@@ -1,3 +1,4 @@
+require 'pe_build'
 require 'pe_build/provisioners'
 require 'vagrant'
 require 'fileutils'
