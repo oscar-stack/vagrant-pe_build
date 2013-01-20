@@ -96,7 +96,7 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
   end
 
   def step(role, stepname)
-    script_dir  = File.join(@env[:root_path], 'bootstrap', role.to_s, stepname.to_s)
+    script_dir  = File.join(PEBuild.source_root, 'bootstrap', role.to_s, stepname.to_s)
     script_list = Dir.glob("#{script_dir}/*")
 
     if script_list.empty?
