@@ -78,8 +78,6 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
     @root     ||= @env[:global_config].pe_build.download_root
     @version  ||= @env[:global_config].pe_build.version
     @filename ||= @env[:global_config].pe_build.filename
-
-    @archive_path = File.join(PEBuild.archive_directory, @filename)
   end
 
   def prepare_answers_file
