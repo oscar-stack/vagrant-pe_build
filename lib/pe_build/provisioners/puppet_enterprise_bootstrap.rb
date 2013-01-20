@@ -125,12 +125,8 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
 
   def on_remote(cmd)
     env[:vm].channel.sudo(cmd) do |type, data|
-      # This section is directly ripped off from the shell provider.
-      if type == :stdout and config.verbose
-        @env[:ui].info(data.chomp, :color => :green, :prefix => false)
-      elsif type == :stderr
-        @env[:ui].info(data.chomp, :color => :red, :prefix => false)
-      end
+      color = (type == :stdout) ? :green : :red
+      @env[:ui].info(data.chomp, :color => color, :prefix => false)
     end
   end
 end
