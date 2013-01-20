@@ -125,7 +125,7 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
 
   def on_remote(cmd)
     env[:vm].channel.sudo(cmd) do |type, data|
-      color = (type == :stdout) ? :cyan : :red
+      color = (type == :stdout) ? :green : :red
       @env[:ui].info(data.chomp, :color => color, :prefix => false)
     end
   end
