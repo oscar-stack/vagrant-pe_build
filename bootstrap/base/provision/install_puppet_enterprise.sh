@@ -6,7 +6,5 @@ else
   echo
   echo
   echo " -- Notice: scheduling Puppet run in one minute to install mcollective"
-  at next minute <<-AT
-  /opt/puppet/bin/puppet agent --onetime --noop
-  AT
+  echo "/opt/puppet/bin/puppet agent --onetime --noop" | at next minute
 fi
