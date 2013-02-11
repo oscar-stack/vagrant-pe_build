@@ -73,11 +73,13 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
       @root     = @env[:vm].pe_build.download_root
       @version  = @env[:vm].pe_build.version
       @filename = @env[:vm].pe_build.version
+      @suffix   = @env[:vm].pe_build.suffix
     end
 
     @root     ||= @env[:global_config].pe_build.download_root
     @version  ||= @env[:global_config].pe_build.version
     @filename ||= @env[:global_config].pe_build.filename
+    @suffix   ||= @env[:global_config].pe_build.suffix
   end
 
   def prepare_answers_file
@@ -116,7 +118,7 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
   # @todo Don't restrict this to the universal installer
   def configure_installer
     vm_base_dir = "/vagrant/.pe_build"
-    installer   = "#{vm_base_dir}/puppet-enterprise-#{@version}-all/puppet-enterprise-installer"
+    installer   = "#{vm_base_dir}/puppet-enterprise-#{@version}-#{@suffix}/puppet-enterprise-installer"
     answers     = "#{vm_base_dir}/answers/#{@env[:vm].name}.txt"
     log_file    = "/root/puppet-enterprise-installer-#{Time.now.strftime('%s')}.log"
 
