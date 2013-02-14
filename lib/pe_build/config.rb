@@ -6,6 +6,7 @@ class PEBuild::Config < Vagrant::Config::Base
   attr_writer :download_root
   attr_writer :version
   attr_writer :filename
+  attr_writer :suffix
 
   def download_root
     @download_root
@@ -17,6 +18,10 @@ class PEBuild::Config < Vagrant::Config::Base
 
   def filename
     @filename
+  end
+
+  def suffix
+    @suffix || :all
   end
 
   def validate(env, errors)
