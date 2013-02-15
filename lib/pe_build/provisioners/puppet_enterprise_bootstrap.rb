@@ -7,7 +7,7 @@ require 'erb'
 class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::Base
 
   class Config < Vagrant::Config::Base
-    attr_writer :verbose, :master
+    attr_writer :verbose, :master, :answers
 
     def role=(rolename)
       @role = (rolename.is_a?(Symbol)) ? rolename : rolename.intern
@@ -23,6 +23,12 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
 
     def master
       @master || 'master'
+    end
+
+    def answers
+      # Either the path the user provided to the answers file under
+      # the project answers dir, or see if one exists based on the role.
+      @answers || "#{role}.txt"
     end
 
     def validate(env, errors)
@@ -83,11 +89,18 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
   end
 
   def prepare_answers_file
-    FileUtils.mkdir_p @answers_dir unless File.directory? @answers_dir
     @env[:ui].info "Creating answers file, node:#{@env[:vm].name}, role: #{config.role}"
+    FileUtils.mkdir_p @answers_dir unless File.directory? @answers_dir
+    dest = "#{@answers_dir}/#{@env[:vm].name}.txt"
 
-    template = File.read("#{PEBuild.source_root}/templates/answers/#{config.role}.txt.erb")
-    dest     = "#{@answers_dir}/#{@env[:vm].name}.txt"
+    # answers dir is enforced
+    user_answers = File.join(@env[:root_path],"answers/#{config.answers}")
+    if File.exists?(user_answers)
+      template = File.read(user_answers)
+    else
+      @env[:ui].info "Using default answers, no answers file available at #{user_answers}"
+      template = File.read("#{PEBuild.source_root}/templates/answers/#{config.role}.txt.erb")
+    end
 
     contents = ERB.new(template).result(binding)
 
