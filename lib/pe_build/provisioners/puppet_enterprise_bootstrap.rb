@@ -127,8 +127,6 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
   end
 
   # Determine the proper invocation of the PE installer
-  #
-  # @todo Don't restrict this to the universal installer
   def configure_installer
     vm_base_dir = "/vagrant/.pe_build"
     installer   = "#{vm_base_dir}/puppet-enterprise-#{@version}-#{@suffix}/puppet-enterprise-installer"
