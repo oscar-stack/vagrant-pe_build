@@ -45,8 +45,8 @@ configure VMs with semi-sane DNS.
 Contact
 -------
 
-  * Source code: https://github.com/adrienthebo/puppet-network
-  * Issue tracker: https://github.com/adrienthebo/puppet-network/issues
+  * Source code: https://github.com/adrienthebo/vagrant-pe\_build
+  * Issue tracker: https://github.com/adrienthebo/vagrant-pe\_build/issues
 
 If you have questions or concerns about this module, contact finch on #vagrant
 on Freenode, or email adrien@puppetlabs.com.
