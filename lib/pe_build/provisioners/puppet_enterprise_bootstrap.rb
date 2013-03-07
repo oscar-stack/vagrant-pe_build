@@ -31,8 +31,21 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
       @answers || "#{role}.txt"
     end
 
+    def step
+      @step || @step = {}
+    end
+
+    def add_step(name, script_path)
+      name = (name.is_a?(Symbol)) ? name : name.intern
+      step[name] = script_path
+    end
+
     def validate(env, errors)
       errors.add("role must be one of [:master, :agent]") unless [:master, :agent].include? role
+
+      step.keys.each do |key|
+        errors.add("step name :#{key.to_s} is invalid, must be one of [:pre, :provision, :post]") unless [:pre, :provision, :post].include? key
+      end
     end
   end
 
@@ -66,7 +79,7 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
 
     [:pre, :provision, :post].each do |stepname|
       [:base, config.role].each do |rolename|
-        step rolename, stepname
+        process_step rolename, stepname
       end
     end
   end
@@ -110,15 +123,28 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
     end
   end
 
-  def step(role, stepname)
-    script_dir  = File.join(PEBuild.source_root, 'bootstrap', role.to_s, stepname.to_s)
-    script_list = Dir.glob("#{script_dir}/*")
+  def process_step(role, stepname)
+
+    if role != :base && config.step[stepname]
+      if File.file? config.step[stepname]
+        script_list = [*config.step[stepname]]
+      else
+        script_list = []
+        @env[:ui].warn "Cannot find defined step for #{role}/#{stepname.to_s} at \'#{config.step[stepname]}\'"
+      end
+    else
+      # We do not have a user defined step for this role or we're processing the :base step
+      script_dir  = File.join(PEBuild.source_root, 'bootstrap', role.to_s, stepname.to_s)
+      script_list = Dir.glob("#{script_dir}/*")
+    end
 
     if script_list.empty?
       @env[:ui].info "No steps for #{role}/#{stepname}", :color => :cyan
     end
 
     script_list.each do |template_path|
+      # A message to show which step's action is running
+      @env[:ui].info "Running action for #{role}/#{stepname}"
       template = File.read(template_path)
       contents = ERB.new(template).result(binding)
 
