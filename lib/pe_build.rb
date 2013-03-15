@@ -6,7 +6,7 @@ module PEBuild
   end
 
   def self.source_root
-    @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), '..'))
+    @source_root ||= File.expand_path('..', File.dirname(__FILE__))
   end
 end
 
