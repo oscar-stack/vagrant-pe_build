@@ -59,6 +59,9 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     prepare_answers_file
     configure_installer
 
+    #perform_installation
+    #relocate_installation if @config.role == :master
+
     [:pre, :provision, :post].each do |stepname|
       [:base, config.role].each do |rolename|
         process_step rolename, stepname
@@ -67,21 +70,6 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   end
 
   private
-
-  # I HATE THIS.
-  def load_variables
-    if @env[:box_name]
-      @root     = @env[:vm].pe_build.download_root
-      @version  = @env[:vm].pe_build.version
-      @filename = @env[:vm].pe_build.version
-      @suffix   = @env[:vm].pe_build.suffix
-    end
-
-    @root     ||= @env[:global_config].pe_build.download_root
-    @version  ||= @env[:global_config].pe_build.version
-    @filename ||= @env[:global_config].pe_build.filename
-    @suffix   ||= @env[:global_config].pe_build.suffix
-  end
 
   # @return [String] The final path to the installer answers file
   def installer_answer_file
