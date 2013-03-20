@@ -64,8 +64,8 @@ class PEBootstrap < Vagrant.plugin('2', :config)
       errors << "Master must be a string, got a #{@master.class}"
     end
 
-    unless File.readable? @answers
-      errors << "Answers must be a readable file"
+    if @answer_file and !File.readable? @answer_file
+      errors << "Answers must be a readable file if given"
     end
 
     {"PE Bootstrap" => errors}
