@@ -30,30 +30,30 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   def initialize(machine, config)
     super
 
-    @logger = Log4R::Logger.new('vagrant::provisioners::pe_bootstrap')
+    @logger = Log4r::Logger.new('vagrant::provisioners::pe_bootstrap')
 
     @work_dir    = File.join(@machine.env.root_path, '.pe_build')
     @answer_dir  = File.join(work_dir, 'answers')
-    @answer_file = (@config.answers || File.join(answer_dir, "#{@machine.name}.txt"))
+    @answer_file = @config.answer_file
   end
 
   # Instantiate all working directory content and stage the PE installer.
-  def configure
+  def configure(some_mysterious_and_undocumented_variable)
     unless File.directory? work_dir
       FileUtils.mkdir_p work_dir
     end
 
-    unless File.directory answers_dir
-      FileUtils.mkdir_p answers_dir
+    unless File.directory? answer_dir
+      FileUtils.mkdir_p answer_dir
     end
 
-    @machine.env[:action_runner].run(
+    @machine.env.action_runner.run(
       PEBuild::Action.stage_pe,
       :unpack_directory => @work_dir
     )
   end
 
-  def provision!
+  def provision
     # determine if bootstrapping is necessary
 
     prepare_answers_file
@@ -83,25 +83,28 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     @suffix   ||= @env[:global_config].pe_build.suffix
   end
 
-  def prepare_answers_file
-    @env[:ui].info "Creating answers file, node:#{@env[:vm].name}, role: #{config.role}"
-    FileUtils.mkdir_p @answers_dir unless File.directory? @answers_dir
-    dest = "#{@answers_dir}/#{@env[:vm].name}.txt"
+  # @return [String] The final path to the installer answers file
+  def installer_answer_file
+    File.join(@answer_dir, "#{@machine.name}.txt")
+  end
 
-    # answers dir is enforced
-    user_answers = File.join(@env[:root_path],"answers/#{config.answers}")
-    if File.exists?(user_answers)
-      template = File.read(user_answers)
+  def prepare_answers_file
+    @machine.env.ui.info "Creating answers file, node:#{@machine.name}, role: #{config.role}"
+
+    if @answer_file
+      template_path = @answer_file
     else
-      @env[:ui].info "Using default answers, no answers file available at #{user_answers}"
-      template = File.read("#{PEBuild.source_root}/templates/answers/#{config.role}.txt.erb")
+      template_path = File.join(PEBuild.template_dir, 'answers', "#{config.role}.txt.erb")
     end
 
-    contents = ERB.new(template).result(binding)
+    template = File.read(template_path)
 
-    @env[:ui].info "Writing answers file to #{dest}"
-    File.open(dest, "w") do |file|
-      file.write contents
+    str = ERB.new(template).result(binding)
+
+
+    @machine.env.ui.info "Writing answers file to #{installer_answer_file}"
+    File.open(installer_answer_file, "w") do |file|
+      file.write(str)
     end
   end
 
@@ -112,7 +115,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
         script_list = [*config.step[stepname]]
       else
         script_list = []
-        @env[:ui].warn "Cannot find defined step for #{role}/#{stepname.to_s} at \'#{config.step[stepname]}\'"
+        @machine.env.ui.warn "Cannot find defined step for #{role}/#{stepname.to_s} at \'#{config.step[stepname]}\'"
       end
     else
       # We do not have a user defined step for this role or we're processing the :base step
@@ -121,12 +124,12 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     end
 
     if script_list.empty?
-      @env[:ui].info "No steps for #{role}/#{stepname}", :color => :cyan
+      @machine.env.ui.info "No steps for #{role}/#{stepname}", :color => :cyan
     end
 
     script_list.each do |template_path|
       # A message to show which step's action is running
-      @env[:ui].info "Running action for #{role}/#{stepname}"
+      @machine.env.ui.info "Running action for #{role}/#{stepname}"
       template = File.read(template_path)
       contents = ERB.new(template).result(binding)
 
@@ -136,18 +139,23 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   # Determine the proper invocation of the PE installer
   def configure_installer
-    vm_base_dir = "/vagrant/.pe_build"
-    installer   = "#{vm_base_dir}/puppet-enterprise-#{@version}-#{@suffix}/puppet-enterprise-installer"
-    answers     = "#{vm_base_dir}/answers/#{@env[:vm].name}.txt"
+    root = "/vagrant/.pe_build"
+
+    installer_dir = "puppet-enterprise-#{@config.version}-#{@config.suffix}"
+    installer     = "puppet-enterprise-installer"
+
+    answers     = "#{root}/answers/#{@machine.name}.txt"
     log_file    = "/root/puppet-enterprise-installer-#{Time.now.strftime('%s')}.log"
 
-    @installer_cmd = "#{installer} -a #{answers} -l #{log_file}"
+    cmd = File.join(root, installer_dir, installer)
+
+    @installer_cmd = "#{cmd} -a #{answers} -l #{log_file}"
   end
 
   def on_remote(cmd)
-    env[:vm].channel.sudo(cmd) do |type, data|
+    @machine.communicate.sudo(cmd) do |type, data|
       color = (type == :stdout) ? :green : :red
-      @env[:ui].info(data.chomp, :color => color, :prefix => false)
+      @machine.env.ui.info(data.chomp, :color => color, :prefix => false)
     end
   end
 end
