@@ -1,4 +1,5 @@
 require 'vagrant'
+require 'log4r'
 
 require 'fileutils'
 
@@ -8,6 +9,8 @@ class Unpackage
   def initialize(app, env)
     @app, @env = app, env
     load_variables
+
+    @logger = Log4r::Logger.new(self.class.name.downcase)
   end
 
   def call(env)
@@ -41,6 +44,7 @@ class Unpackage
     else
       cmd = %{tar xf #{@archive_path} -C #{@env[:unpack_directory]}}
       @env[:ui].info "Extracting #{@archive_path} to #{@env[:unpack_directory]}"
+      @logger.debug "Executing #{cmd.inspect}"
       %x{#{cmd}}
     end
   rescue => e
