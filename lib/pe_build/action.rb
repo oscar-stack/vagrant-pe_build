@@ -8,7 +8,7 @@ require 'pe_build/action/unpackage'
 module PEBuild
 module Action
 
-  def self.stage_pe_action
+  def self.stage_pe
     Vagrant::Action::Builder.new.tap do |b|
       b.use PEBuild::Action::Download
       b.use PEBuild::Action::Unpackage
