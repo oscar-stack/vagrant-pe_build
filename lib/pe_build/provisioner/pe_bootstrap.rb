@@ -4,6 +4,8 @@ require 'log4r'
 require 'fileutils'
 require 'erb'
 
+require 'pe_build/action'
+
 module PEBuild; module Provisioner
 
 class PEBootstrapError < Vagrant::Errors::VagrantError
@@ -45,8 +47,10 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
       FileUtils.mkdir_p answers_dir
     end
 
-    raise NotImplementedError, "Actions are currently broken"
-    #@machine.env[:action_runner].run(:prep_build, :unpack_directory => @work_dir)
+    @machine.env[:action_runner].run(
+      PEBuild::Action.stage_pe,
+      :unpack_directory => @work_dir
+    )
   end
 
   def provision!
