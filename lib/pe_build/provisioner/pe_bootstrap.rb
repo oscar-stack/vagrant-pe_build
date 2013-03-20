@@ -54,9 +54,6 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   end
 
   def provision
-    # determine if bootstrapping is necessary
-
-    @logger.info "Creating answers file, node:#{@machine.name}, role: #{config.role}"
     prepare_answers_file
 
     [:base, config.role].each do |rolename|
@@ -141,9 +138,8 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   def perform_installation
     if @machine.communicate.test('test -f /opt/puppet/pe_version')
-      @machine.env.ui.info "Puppet Enterprise is already installed, skipping installation.",
-        :name  => @machine.name,
-        :color => :red
+      @machine.env.ui.warn "Puppet Enterprise is already installed, skipping installation.",
+        :name  => @machine.name
     else
       on_remote installer_cmd
       @machine.env.ui.info "Scheduling puppet run to prime pe_mcollective"
@@ -155,14 +151,11 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     @machine.communicate.sudo(cmd) do |type, data|
       if type == :stdout
         if verbose
-          $stdout.print "\r"
           @machine.env.ui.info(data.chomp, :color => :green, :prefix => true)
         else
-          $stdout.print '.'
-          $stdout.flush
+          @machine.env.ui.info('.', :color => :green, :prefix => true, :new_line => false)
         end
       else
-        $stdout.print "\r"
         @machine.env.ui.info(data.chomp, :color => :red, :prefix => true)
       end
     end
