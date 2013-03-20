@@ -1,8 +1,10 @@
 require 'vagrant'
-require 'pe_build/action'
+
 require 'fileutils'
 
-class PEBuild::Action::Unpackage
+module PEBuild; module Action
+
+class Unpackage
   def initialize(app, env)
     @app, @env = app, env
     load_variables
@@ -68,3 +70,5 @@ class PEBuild::Action::Unpackage
     dir
   end
 end
+
+end; end

@@ -1,9 +1,10 @@
 require 'pe_build'
-require 'pe_build/action'
 require 'vagrant'
 require 'fileutils'
 
-class PEBuild::Action::Download
+module PEBuild; module Action
+
+class Download
   # Downloads a PE build to a temp directory
 
   def initialize(app, env)
@@ -54,3 +55,5 @@ class PEBuild::Action::Download
     end
   end
 end
+
+end; end
