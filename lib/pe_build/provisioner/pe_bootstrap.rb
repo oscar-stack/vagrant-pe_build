@@ -142,8 +142,19 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   def on_remote(cmd)
     @machine.communicate.sudo(cmd) do |type, data|
-      color = (type == :stdout) ? :green : :red
-      @machine.env.ui.info(data.chomp, :color => color, :prefix => false)
+
+      if type == :stdout
+        if @config.verbose
+          $stdout.print "\r"
+          @machine.env.ui.info(data.chomp, :color => :green, :prefix => true)
+        else
+          $stdout.print '.'
+          $stdout.flush
+        end
+      else
+        $stdout.print "\r"
+        @machine.env.ui.info(data.chomp, :color => :red, :prefix => true)
+      end
     end
   end
 end
