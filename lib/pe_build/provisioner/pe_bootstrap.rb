@@ -56,42 +56,41 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   def provision
     # determine if bootstrapping is necessary
 
+    @logger.info "Creating answers file, node:#{@machine.name}, role: #{config.role}"
     prepare_answers_file
-    configure_installer
 
-    #perform_installation
+    [:base, config.role].each do |rolename|
+      process_step rolename, :pre
+    end
+
+    perform_installation
     #relocate_installation if @config.role == :master
 
-    [:pre, :provision, :post].each do |stepname|
-      [:base, config.role].each do |rolename|
-        process_step rolename, stepname
-      end
+    [:base, config.role].each do |rolename|
+      process_step rolename, :post
     end
   end
 
   private
 
-  # @return [String] The final path to the installer answers file
-  def installer_answer_file
-    File.join(@answer_dir, "#{@machine.name}.txt")
-  end
-
-  def prepare_answers_file
-    @machine.env.ui.info "Creating answers file, node:#{@machine.name}, role: #{config.role}"
-
+  def generate_answers
+    default_template_path = File.join(PEBuild.template_dir, 'answers', "#{config.role}.txt.erb")
     if @answer_file
       template_path = @answer_file
     else
-      template_path = File.join(PEBuild.template_dir, 'answers', "#{config.role}.txt.erb")
+      template_path = default_template_path
     end
-
     template = File.read(template_path)
-
     str = ERB.new(template).result(binding)
+  end
 
+  def prepare_answers_file
+    str = generate_answers
 
-    @machine.env.ui.info "Writing answers file to #{installer_answer_file}"
-    File.open(installer_answer_file, "w") do |file|
+    dest_file = File.join(@answer_dir, "#{@machine.name}.txt")
+
+    @machine.env.ui.info "Writing answers file to #{dest_file}"
+    File.open(dest_file, "w") do |file|
       file.write(str)
     end
   end
@@ -112,7 +111,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     end
 
     if script_list.empty?
-      @machine.env.ui.info "No steps for #{role}/#{stepname}", :color => :cyan
+      @logger.info "No steps for #{role}/#{stepname}", :color => :cyan
     end
 
     script_list.each do |template_path|
@@ -126,7 +125,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   end
 
   # Determine the proper invocation of the PE installer
-  def configure_installer
+  def installer_cmd
     root = "/vagrant/.pe_build"
 
     installer_dir = "puppet-enterprise-#{@config.version}-#{@config.suffix}"
@@ -140,11 +139,22 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     @installer_cmd = "#{cmd} -a #{answers} -l #{log_file}"
   end
 
-  def on_remote(cmd)
-    @machine.communicate.sudo(cmd) do |type, data|
+  def perform_installation
+    if @machine.communicate.test('test -f /opt/puppet/pe_version')
+      @machine.env.ui.info "Puppet Enterprise is already installed, skipping installation.",
+        :name  => @machine.name,
+        :color => :red
+    else
+      on_remote installer_cmd
+      @machine.env.ui.info "Scheduling puppet run to prime pe_mcollective"
+      on_remote "echo '/opt/puppet/bin/puppet agent -t' | at next minute"
+    end
+  end
 
+  def on_remote(cmd, verbose = false)
+    @machine.communicate.sudo(cmd) do |type, data|
       if type == :stdout
-        if @config.verbose
+        if verbose
           $stdout.print "\r"
           @machine.env.ui.info(data.chomp, :color => :green, :prefix => true)
         else
