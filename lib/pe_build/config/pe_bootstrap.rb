@@ -40,7 +40,7 @@ class PEBootstrap < Vagrant.plugin('2', :config)
     set_default :@role,    :agent
     set_default :@verbose, false
     set_default :@master,  'master'
-    set_default :@answers, "#{@role}.txt"
+    set_default :@answers, nil
   end
 
   def add_step(name, script_path)
