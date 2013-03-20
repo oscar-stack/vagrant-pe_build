@@ -12,23 +12,27 @@ end
 
 class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
+  # @!attribute [r] work_dir
+  #   @return [String] The path to the machine pe_build working directory
+
+  attr_reader :work_dir
+
+  # @!attribute [r] answer_dir
+  #   @return [String] The path to the default answer file template dir
+  attr_reader :answer_dir
+
+  # @!attribute [r] answer_file
+  #   @return [String] The path to the answer file for this machine.
+  attr_reader :answer_file
+
   def initialize(machine, config)
     super
 
     @logger = Log4R::Logger.new('vagrant::provisioners::pe_bootstrap')
-  end
 
-  # The path to the local PE installer cache path
-  def work_dir
-    @work_dir ||= File.join(@machine.env.root_path, '.pe_build')
-  end
-
-  def answer_dir
-    @answer_dir ||= File.join(work_dir, 'answers')
-  end
-
-  def answer_file
-    @answer_file ||= (@config.answers || File.join(answer_dir, "#{@machine.name}.txt"))
+    @work_dir    = File.join(@machine.env.root_path, '.pe_build')
+    @answer_dir  = File.join(work_dir, 'answers')
+    @answer_file = (@config.answers || File.join(answer_dir, "#{@machine.name}.txt"))
   end
 
   # Instantiate all working directory content and stage the PE installer.
