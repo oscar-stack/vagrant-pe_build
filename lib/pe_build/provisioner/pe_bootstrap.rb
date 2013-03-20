@@ -4,7 +4,8 @@ require 'vagrant'
 require 'fileutils'
 require 'erb'
 
-class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::Base
+module PEBuild; module Provisioner
+class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   class Config < Vagrant::Config::Base
     attr_writer :verbose, :master, :answers
@@ -169,3 +170,5 @@ class PEBuild::Provisioners::PuppetEnterpriseBootstrap < Vagrant::Provisioners::
     end
   end
 end
+
+end; end
