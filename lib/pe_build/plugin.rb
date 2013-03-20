@@ -20,6 +20,11 @@ class PEBuild::Plugin < Vagrant.plugin('2')
     PEBuild::Config::PEBootstrap
   end
 
+  config(:pe_build) do
+    require_relative 'config/global'
+    PEBuild::Config::Global
+  end
+
   provisioner(:pe_bootstrap) do
     require_relative 'provisioner/pe_bootstrap'
     PEBuild::Provisioner::PEBootstrap
