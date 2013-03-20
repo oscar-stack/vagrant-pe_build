@@ -30,13 +30,16 @@ class Global < Vagrant.plugin('2', :config)
   def finalize!
     set_default :@suffix,   'all'
     set_default :@version,  DEFAULT_PE_VERSION
-    # TODO this is still *nix centric, which needs to be resolved.
     set_default :@filename, "puppet-enterprise-#{version}-#{suffix}.tar.gz"
+
+    set_default :@download_root, nil
   end
 
   # @todo Convert error strings to I18n
   def validate(machine)
     errors = []
+
+    {"PE Build global config" => errors}
   end
 
   private

@@ -1,46 +1,50 @@
 require 'vagrant'
+require 'pe_build/config/global'
 
 module PEBuild; module Config
 
-class PEBootstrap < Vagrant.plugin('2', :config)
+class PEBootstrap < PEBuild::Config::Global
 
   # @!attribute master
   #   @return The DNS hostname of the Puppet master for this node.
-  attr_writer :master
+  attr_accessor :master
 
-  # @!attribute answers
-  #   @return [String] The path to a user specified answers file (Optional)
-  attr_writer :answers
+  # @!attribute answer_file
+  #   @return [String] The path to a user specified answer_file file (Optional)
+  attr_accessor :answer_file
 
   # @!attribute verbose
   #   @return [TrueClass, FalseClass] if stdout will be displayed when installing
-
-
-  VALID_ROLES = [:agent, :master]
+  attr_accessor :verbose
 
   # @!attribute role
   #   @return [Symbol] The type of the PE installation role. One of [:master, :agent]
-  attr_writer :role
+  attr_accessor :role
+  VALID_ROLES = [:agent, :master]
 
   # @!attribute step
   #   @return [Hash<Symbol, String>] a hash whose keys are step levels, and whose
   #                                  keys are directories to optional steps.
-  attr_writer :steps
+  attr_accessor :steps
+  attr_accessor :step
 
   def initialize
-    @role    = UNSET_VALUE
-    @verbose = UNSET_VALUE
-    @master  = UNSET_VALUE
-    @answers = UNSET_VALUE
+    super
+    @role        = UNSET_VALUE
+    @verbose     = UNSET_VALUE
+    @master      = UNSET_VALUE
+    @answer_file = UNSET_VALUE
 
     @step    = {}
   end
 
   def finalize!
-    set_default :@role,    :agent
-    set_default :@verbose, false
-    set_default :@master,  'master'
-    set_default :@answers, nil
+    super
+    set_default :@role,        :agent
+    set_default :@verbose,     false
+    set_default :@master,      'master'
+    set_default :@answer_file, nil
+
   end
 
   def add_step(name, script_path)
@@ -50,8 +54,9 @@ class PEBootstrap < Vagrant.plugin('2', :config)
 
   # @todo Convert error strings to I18n
   def validate(machine)
-    errors = []
+    h = super
 
+    errors = []
     unless VALID_ROLES.any? {|sym| @role == sym}
       errors << "Role must be one of #{VALID_ROLES.inspect}, was #{@role.inspect}"
     end
@@ -68,7 +73,7 @@ class PEBootstrap < Vagrant.plugin('2', :config)
       errors << "Answers must be a readable file if given"
     end
 
-    {"PE Bootstrap" => errors}
+    h.merge({"PE Bootstrap" => errors})
   end
 
   private
