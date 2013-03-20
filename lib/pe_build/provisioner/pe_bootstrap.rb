@@ -1,75 +1,48 @@
-require 'pe_build'
-require 'pe_build/provisioners'
 require 'vagrant'
+
+require 'log4r'
 require 'fileutils'
 require 'erb'
 
 module PEBuild; module Provisioner
+
+class PEBootstrapError < Vagrant::Errors::VagrantError
+  #error_namespace('vagrant.provisioners.pe_bootstrap')
+end
+
 class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
-  class Config < Vagrant::Config::Base
-    attr_writer :verbose, :master, :answers
-
-    def role=(rolename)
-      @role = (rolename.is_a?(Symbol)) ? rolename : rolename.intern
-    end
-
-    def role
-      @role || :agent
-    end
-
-    def verbose
-      @verbose || true
-    end
-
-    def master
-      @master || 'master'
-    end
-
-    def answers
-      # Either the path the user provided to the answers file under
-      # the project answers dir, or see if one exists based on the role.
-      @answers || "#{role}.txt"
-    end
-
-    def step
-      @step || @step = {}
-    end
-
-    def add_step(name, script_path)
-      name = (name.is_a?(Symbol)) ? name : name.intern
-      step[name] = script_path
-    end
-
-    def validate(env, errors)
-      errors.add("role must be one of [:master, :agent]") unless [:master, :agent].include? role
-
-      step.keys.each do |key|
-        errors.add("step name :#{key.to_s} is invalid, must be one of [:pre, :provision, :post]") unless [:pre, :provision, :post].include? key
-      end
-    end
-  end
-
-  def self.config_class
-    Config
-  end
-
-  def initialize(*args)
+  def initialize(machine, config)
     super
 
-    load_variables
-
-    @cache_path   = File.join(@env[:root_path], '.pe_build')
-    @answers_dir  = File.join(@cache_path, 'answers')
+    @logger = Log4R::Logger.new('vagrant::provisioners::pe_bootstrap')
   end
 
-  def validate(app, env)
-
+  # The path to the local PE installer cache path
+  def work_dir
+    @work_dir ||= File.join(@machine.env.root_path, '.pe_build')
   end
 
-  def prepare
-    FileUtils.mkdir @cache_path unless File.directory? @cache_path
-    @env[:action_runner].run(:prep_build, :unpack_directory => @cache_path)
+  def answer_dir
+    @answer_dir ||= File.join(work_dir, 'answers')
+  end
+
+  def answer_file
+    @answer_file ||= (@config.answers || File.join(answer_dir, "#{@machine.name}.txt"))
+  end
+
+  # Instantiate all working directory content and stage the PE installer.
+  def configure
+    unless File.directory? work_dir
+      FileUtils.mkdir_p work_dir
+    end
+
+    unless File.directory answers_dir
+      FileUtils.mkdir_p answers_dir
+    end
+
+    raise NotImplementedError, "Actions are currently broken"
+    #@machine.env[:action_runner].run(:prep_build, :unpack_directory => @work_dir)
   end
 
   def provision!
