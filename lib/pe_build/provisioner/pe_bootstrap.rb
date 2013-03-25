@@ -34,7 +34,6 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
     @work_dir    = File.join(@machine.env.root_path, '.pe_build')
     @answer_dir  = File.join(work_dir, 'answers')
-    @answer_file = @config.answer_file
   end
 
   # Instantiate all working directory content and stage the PE installer.
@@ -56,14 +55,17 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   def provision
     prepare_answers_file
 
-    [:base, config.role].each do |rolename|
+    [:base, @config.role].each do |rolename|
       process_step rolename, :pre
     end
 
     perform_installation
-    #relocate_installation if @config.role == :master
 
-    [:base, config.role].each do |rolename|
+    if @config.relocate_manifests
+      relocate_installation
+    end
+
+    [:base, @config.role].each do |rolename|
       process_step rolename, :post
     end
   end
@@ -71,12 +73,13 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   private
 
   def generate_answers
-    default_template_path = File.join(PEBuild.template_dir, 'answers', "#{config.role}.txt.erb")
-    if @answer_file
-      template_path = @answer_file
+    if @config.answer_file
+      template_path = @config.answer_file
     else
+      default_template_path = File.join(PEBuild.template_dir, 'answers', "#{@config.role}.txt.erb")
       template_path = default_template_path
     end
+    @machine.env.ui.info "Using #{template_path} as answers template"
     template = File.read(template_path)
     str = ERB.new(template).result(binding)
   end
@@ -147,10 +150,23 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     end
   end
 
-  def on_remote(cmd, verbose = false)
+  # Modify the PE puppet master config to use alternate /manifests and /modules
+  #
+  # Manifests and modules need to be mounted on the master via shared folders,
+  # but the default /vagrant mount has permissions and ownership that conflicts
+  # with the puppet master process and the pe-puppet user. Those directories
+  # need to be mounted with permissions like 'fmode=644,dmode=755,fmask=022,dmask=022'
+  #
+  def relocate_installation
+    script_path = File.join(PEBuild.template_dir, 'scripts', 'relocate_installation.sh')
+    script = File.read script_path
+    on_remote script
+  end
+
+  def on_remote(cmd)
     @machine.communicate.sudo(cmd) do |type, data|
       if type == :stdout
-        if verbose
+        if @config.verbose
           @machine.env.ui.info(data.chomp, :color => :green, :prefix => true)
         else
           @machine.env.ui.info('.', :color => :green, :prefix => true, :new_line => false)
