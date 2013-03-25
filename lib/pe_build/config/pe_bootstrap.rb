@@ -25,7 +25,6 @@ class PEBootstrap < PEBuild::Config::Global
   # @!attribute step
   #   @return [Hash<Symbol, String>] a hash whose keys are step levels, and whose
   #                                  keys are directories to optional steps.
-  attr_accessor :steps
   attr_accessor :step
 
   def initialize
