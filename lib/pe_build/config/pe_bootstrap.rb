@@ -27,12 +27,19 @@ class PEBootstrap < PEBuild::Config::Global
   #                                  keys are directories to optional steps.
   attr_accessor :step
 
+  attr_accessor :relocate_manifests
+  # @!attribute relocate_manifests
+  #   @return [TrueClass, FalseClass] if the puppet master should use manifests
+  #                                   out of the vagrant directory.
+  #
   def initialize
     super
     @role        = UNSET_VALUE
     @verbose     = UNSET_VALUE
     @master      = UNSET_VALUE
     @answer_file = UNSET_VALUE
+
+    @relocate_manifests = UNSET_VALUE
 
     @step    = {}
   end
@@ -44,6 +51,7 @@ class PEBootstrap < PEBuild::Config::Global
     set_default :@master,      'master'
     set_default :@answer_file, nil
 
+    set_default :@relocate_manifests, (@role == :master)
   end
 
   def add_step(name, script_path)
@@ -70,6 +78,10 @@ class PEBootstrap < PEBuild::Config::Global
 
     if @answer_file and !File.readable? @answer_file
       errors << "Answers must be a readable file if given"
+    end
+
+    if @relocate_manifests and not @role == :master
+      errors << "'relocate_manifests' can only be applied to a master"
     end
 
     h.merge({"PE Bootstrap" => errors})
