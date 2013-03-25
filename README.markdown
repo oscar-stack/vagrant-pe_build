@@ -42,6 +42,9 @@ Puppet Enterprise relies on SSL for security so you'll need to ensure that your
 SSL configuration isn't borked. [vagrant-hosts][vagranthosts] is recommended to
 configure VMs with semi-sane DNS.
 
+Guest VMs need to be able to directly communicate. You'll need to ensure that
+they have private network interfaces prepared.
+
 Contact
 -------
 
