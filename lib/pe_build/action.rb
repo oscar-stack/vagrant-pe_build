@@ -1,20 +1,19 @@
 require 'vagrant'
 require 'vagrant/action/builder'
-require 'pe_build'
-
-module PEBuild::Action
-end
 
 require 'pe_build/action/download'
 require 'pe_build/action/unpackage'
 
-builder = Vagrant::Action::Builder.new do
-  use PEBuild::Action::Download
+
+module PEBuild
+module Action
+
+  def self.stage_pe
+    Vagrant::Action::Builder.new.tap do |b|
+      b.use PEBuild::Action::Download
+      b.use PEBuild::Action::Unpackage
+    end
+  end
+
 end
-
-Vagrant.actions.register :download_pe_build, builder
-
-Vagrant.actions.register(:prep_build, Vagrant::Action::Builder.new do
-  use PEBuild::Action::Download
-  use PEBuild::Action::Unpackage
-end)
+end

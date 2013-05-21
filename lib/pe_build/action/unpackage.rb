@@ -1,11 +1,16 @@
 require 'vagrant'
-require 'pe_build/action'
+require 'log4r'
+
 require 'fileutils'
 
-class PEBuild::Action::Unpackage
+module PEBuild; module Action
+
+class Unpackage
   def initialize(app, env)
     @app, @env = app, env
     load_variables
+
+    @logger = Log4r::Logger.new(self.class.name.downcase)
   end
 
   def call(env)
@@ -39,6 +44,7 @@ class PEBuild::Action::Unpackage
     else
       cmd = %{tar xf #{@archive_path} -C #{@env[:unpack_directory]}}
       @env[:ui].info "Extracting #{@archive_path} to #{@env[:unpack_directory]}"
+      @logger.debug "Executing #{cmd.inspect}"
       %x{#{cmd}}
     end
   rescue => e
@@ -68,3 +74,5 @@ class PEBuild::Action::Unpackage
     dir
   end
 end
+
+end; end

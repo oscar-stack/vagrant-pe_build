@@ -6,12 +6,13 @@ module PEBuild
   end
 
   def self.source_root
-    @source_root ||= File.expand_path('..', File.dirname(__FILE__))
+    File.expand_path('..', File.dirname(__FILE__))
+  end
+
+  def self.template_dir
+    File.expand_path('templates', source_root)
   end
 end
 
+require 'pe_build/plugin'
 require 'pe_build/version'
-require 'pe_build/action'
-require 'pe_build/config'
-require 'pe_build/command'
-require 'pe_build/provisioners'
