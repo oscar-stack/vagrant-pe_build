@@ -1,9 +1,9 @@
-require 'pe_build'
+require 'pe_build/archive'
 require 'vagrant'
 require 'fileutils'
 
-module PEBuild; module Action
-
+module PEBuild
+module Action
 class Download
   # Downloads a PE build to a temp directory
 
@@ -25,6 +25,12 @@ class Download
   # If we are applying actions within the context of a single box, then we
   # should try to prefer and box level configuration options first. If
   # anything is unset then we should fall back to the global settings.
+  #
+  # @todo this is the worst damn thing ever. It needs to be purged. These
+  #   variables should be _explicitly passed_ and let the caller figure this
+  #   out. It's a disgusting amount of data munging that's hardly our
+  #   responsibility. Although really, this class should be killed. Killed dead.
+  #
   def load_variables
     if @env[:box_name]
       @root     = @env[:vm].pe_build.download_root
@@ -35,25 +41,13 @@ class Download
     @root     ||= @env[:global_config].pe_build.download_root
     @version  ||= @env[:global_config].pe_build.version
     @filename ||= @env[:global_config].pe_build.filename
-
-    @archive_path = File.join(PEBuild.archive_directory, @filename)
-  end
-
-  # @return [String] The full URL to download, based on the config
-  def url
-    [@root, @version, @filename].join('/')
   end
 
   def perform_download
-    if File.exist? @archive_path
-      @env[:ui].info "#{@filename} cached, skipping download."
-    else
-      FileUtils.mkdir_p PEBuild.archive_directory unless File.directory? PEBuild.archive_directory
-      cmd = %{curl -L -A "Vagrant/PEBuild (v#{PEBuild::VERSION})" -O #{url}}
-      @env[:ui].info "Executing '#{cmd}'"
-      Dir.chdir(PEBuild.archive_directory) { %x{#{cmd}} }
-    end
+    archive = PEBuild::Archive.new(@filename, @version)
+    archive.ui = @env[:ui]
+    archive.download(@root)
   end
 end
-
-end; end
+end
+end
