@@ -44,8 +44,7 @@ class Download
   end
 
   def perform_download
-    archive = PEBuild::Archive.new(@filename, @version)
-    archive.ui = @env[:ui]
+    archive = PEBuild::Archive.new(@filename, @version, @env[:ui])
     archive.download(@root)
   end
 end

@@ -19,8 +19,8 @@ class Archive
 
   attr_accessor :ui
 
-  def initialize(filename, version)
-
+  def initialize(filename, version, ui)
+    @ui       = ui
     @version  = version
     @filename = filename.gsub(/:version/, @version)
 
