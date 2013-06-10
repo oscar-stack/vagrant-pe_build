@@ -1,6 +1,8 @@
 require 'vagrant'
 
 module PEBuild
+
+  # XXX should be vagrant_home
   def self.archive_directory
     File.expand_path(File.join(ENV['HOME'], '.vagrant.d', 'pe_builds'))
   end
