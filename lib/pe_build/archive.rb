@@ -28,6 +28,19 @@ class Archive
     @url = "#{@download_dir}/#{@filename}"
   end
 
+  def copy_from(fs_dir)
+    if File.exist? @archive_path
+      # @ui IS NOT REQUIRED. IT WILL BLOW UP IF MISSING.
+      @ui.info "#{@filename} cached, skipping download."
+    else
+      mk_archive_dir
+
+      file_path = File.join(fs_dir, filename)
+
+      FileUtils.cp file_path, @archive_path
+    end
+  end
+
   # @todo Take download_dir as an argument; don't presuppose that we will be
   #   downloading every file.
   # @todo Download to tempfile, and move into place when download complete
