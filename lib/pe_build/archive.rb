@@ -48,7 +48,6 @@ class Archive
   def download(download_dir)
 
     if File.exist? @archive_path
-      # @ui IS NOT REQUIRED. IT WILL BLOW UP IF MISSING.
       @ui.info "#{@filename} cached, skipping download."
     else
       mk_archive_dir
