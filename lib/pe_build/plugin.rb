@@ -30,7 +30,7 @@ class Plugin < Vagrant.plugin('2')
     PEBuild::Provisioner::PEBootstrap
   end
 
-  command(:pe_build) do
+  command(:'pe-build') do
     require_relative 'command'
     PEBuild::Command
   end
