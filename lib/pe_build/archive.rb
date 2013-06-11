@@ -55,7 +55,7 @@ class Archive
       url = "#{download_dir}/#{@filename}"
       url.gsub!(':version', @version)
 
-      cmd = %{curl -L -A "Vagrant/PEBuild (v#{PEBuild::VERSION})" -O #{url}}
+      cmd = %{curl --fail -L -A "Vagrant/PEBuild (v#{PEBuild::VERSION})" -O #{url}}
       @ui.info "Executing '#{cmd}'"
       Dir.chdir(PEBuild.archive_directory) { %x{#{cmd}} }
     end
