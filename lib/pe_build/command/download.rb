@@ -1,8 +1,12 @@
-require 'pe_build'
 require 'vagrant'
 
-class PEBuild::Command::Download < Vagrant::Command::Base
+module PEBuild
+class Command
+class Download < Vagrant.plugin(2, :command)
   def execute
-    @env.action_runner.run(:download_pe_build)
+    raise NotImplementedError
+    #@env.action_runner.run(:download_pe_build)
   end
+end
+end
 end

@@ -1,12 +1,12 @@
 require 'vagrant'
-require 'pe_build'
 require 'pe_build/version'
 
 if Vagrant::VERSION < "1.1.0"
   raise "vagrant-pe_build version #{PEBuild::VERSION} requires Vagrant 1.1 or later"
 end
 
-class PEBuild::Plugin < Vagrant.plugin('2')
+module PEBuild
+class Plugin < Vagrant.plugin('2')
 
   name 'pe_build'
 
@@ -29,4 +29,10 @@ class PEBuild::Plugin < Vagrant.plugin('2')
     require_relative 'provisioner/pe_bootstrap'
     PEBuild::Provisioner::PEBootstrap
   end
+
+  command(:pe_build) do
+    require_relative 'command'
+    PEBuild::Command
+  end
+end
 end
