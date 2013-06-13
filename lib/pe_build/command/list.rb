@@ -4,7 +4,6 @@ module PEBuild
 class Command
 class List < Vagrant.plugin(2, :command)
   def execute
-    #raise NotImplementedError
     if File.directory? PEBuild.archive_directory
       @env.ui.info "PE versions available (at #{PEBuild.archive_directory})"
       @env.ui.info "---"
