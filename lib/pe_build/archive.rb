@@ -36,21 +36,21 @@ class Archive
 
   # @param fs_dir [String] The base directory holding the archive
   def copy_from(fs_dir)
-    if File.exist? @archive_path
+    if File.exist? archive_path
       @env.ui.info "#{@filename} cached, skipping copy."
     else
       prepare_for_copy!
 
       file_path = versioned_path(File.join(fs_dir, filename))
 
-      FileUtils.cp file_path, @archive_path
+      FileUtils.cp file_path, archive_path
     end
   end
 
   # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
 
-    if File.exist? @archive_path
+    if File.exist? archive_path
       @env.ui.info "#{@filename} cached, skipping download."
     else
       prepare_for_copy!
@@ -58,7 +58,7 @@ class Archive
       str = versioned_path("#{download_dir}/#{@filename}")
 
       tmpfile = open_uri(str)
-      FileUtils.mv tmpfile, @archive_path
+      FileUtils.mv tmpfile, archive_path
     end
   end
 
