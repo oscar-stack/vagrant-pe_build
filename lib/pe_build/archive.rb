@@ -32,7 +32,7 @@ class Archive
     if File.exist? @archive_path
       @ui.info "#{@filename} cached, skipping download."
     else
-      mk_archive_dir
+      prepare_for_copy!
 
       file_path = File.join(fs_dir, filename)
 
@@ -46,7 +46,7 @@ class Archive
     if File.exist? @archive_path
       @ui.info "#{@filename} cached, skipping download."
     else
-      mk_archive_dir
+      prepare_for_copy!
 
       url = "#{download_dir}/#{@filename}"
       url.gsub!(':version', @version)
@@ -60,7 +60,7 @@ class Archive
   private
 
   # @todo hackish. Remove.
-  def mk_archive_dir
+  def prepare_for_copy!
     archive_dir = PEBuild.archive_directory
     if not File.directory? archive_dir
       FileUtils.mkdir_p archive_dir
