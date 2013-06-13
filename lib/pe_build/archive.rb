@@ -30,7 +30,6 @@ class Archive
 
   def copy_from(fs_dir)
     if File.exist? @archive_path
-      # @ui IS NOT REQUIRED. IT WILL BLOW UP IF MISSING.
       @ui.info "#{@filename} cached, skipping download."
     else
       mk_archive_dir
