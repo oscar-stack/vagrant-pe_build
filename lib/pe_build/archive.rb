@@ -23,10 +23,8 @@ class Archive
   # @param filename [String] The uninterpolated filename
   # @param env [Vagrant::Environment]
   def initialize(filename, env)
-    @env      = env
     @filename = filename
-
-    @url = "#{@download_dir}/#{@filename}"
+    @env      = env
   end
 
   # @param fs_dir [String] The base directory to extract the installer to
