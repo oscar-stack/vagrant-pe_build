@@ -41,7 +41,6 @@ class Archive
   end
 
   # @todo Download to tempfile, and move into place when download complete
-  # @todo better handling of @ui variable; should probably be a mandatory arg
   def download_from(download_dir)
 
     if File.exist? @archive_path
