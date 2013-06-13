@@ -30,7 +30,7 @@ class Archive
 
   def copy_from(fs_dir)
     if File.exist? @archive_path
-      @ui.info "#{@filename} cached, skipping download."
+      @ui.info "#{@filename} cached, skipping copy."
     else
       prepare_for_copy!
 
