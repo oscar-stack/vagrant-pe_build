@@ -20,27 +20,29 @@ class Archive
 
   attr_accessor :ui
 
-  def initialize(filename, version, ui)
+  # @param filename [String] The uninterpolated filename
+  # @param ui [Vagrant::UI]
+  def initialize(filename, ui)
     @ui       = ui
-    @version  = version
-    @filename = filename.gsub(/:version/, @version)
+    @filename = filename
 
-    @archive_path = File.join(PEBuild.archive_directory, @filename)
     @url = "#{@download_dir}/#{@filename}"
   end
 
+  # @param fs_dir [String] The base directory holding the archive
   def copy_from(fs_dir)
     if File.exist? @archive_path
       @ui.info "#{@filename} cached, skipping copy."
     else
       prepare_for_copy!
 
-      file_path = File.join(fs_dir, filename)
+      file_path = versioned_path(File.join(fs_dir, filename))
 
       FileUtils.cp file_path, @archive_path
     end
   end
 
+  # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
 
     if File.exist? @archive_path
@@ -48,18 +50,18 @@ class Archive
     else
       prepare_for_copy!
 
-      str = "#{download_dir}/#{@filename}"
-      str.gsub!(':version', @version)
+      str = versioned_path("#{download_dir}/#{@filename}")
 
       tmpfile = open_uri(str)
-
       FileUtils.mv tmpfile, @archive_path
     end
   end
 
   private
 
-  # @todo hackish. Remove.
+  # Initialize the PE directory
+  #
+  # @todo respect Vagrant home setting
   def prepare_for_copy!
     archive_dir = PEBuild.archive_directory
     if not File.directory? archive_dir
@@ -69,6 +71,11 @@ class Archive
 
   HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
 
+  # Open a open-uri file handle for the given URL
+  #
+  # @param str [String] The URL to open
+  #
+  # @return [IO]
   def open_uri(str)
     uri = URI.parse(str)
     progress = nil
@@ -90,6 +97,20 @@ class Archive
     })
 
     uri.open(options)
+  end
+
+  # @return [String] The interpolated archive path
+  def archive_path
+    path = File.join(PEBuild.archive_directory, @filename)
+    versioned_path(path)
+  end
+
+  def versioned_path(path)
+    if @version
+      path.gsub(/:version/, @version)
+    else
+      path
+    end
   end
 end
 end

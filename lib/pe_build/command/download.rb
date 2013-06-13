@@ -31,6 +31,7 @@ class Download < Vagrant.plugin(2, :command)
     end
 
     archive = PEBuild::Archive.new(filename, options[:version], @env.ui)
+    archive.version = options[:version]
     archive.download_from(options[:dir])
   end
 end

@@ -29,7 +29,8 @@ class Copy < Vagrant.plugin(2, :command)
     #  raise Vagrant::Errors::CLIInvalidUsage, :help => parser.help.chomp
     #end
 
-    archive = PEBuild::Archive.new(fpath, '2.7.2', @env.ui)
+    archive = PEBuild::Archive.new(fpath, @env.ui)
+    archive.version = options[:version]
     archive.copy_from(dirname)
   end
 end
