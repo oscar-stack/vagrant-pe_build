@@ -40,8 +40,6 @@ class Archive
     end
   end
 
-  # @todo Take download_dir as an argument; don't presuppose that we will be
-  #   downloading every file.
   # @todo Download to tempfile, and move into place when download complete
   # @todo better handling of @ui variable; should probably be a mandatory arg
   def download_from(download_dir)
