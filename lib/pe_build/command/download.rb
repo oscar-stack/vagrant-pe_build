@@ -11,7 +11,7 @@ class Download < Vagrant.plugin(2, :command)
     options = {}
 
     parser = OptionParser.new do |o|
-      o.banner = "Usage: vagrant pe_build download --version <version> --dir <dir>"
+      o.banner = "Usage: vagrant pe-build download --version <version> --dir <dir>"
       o.separator ''
 
       o.on('-v', '--version=val', String, "The version of PE to fetch") do |val|
