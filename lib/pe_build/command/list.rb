@@ -11,7 +11,7 @@ class List < Vagrant.plugin(2, :command)
 
       pathglob = File.join(PEBuild.archive_directory, '*')
 
-      Dir.glob(pathglob).each do |entry|
+      Dir.glob(pathglob).sort.each do |entry|
         @env.ui.info "  - #{File.basename(entry)}"
       end
     else
