@@ -13,7 +13,6 @@ Gem::Specification.new do |gem|
 
   gem.summary     = "Vagrant provisioner for installing Puppet Enterprise"
 
-  gem.add_dependency 'vagrant', '>= 1.1.0'
   gem.add_dependency 'progressbar'
 
   gem.files        = %x{git ls-files -z}.split("\0")
