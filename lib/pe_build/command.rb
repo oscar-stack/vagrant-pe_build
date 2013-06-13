@@ -26,10 +26,10 @@ class Command < Vagrant.plugin(2, :command)
   private
 
   def register_subcommands
-    #@subcommands.register('copy') do
-    #  require_relative 'command/copy'
-    #  PEBuild::Command::Copy
-    #end
+    @subcommands.register('copy') do
+      require_relative 'command/copy'
+      PEBuild::Command::Copy
+    end
 
     @subcommands.register('download') do
       require_relative 'command/download'
