@@ -1,4 +1,6 @@
 require 'pe_build'
+require 'pe_build/idempotent'
+
 require 'fileutils'
 
 require 'tempfile'
@@ -9,6 +11,8 @@ require 'progressbar'
 module PEBuild
 class Archive
   # Represents a packed Puppet Enterprise archive
+
+  include PEBuild::Idempotent
 
   # @!attribute [rw] version
   #   @return [String] The version of Puppet Enterprise
@@ -34,27 +38,18 @@ class Archive
 
   # @param fs_dir [String] The base directory holding the archive
   def copy_from(fs_dir)
-    if File.exist? archive_path
-      @env.ui.info "#{@filename} cached, skipping copy."
-    else
+    idempotent(archive_path, "Installer #{versioned_path @filename}") do
       prepare_for_copy!
-
       file_path = versioned_path(File.join(fs_dir, filename))
-
       FileUtils.cp file_path, archive_path
     end
   end
 
   # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
-
-    if File.exist? archive_path
-      @env.ui.info "#{@filename} cached, skipping download."
-    else
+    idempotent(archive_path, "Installer #{versioned_path @filename}") do
       prepare_for_copy!
-
       str = versioned_path("#{download_dir}/#{@filename}")
-
       tmpfile = open_uri(str)
       FileUtils.mv tmpfile, archive_path
     end
