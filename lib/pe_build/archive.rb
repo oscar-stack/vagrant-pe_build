@@ -1,5 +1,6 @@
 require 'pe_build'
 require 'fileutils'
+require 'tempfile'
 
 module PEBuild
 class Archive
@@ -65,6 +66,14 @@ class Archive
     if not File.directory? archive_dir
       FileUtils.mkdir_p archive_dir
     end
+  end
+
+  def with_tempfile(filename, &block)
+    tmpfile = Tempfile.new('pe-build')
+    yield tmpfile
+    FileUtils.mv tmpfile, filename
+  ensure
+    tmpfile.unlink
   end
 end
 end
