@@ -74,14 +74,6 @@ class Archive
     end
   end
 
-  def with_tempfile(filename, &block)
-    tmpfile = Tempfile.new('pe-build')
-    yield tmpfile
-    FileUtils.mv tmpfile, filename
-  ensure
-    tmpfile.unlink
-  end
-
   def open_uri(str)
     uri = URI.parse(str)
     progress = nil
