@@ -4,11 +4,18 @@ module PEBuild
 class Command
 class List < Vagrant.plugin(2, :command)
   def execute
-    raise NotImplementedError
-    if File.directory? PEBuild.archive_directory and (entries = Dir["#{PEBuild.archive_directory}/*"])
-      puts entries.join("\n")
+    #raise NotImplementedError
+    if File.directory? PEBuild.archive_directory
+      @env.ui.info "PE versions available (at #{PEBuild.archive_directory})"
+      @env.ui.info "---"
+
+      pathglob = File.join(PEBuild.archive_directory, '*')
+
+      Dir.glob(pathglob).each do |entry|
+        @env.ui.info "  - #{File.basename(entry)}"
+      end
     else
-      warn "No PE versions downloaded."
+      @env.ui.warn "No PE versions available at #{PEBuild.archive_directory}"
     end
   end
 end
