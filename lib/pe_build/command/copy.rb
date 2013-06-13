@@ -29,11 +29,10 @@ class Copy < Vagrant.plugin(2, :command)
     #  raise Vagrant::Errors::CLIInvalidUsage, :help => parser.help.chomp
     #end
 
-    archive = PEBuild::Archive.new(fpath, @env.ui)
+    archive = PEBuild::Archive.new(fpath, @env)
     archive.version = options[:version]
     archive.copy_from(dirname)
   end
 end
 end
 end
-

@@ -18,21 +18,26 @@ class Archive
   #   @return [String] The filename. Thing
   attr_accessor :filename
 
-  attr_accessor :ui
+  attr_accessor :env
 
   # @param filename [String] The uninterpolated filename
-  # @param ui [Vagrant::UI]
-  def initialize(filename, ui)
-    @ui       = ui
+  # @param env [Vagrant::Environment]
+  def initialize(filename, env)
+    @env      = env
     @filename = filename
 
     @url = "#{@download_dir}/#{@filename}"
   end
 
+  # @param fs_dir [String] The base directory to extract the installer to
+  def unpack_to(fs_dir)
+
+  end
+
   # @param fs_dir [String] The base directory holding the archive
   def copy_from(fs_dir)
     if File.exist? @archive_path
-      @ui.info "#{@filename} cached, skipping copy."
+      @env.ui.info "#{@filename} cached, skipping copy."
     else
       prepare_for_copy!
 
@@ -46,7 +51,7 @@ class Archive
   def download_from(download_dir)
 
     if File.exist? @archive_path
-      @ui.info "#{@filename} cached, skipping download."
+      @env.ui.info "#{@filename} cached, skipping download."
     else
       prepare_for_copy!
 
