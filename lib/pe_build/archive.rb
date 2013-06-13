@@ -9,10 +9,6 @@ require 'progressbar'
 module PEBuild
 class Archive
   # Represents a packed Puppet Enterprise archive
-  #
-  # @todo Segregate logic around downloading file
-  # @todo Add logic for copying file from local source
-  # @todo replace curl with 'open-uri'
 
   # @!attribute [rw] version
   #   @return [String] The version of Puppet Enterprise
@@ -45,9 +41,6 @@ class Archive
     end
   end
 
-  HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
-
-  # @todo Download to tempfile, and move into place when download complete
   def download_from(download_dir)
 
     if File.exist? @archive_path
@@ -73,6 +66,8 @@ class Archive
       FileUtils.mkdir_p archive_dir
     end
   end
+
+  HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
 
   def open_uri(str)
     uri = URI.parse(str)
