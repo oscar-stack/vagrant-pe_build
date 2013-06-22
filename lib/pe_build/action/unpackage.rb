@@ -26,7 +26,7 @@ class Unpackage
     if @env[:box_name]
       @root     = @env[:vm].pe_build.download_root
       @version  = @env[:vm].pe_build.version
-      @filename = @env[:vm].pe_build.version
+      @filename = @env[:vm].pe_build.filename
     end
 
     @root     ||= @env[:global_config].pe_build.download_root
