@@ -25,7 +25,7 @@ class Archive
   attr_accessor :env
 
   # @param filename [String] The uninterpolated filename
-  # @param env [Vagrant::Environment]
+  # @param env [Hash]
   def initialize(filename, env)
     @filename = filename
     @env      = env
