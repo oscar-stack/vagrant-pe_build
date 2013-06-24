@@ -79,7 +79,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
       default_template_path = File.join(PEBuild.template_dir, 'answers', "#{@config.role}.txt.erb")
       template_path = default_template_path
     end
-    @machine.env.ui.info "Using #{template_path} as answers template"
+    @machine.ui.info "Using #{template_path} as answers template"
     template = File.read(template_path)
     str = ERB.new(template).result(binding)
   end
@@ -89,7 +89,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
     dest_file = File.join(@answer_dir, "#{@machine.name}.txt")
 
-    @machine.env.ui.info "Writing answers file to #{dest_file}"
+    @machine.ui.info "Writing answers file to #{dest_file}"
     File.open(dest_file, "w") do |file|
       file.write(str)
     end
@@ -102,7 +102,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
         script_list = [*config.step[stepname]]
       else
         script_list = []
-        @machine.env.ui.warn "Cannot find defined step for #{role}/#{stepname.to_s} at \'#{config.step[stepname]}\'"
+        @machine.ui.warn "Cannot find defined step for #{role}/#{stepname.to_s} at \'#{config.step[stepname]}\'"
       end
     else
       # We do not have a user defined step for this role or we're processing the :base step
@@ -116,7 +116,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
     script_list.each do |template_path|
       # A message to show which step's action is running
-      @machine.env.ui.info "Running action for #{role}/#{stepname}"
+      @machine.ui.info "Running action for #{role}/#{stepname}"
       template = File.read(template_path)
       contents = ERB.new(template).result(binding)
 
@@ -141,11 +141,11 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   def perform_installation
     if @machine.communicate.test('test -f /opt/puppet/pe_version')
-      @machine.env.ui.warn "Puppet Enterprise is already installed, skipping installation.",
+      @machine.ui.warn "Puppet Enterprise is already installed, skipping installation.",
         :name  => @machine.name
     else
       on_remote installer_cmd
-      @machine.env.ui.info "Scheduling puppet run to prime pe_mcollective"
+      @machine.ui.info "Scheduling puppet run to prime pe_mcollective"
       on_remote "echo '/opt/puppet/bin/puppet agent -t' | at next minute"
     end
   end
@@ -167,12 +167,12 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     @machine.communicate.sudo(cmd) do |type, data|
       if type == :stdout
         if @config.verbose
-          @machine.env.ui.info(data.chomp, :color => :green, :prefix => true)
+          @machine.ui.info(data.chomp, :color => :green, :prefix => true)
         else
-          @machine.env.ui.info('.', :color => :green, :prefix => true, :new_line => false)
+          @machine.ui.info('.', :color => :green, :prefix => true, :new_line => false)
         end
       else
-        @machine.env.ui.info(data.chomp, :color => :red, :prefix => true)
+        @machine.ui.info(data.chomp, :color => :red, :prefix => true)
       end
     end
   end
