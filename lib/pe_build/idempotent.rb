@@ -7,7 +7,7 @@ module Idempotent
     desc ||= fpath
 
     if File.exist? fpath
-      @env.ui.info "#{desc} is already present."
+      @env[:ui].info "#{desc} is already present."
     else
       yield
     end
