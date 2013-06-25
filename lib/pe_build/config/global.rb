@@ -44,8 +44,15 @@ class Global < Vagrant.plugin('2', :config)
   def validate(machine)
     errors = []
 
-    unless @version.kind_of? String and @version.match /\d+\.\d+(\.\d+)?/
-      errors << "version must be a valid version string, got #{@version.inspect}"
+    # Allow Global version to be unset, rendering it essentially optional. If it is
+    # discovered to be unset by a configuration on the next level up who cannot provide a
+    # value, it is that configuration's job to take action.
+    if @version.kind_of? String
+      unless @version.match /\d+\.\d+(\.\d+)?/
+        errors << "version must be a valid version string, got #{@version.inspect}"
+      end
+    elsif @version != UNSET_VALUE
+      errors << "version only accepts a string, got #{@version.class}"
     end
 
     {"PE Build global config" => errors}
