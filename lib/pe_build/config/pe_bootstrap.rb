@@ -1,5 +1,7 @@
 require 'vagrant'
+
 require 'pe_build/config/global'
+require 'pe_build/config_default'
 
 module PEBuild; module Config
 
@@ -44,6 +46,8 @@ class PEBootstrap < PEBuild::Config::Global
     @step    = {}
   end
 
+  include PEBuild::ConfigDefault
+
   def finalize!
     super
     set_default :@role,        :agent
@@ -86,17 +90,6 @@ class PEBootstrap < PEBuild::Config::Global
 
     h.merge({"PE Bootstrap" => errors})
   end
-
-  private
-
-  # @param [Symbol] iv The instance variable to set the default value
-  # @param [Object] default The default value
-  def set_default(iv, default)
-    iv_val = instance_variable_get(iv)
-    if iv_val == UNSET_VALUE
-      instance_variable_set(iv, default)
-    end
-  end
 end
-
-end; end
+end
+end

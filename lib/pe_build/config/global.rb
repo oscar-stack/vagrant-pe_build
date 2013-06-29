@@ -1,6 +1,9 @@
 require 'vagrant'
 
-module PEBuild; module Config
+require 'pe_build/config_default'
+
+module PEBuild
+module Config
 
 class Global < Vagrant.plugin('2', :config)
 
@@ -27,6 +30,8 @@ class Global < Vagrant.plugin('2', :config)
     @filename      = UNSET_VALUE
   end
 
+  include PEBuild::ConfigDefault
+
   def finalize!
     set_default :@suffix,   'all'
     #set_default :@version,  DEFAULT_PE_VERSION
@@ -45,17 +50,7 @@ class Global < Vagrant.plugin('2', :config)
 
     {"PE Build global config" => errors}
   end
-
-  private
-
-  # @param [Symbol] iv The instance variable to set the default value
-  # @param [Object] default The default value
-  def set_default(iv, default)
-    iv_val = instance_variable_get(iv)
-    if iv_val == UNSET_VALUE
-      instance_variable_set(iv, default)
-    end
-  end
 end
 
-end; end
+end
+end
