@@ -3,7 +3,8 @@ require 'vagrant'
 require 'pe_build/config/global'
 require 'pe_build/config_default'
 
-module PEBuild; module Config
+module PEBuild
+module Config
 
 class PEBootstrap < PEBuild::Config::Global
 
