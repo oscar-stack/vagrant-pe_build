@@ -33,7 +33,7 @@ class Archive
 
   # @param fs_dir [String] The base directory to extract the installer to
   def unpack_to(fs_dir)
-
+    raise NotImplementedError
   end
 
   # @param fs_dir [String] The base directory holding the archive
