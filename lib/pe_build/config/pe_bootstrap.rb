@@ -34,7 +34,10 @@ class PEBootstrap < PEBuild::Config::Global
   # @!attribute relocate_manifests
   #   @return [TrueClass, FalseClass] if the puppet master should use manifests
   #                                   out of the vagrant directory.
-  #
+
+  # @todo config option for autosigning.
+  #attr_accessor :autosign
+
   def initialize
     super
     @role        = UNSET_VALUE
@@ -43,6 +46,8 @@ class PEBootstrap < PEBuild::Config::Global
     @answer_file = UNSET_VALUE
 
     @relocate_manifests = UNSET_VALUE
+
+    #@autosign    = UNSET_VALUE
 
     @step    = {}
   end
