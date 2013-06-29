@@ -1,15 +1,9 @@
 require 'vagrant'
 
-require 'pe_build/config_default'
-
 module PEBuild
 module Config
 
 class Global < Vagrant.plugin('2', :config)
-
-  # @todo This value should be discovered based on what versions of the
-  #       installer are cached.
-  #DEFAULT_PE_VERSION = '2.7.2'
 
   # @!attribute download_root
   attr_accessor :download_root
@@ -30,8 +24,6 @@ class Global < Vagrant.plugin('2', :config)
     @filename      = UNSET_VALUE
   end
 
-  include PEBuild::ConfigDefault
-
   def finalize!
     set_default :@suffix,   'all'
     #set_default :@version,  DEFAULT_PE_VERSION
@@ -44,8 +36,11 @@ class Global < Vagrant.plugin('2', :config)
   def validate(machine)
     errors = []
 
-    unless @version.kind_of? String and @version.match /\d+\.\d+(\.\d+)?/
-      errors << "version must be a valid version string, got #{@version.inspect}"
+    %w[suffix version filename download_root].each do |iv|
+      iv_val = instance_variable_get("@#{iv}")
+      unless iv_val == UNSET_VALUE
+        errors << "pe_build.#{iv} as a global config value is deprecated. Specify this value on a per-provisioner basis."
+      end
     end
 
     {"PE Build global config" => errors}
