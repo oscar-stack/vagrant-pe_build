@@ -33,8 +33,12 @@ class Archive
 
   # @param fs_dir [String] The base directory to extract the installer to
   def unpack_to(fs_dir)
-    tar = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
-    tar.unpack
+    tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
+    path = File.join(fs_dir, tar.dirname)
+
+    idempotent(path, "Unpacked archive #{filename}") do
+      tar.unpack
+    end
   end
 
   # @param fs_dir [String] The base directory holding the archive

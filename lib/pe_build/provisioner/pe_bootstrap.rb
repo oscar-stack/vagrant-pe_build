@@ -1,5 +1,7 @@
 require 'vagrant'
 
+require 'pe_build/archive'
+
 require 'log4r'
 require 'fileutils'
 require 'erb'
@@ -169,7 +171,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
         if @config.verbose
           @machine.ui.info(data.chomp, :color => :green, :prefix => true)
         else
-          @machine.ui.info('.', :color => :green, :prefix => true, :new_line => false)
+          @machine.ui.info('.', :color => :green)
         end
       else
         @machine.ui.info(data.chomp, :color => :red, :prefix => true)
