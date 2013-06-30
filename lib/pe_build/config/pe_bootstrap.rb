@@ -20,8 +20,6 @@ class PEBootstrap < Vagrant.plugin('2', :config)
   # @!attribute filename
   attr_accessor :filename
 
-
-
   # @!attribute master
   #   @return The DNS hostname of the Puppet master for this node.
   attr_accessor :master
@@ -58,6 +56,11 @@ class PEBootstrap < Vagrant.plugin('2', :config)
     @verbose     = UNSET_VALUE
     @master      = UNSET_VALUE
     @answer_file = UNSET_VALUE
+
+    @download_root = UNSET_VALUE
+    @suffix      = UNSET_VALUE
+    @version     = UNSET_VALUE
+    @filename    = UNSET_VALUE
 
     @relocate_manifests = UNSET_VALUE
 
