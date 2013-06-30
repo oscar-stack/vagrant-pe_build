@@ -55,7 +55,6 @@ class PEBootstrap < PEBuild::Config::Global
   include PEBuild::ConfigDefault
 
   def finalize!
-    super
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'
