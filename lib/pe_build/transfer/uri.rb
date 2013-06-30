@@ -15,8 +15,8 @@ class URI
   end
 
   def copy
-    tmpfile = open_uri(str)
-    FileUtils.mv tmpfile, archive_path
+    tmpfile = open_uri(@src)
+    FileUtils.mv(tmpfile, @dst)
   end
 
   HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
@@ -25,16 +25,14 @@ class URI
 
   # Open a open-uri file handle for the given URL
   #
-  # @param str [String] The URL to open
-  #
   # @return [IO]
-  def open_uri(str)
-    uri = URI.parse(str)
+  def open_uri(path)
+    uri = ::URI.parse(path)
     progress = nil
 
     content_length_proc = lambda do |length|
       if length and length > 0
-        progress = ProgressBar.new(@version, length)
+        progress = ProgressBar.new('Fetching', length)
         progress.file_transfer_mode
       end
     end
