@@ -1,6 +1,7 @@
 require 'vagrant'
 
 require 'pe_build/archive'
+require 'pe_build/util/config'
 
 require 'log4r'
 require 'fileutils'
@@ -47,10 +48,13 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
       FileUtils.mkdir_p answer_dir
     end
 
-    archive = PEBuild::Archive.new(config.filename, @machine.env)
-    archive.version = config.version
+    @original_config = @config
+    @config          = PEBuild::Util::Config.local_merge(@original_config,@machine.config.pe_build)
 
-    archive.download_from(config.download_root)
+    archive = PEBuild::Archive.new(@config.filename, @machine.env)
+    archive.version = @config.version
+
+    archive.download_from(@config.download_root)
     archive.unpack_to(@work_dir)
   end
 
