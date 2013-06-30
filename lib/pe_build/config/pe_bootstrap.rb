@@ -74,6 +74,10 @@ class PEBootstrap < PEBuild::Config::Global
     h = super
 
     errors = []
+    if @version == UNSET_VALUE and machine.config.pe_build.version == UNSET_VALUE
+      errors << "Version must be set on provisioner when unset globally"
+    end
+
     unless VALID_ROLES.any? {|sym| @role == sym}
       errors << "Role must be one of #{VALID_ROLES.inspect}, was #{@role.inspect}"
     end
@@ -94,7 +98,8 @@ class PEBootstrap < PEBuild::Config::Global
       errors << "'relocate_manifests' can only be applied to a master"
     end
 
-    h.merge({"PE Bootstrap" => errors})
+    errors |= h.values.flatten
+    {"PE Bootstrap" => errors}
   end
 end
 end
