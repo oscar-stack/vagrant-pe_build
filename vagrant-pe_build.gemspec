@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.summary     = "Vagrant provisioner for installing Puppet Enterprise"
 
   gem.add_dependency 'progressbar'
+  gem.add_dependency 'minitar'
 
   gem.files        = %x{git ls-files -z}.split("\0")
   gem.require_path = 'lib'

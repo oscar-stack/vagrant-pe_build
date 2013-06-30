@@ -4,6 +4,8 @@ require 'pe_build/idempotent'
 require 'pe_build/transfer/file'
 require 'pe_build/transfer/uri'
 
+require 'pe_build/unpack/tar'
+
 require 'fileutils'
 
 module PEBuild
@@ -31,7 +33,12 @@ class Archive
 
   # @param fs_dir [String] The base directory to extract the installer to
   def unpack_to(fs_dir)
-    raise NotImplementedError
+    tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
+    path = File.join(fs_dir, tar.dirname)
+
+    idempotent(path, "Unpacked archive #{filename}") do
+      tar.unpack
+    end
   end
 
   # @param fs_dir [String] The base directory holding the archive

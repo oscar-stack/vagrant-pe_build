@@ -1,12 +1,13 @@
 require 'vagrant'
 
+require 'pe_build/archive'
+
 require 'log4r'
 require 'fileutils'
 require 'erb'
 
-require 'pe_build/action'
-
-module PEBuild; module Provisioner
+module PEBuild
+module Provisioner
 
 class PEBootstrapError < Vagrant::Errors::VagrantError
   #error_namespace('vagrant.provisioners.pe_bootstrap')
@@ -46,10 +47,11 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
       FileUtils.mkdir_p answer_dir
     end
 
-    @machine.env.action_runner.run(
-      PEBuild::Action.stage_pe,
-      :unpack_directory => @work_dir
-    )
+    archive = PEBuild::Archive.new(config.filename, @machine.env)
+    archive.version = config.version
+
+    archive.download_from(config.download_root)
+    archive.unpack_to(@work_dir)
   end
 
   def provision
@@ -169,7 +171,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
         if @config.verbose
           @machine.ui.info(data.chomp, :color => :green, :prefix => true)
         else
-          @machine.ui.info('.', :color => :green, :prefix => true, :new_line => false)
+          @machine.ui.info('.', :color => :green)
         end
       else
         @machine.ui.info(data.chomp, :color => :red, :prefix => true)
@@ -178,4 +180,5 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   end
 end
 
-end; end
+end
+end
