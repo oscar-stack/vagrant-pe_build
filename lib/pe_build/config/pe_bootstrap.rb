@@ -6,7 +6,21 @@ require 'pe_build/config_default'
 module PEBuild
 module Config
 
-class PEBootstrap < PEBuild::Config::Global
+class PEBootstrap < Vagrant.plugin('2', :config)
+
+  # @!attribute download_root
+  attr_accessor :download_root
+
+  # @!attribute version
+  attr_accessor :version
+
+  # @!attribute suffix
+  attr_accessor :suffix
+
+  # @!attribute filename
+  attr_accessor :filename
+
+
 
   # @!attribute master
   #   @return The DNS hostname of the Puppet master for this node.
@@ -52,10 +66,19 @@ class PEBootstrap < PEBuild::Config::Global
     @step    = {}
   end
 
+  def add_step(name, script_path)
+    name = (name.is_a?(Symbol)) ? name : name.intern
+    step[name] = script_path
+  end
+
   include PEBuild::ConfigDefault
 
   def finalize!
-    super
+    set_default :@suffix,   'all'
+    #set_default :@version,  DEFAULT_PE_VERSION
+    set_default :@filename, "puppet-enterprise-#{version}-#{suffix}.tar.gz"
+    set_default :@download_root, nil
+
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'
@@ -64,16 +87,10 @@ class PEBootstrap < PEBuild::Config::Global
     set_default :@relocate_manifests, (@role == :master)
   end
 
-  def add_step(name, script_path)
-    name = (name.is_a?(Symbol)) ? name : name.intern
-    step[name] = script_path
-  end
-
   # @todo Convert error strings to I18n
   def validate(machine)
-    h = super
-
     errors = []
+
     unless VALID_ROLES.any? {|sym| @role == sym}
       errors << "Role must be one of #{VALID_ROLES.inspect}, was #{@role.inspect}"
     end
@@ -94,7 +111,11 @@ class PEBootstrap < PEBuild::Config::Global
       errors << "'relocate_manifests' can only be applied to a master"
     end
 
-    h.merge({"PE Bootstrap" => errors})
+    unless @version.kind_of? String and @version.match /\d+\.\d+(\.\d+)?/
+      errors << "version must be a valid version string, got #{@version.inspect}"
+    end
+
+    {"PE Bootstrap" => errors}
   end
 end
 end
