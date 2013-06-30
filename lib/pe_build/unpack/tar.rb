@@ -1,4 +1,4 @@
-require 'minitar'
+require 'archive/tar/minitar'
 
 module PEBuild
 class Archive
