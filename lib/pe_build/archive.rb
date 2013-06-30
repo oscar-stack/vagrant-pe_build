@@ -1,12 +1,10 @@
 require 'pe_build'
 require 'pe_build/idempotent'
 
+require 'pe_build/transfer/file'
+require 'pe_build/transfer/uri'
+
 require 'fileutils'
-
-require 'tempfile'
-require 'open-uri'
-require 'progressbar'
-
 
 module PEBuild
 class Archive
@@ -33,25 +31,28 @@ class Archive
 
   # @param fs_dir [String] The base directory to extract the installer to
   def unpack_to(fs_dir)
-
+    raise NotImplementedError
   end
 
   # @param fs_dir [String] The base directory holding the archive
   def copy_from(fs_dir)
+    file_path = versioned_path(File.join(fs_dir, filename))
+
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
       prepare_for_copy!
-      file_path = versioned_path(File.join(fs_dir, filename))
-      FileUtils.cp file_path, archive_path
+      transfer = PEBuild::Transfer::File.new(file_path, archive_path)
+      transfer.copy
     end
   end
 
   # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
+    str = versioned_path("#{download_dir}/#{@filename}")
+
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
       prepare_for_copy!
-      str = versioned_path("#{download_dir}/#{@filename}")
-      tmpfile = open_uri(str)
-      FileUtils.mv tmpfile, archive_path
+      transfer = PEBuild::Transfer::URI.new(str, archive_path)
+      transfer.copy
     end
   end
 
@@ -67,35 +68,6 @@ class Archive
     end
   end
 
-  HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
-
-  # Open a open-uri file handle for the given URL
-  #
-  # @param str [String] The URL to open
-  #
-  # @return [IO]
-  def open_uri(str)
-    uri = URI.parse(str)
-    progress = nil
-
-    content_length_proc = lambda do |length|
-      if length and length > 0
-        progress = ProgressBar.new(@version, length)
-        progress.file_transfer_mode
-      end
-    end
-
-    progress_proc = lambda do |size|
-      progress.set(size) if progress
-    end
-
-    options = HEADERS.merge({
-      :content_length_proc => content_length_proc,
-      :progress_proc       => progress_proc,
-    })
-
-    uri.open(options)
-  end
 
   # @return [String] The interpolated archive path
   def archive_path
