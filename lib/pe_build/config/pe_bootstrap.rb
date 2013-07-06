@@ -55,6 +55,11 @@ class PEBootstrap < PEBuild::Config::Global
   include PEBuild::ConfigDefault
 
   def finalize!
+    # This does _not_ set default values for config options inherited from the
+    # global configuration. If configuration is not set for a value on the
+    # global config or here it will be passed through as `UNSET_VALUE`, which
+    # is not ideal.
+
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'
