@@ -39,7 +39,10 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   end
 
   # Instantiate all working directory content and stage the PE installer.
-  def configure(some_mysterious_and_undocumented_variable)
+  #
+  # @param root_config [Object] ???
+  # @return [void]
+  def configure(root_config)
     unless File.directory? work_dir
       FileUtils.mkdir_p work_dir
     end
