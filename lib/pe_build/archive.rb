@@ -6,6 +6,8 @@ require 'pe_build/transfer/uri'
 
 require 'pe_build/unpack/tar'
 
+require 'pe_build/command/list'
+
 require 'fileutils'
 
 module PEBuild
@@ -54,12 +56,19 @@ class Archive
 
   # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
-    str = versioned_path("#{download_dir}/#{@filename}")
-
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
-      prepare_for_copy!
-      transfer = PEBuild::Transfer::URI.new(str, archive_path)
-      transfer.copy
+      if download_dir == Vagrant::Plugin::V2::Config::UNSET_VALUE
+        @env.ui.error "Installer #{versioned_path @filename} is not available."
+        PEBuild::Command::List.new(nil, @env).execute
+        @env.ui.error "Please provide a download_root to retrieve the installer from or use 'vagrant pe-build' to provide the installer..."
+        raise Vagrant::Errors::VagrantError
+      else
+        str = versioned_path("#{download_dir}/#{@filename}")
+
+        prepare_for_copy!
+        transfer = PEBuild::Transfer::URI.new(str, archive_path)
+        transfer.copy
+      end
     end
   end
 
