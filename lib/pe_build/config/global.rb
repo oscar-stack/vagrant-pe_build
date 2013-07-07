@@ -35,7 +35,7 @@ class Global < Vagrant.plugin('2', :config)
   def finalize!
     set_default :@suffix,   'all'
     #set_default :@version,  DEFAULT_PE_VERSION
-    set_default :@filename, "puppet-enterprise-#{version}-#{suffix}.tar.gz"
+    set_default :@filename, "puppet-enterprise-:version-#{suffix}.tar.gz"
 
     set_default :@download_root, nil
   end
