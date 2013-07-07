@@ -16,5 +16,8 @@ module PEBuild
   end
 end
 
+# I18n to load the en locale
+I18n.load_path << File.expand_path("locales/en.yml", PEBuild.template_dir)
+
 require 'pe_build/plugin'
 require 'pe_build/version'
