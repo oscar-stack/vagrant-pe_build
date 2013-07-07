@@ -11,6 +11,11 @@ require 'pe_build/command/list'
 require 'fileutils'
 
 module PEBuild
+
+class ArchiveNoInstallerSource < Vagrant::Errors::VagrantError
+  error_key(:no_installer_source, "pebuild.archive")
+end
+
 class Archive
   # Represents a packed Puppet Enterprise archive
 
@@ -60,8 +65,7 @@ class Archive
       if download_dir == Vagrant::Plugin::V2::Config::UNSET_VALUE
         @env.ui.error "Installer #{versioned_path @filename} is not available."
         PEBuild::Command::List.new(nil, @env).execute
-        @env.ui.error "Please provide a download_root to retrieve the installer from or use 'vagrant pe-build' to provide the installer..."
-        raise Vagrant::Errors::VagrantError
+        raise PEBuild::ArchiveNoInstallerSource
       else
         str = versioned_path("#{download_dir}/#{@filename}")
 
