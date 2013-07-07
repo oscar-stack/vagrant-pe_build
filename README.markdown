@@ -33,9 +33,6 @@ Usage
 Requirements
 ------------
 
-`vagrant-pe_build` shells out to `curl` and `tar` so you'll need those
-available.
-
 [vagranthosts]: https://github.com/adrienthebo/vagrant-hosts
 
 Puppet Enterprise relies on SSL for security so you'll need to ensure that your
