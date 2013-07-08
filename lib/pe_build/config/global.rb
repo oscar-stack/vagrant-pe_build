@@ -1,3 +1,4 @@
+require 'uri'
 require 'vagrant'
 
 require 'pe_build/config_default'
@@ -53,6 +54,11 @@ class Global < Vagrant.plugin('2', :config)
       end
     elsif @version != UNSET_VALUE
       errors << "version only accepts a string, got #{@version.class}"
+    end
+
+    uri = URI.parse(@download_root) rescue nil
+    unless @download_root == UNSET_VALUE or @download_root.nil? or File.directory?(File.expand_path(@download_root)) or uri.kind_of? (URI::HTTP||URI::HTTPS) or uri.kind_of? URI::FTP
+      errors << "download_root must be valid URL or present local file path, got #{@download_root}"
     end
 
     {"PE Build global config" => errors}

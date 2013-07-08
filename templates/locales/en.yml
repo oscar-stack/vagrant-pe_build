@@ -1,0 +1,7 @@
+en:
+  pebuild:
+    archive:
+      no_installer_source: |-
+        No installer source is available. Please provide a download_root
+        to retrieve the installer from or use 'vagrant pe-build' to provide
+        the installer...
