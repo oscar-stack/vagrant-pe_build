@@ -6,8 +6,6 @@ require 'pe_build/transfer/uri'
 
 require 'pe_build/unpack/tar'
 
-require 'pe_build/command/list'
-
 require 'fileutils'
 
 module PEBuild
@@ -64,7 +62,10 @@ class Archive
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
       if download_dir.nil?
         @env.ui.error "Installer #{versioned_path @filename} is not available."
-        PEBuild::Command::List.new(nil, @env).execute
+
+        collection = PEBuild::ArchiveCollection.new(PEBuild.archive_directory, @env)
+        collection.display
+
         raise PEBuild::ArchiveNoInstallerSource
       else
         str = versioned_path("#{download_dir}/#{@filename}")
