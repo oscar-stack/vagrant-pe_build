@@ -10,10 +10,6 @@ require 'erb'
 module PEBuild
 module Provisioner
 
-class PEBootstrapError < Vagrant::Errors::VagrantError
-  #error_namespace('vagrant.provisioners.pe_bootstrap')
-end
-
 class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   # @!attribute [r] work_dir
