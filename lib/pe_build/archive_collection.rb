@@ -24,6 +24,12 @@ class ArchiveCollection
     @archives.each { |archive| yield archive }
   end
 
+  def display
+    @archives.each do |archive|
+      @env.ui.info "  - #{archive.filename}"
+    end
+  end
+
   private
 
   def load_archives
