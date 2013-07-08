@@ -62,7 +62,7 @@ class Archive
   # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
-      if download_dir == Vagrant::Plugin::V2::Config::UNSET_VALUE
+      if download_dir.nil?
         @env.ui.error "Installer #{versioned_path @filename} is not available."
         PEBuild::Command::List.new(nil, @env).execute
         raise PEBuild::ArchiveNoInstallerSource

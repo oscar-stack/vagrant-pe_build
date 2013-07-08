@@ -38,7 +38,7 @@ class Global < Vagrant.plugin('2', :config)
     #set_default :@version,  DEFAULT_PE_VERSION
     set_default :@filename, "puppet-enterprise-#{version}-#{suffix}.tar.gz"
 
-#    set_default :@download_root, nil
+    set_default :@download_root, nil
   end
 
   # @todo Convert error strings to I18n
@@ -57,7 +57,7 @@ class Global < Vagrant.plugin('2', :config)
     end
 
     uri = URI.parse(@download_root) rescue nil
-    unless @download_root == UNSET_VALUE or File.directory?(File.expand_path(@download_root)) or uri.kind_of? (URI::HTTP||URI::HTTPS) or uri.kind_of? URI::FTP
+    unless @download_root == UNSET_VALUE or @download_root.nil? or File.directory?(File.expand_path(@download_root)) or uri.kind_of? (URI::HTTP||URI::HTTPS) or uri.kind_of? URI::FTP
       errors << "download_root must be valid URL or present local file path, got #{@download_root}"
     end
 
