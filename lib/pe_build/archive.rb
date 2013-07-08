@@ -6,9 +6,16 @@ require 'pe_build/transfer/uri'
 
 require 'pe_build/unpack/tar'
 
+require 'pe_build/command/list'
+
 require 'fileutils'
 
 module PEBuild
+
+class ArchiveNoInstallerSource < Vagrant::Errors::VagrantError
+  error_key(:no_installer_source, "pebuild.archive")
+end
+
 class Archive
   # Represents a packed Puppet Enterprise archive
 
@@ -54,12 +61,18 @@ class Archive
 
   # @param download_dir [String] The URL base containing the archive
   def download_from(download_dir)
-    str = versioned_path("#{download_dir}/#{@filename}")
-
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
-      prepare_for_copy!
-      transfer = PEBuild::Transfer::URI.new(str, archive_path)
-      transfer.copy
+      if download_dir.nil?
+        @env.ui.error "Installer #{versioned_path @filename} is not available."
+        PEBuild::Command::List.new(nil, @env).execute
+        raise PEBuild::ArchiveNoInstallerSource
+      else
+        str = versioned_path("#{download_dir}/#{@filename}")
+
+        prepare_for_copy!
+        transfer = PEBuild::Transfer::URI.new(str, archive_path)
+        transfer.copy
+      end
     end
   end
 
