@@ -1,4 +1,5 @@
 require 'vagrant'
+require 'pe_build/archive_collection'
 
 module PEBuild
 class Command
@@ -8,10 +9,10 @@ class List < Vagrant.plugin(2, :command)
       @env.ui.info "PE versions available (at #{PEBuild.archive_directory})"
       @env.ui.info "---"
 
-      pathglob = File.join(PEBuild.archive_directory, '*')
+      collection = PEBuild::ArchiveCollection.new(PEBuild.archive_directory, @env)
 
-      Dir.glob(pathglob).sort.each do |entry|
-        @env.ui.info "  - #{File.basename(entry)}"
+      collection.each do |archive|
+        @env.ui.info "  - #{archive.filename}"
       end
     else
       @env.ui.warn "No PE versions available at #{PEBuild.archive_directory}"
