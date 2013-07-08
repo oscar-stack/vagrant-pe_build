@@ -12,11 +12,11 @@ module Config
   # This function assumes that the "local" object is of the same class or at the very
   # least a subclass of "other".
   #
-  # @param [Object] Local configuration class to merge
-  # @param [Object] Other configuration class to merge
-  # @return [Object] New object of the same class as Local that represents the merged result
+  # @param local [Vagrant::Plugin::V2::Config] Local configuration class to merge
+  # @param other [Vagrant::Plugin::V2::Config] Other configuration class to merge
+  # @return [Vagrant::Plugin::V2::Config] New object of the same class as Local that represents the merged result
   #
-  def self.local_merge(local,other)
+  def self.local_merge(local, other)
     if other.class >= local.class
       result = local.class.new
 
