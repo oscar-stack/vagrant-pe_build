@@ -84,7 +84,10 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     provision = @config
     global    = root_config.pe_build
 
-    # Just in case
+    # We don't necessarily know if the configs have been merged. If a config
+    # is being used for default values and was never directly touched then it
+    # may have bad values, so we re-finalize everything. This may not be
+    # generally safe but inside of this plugin it should be ok.
     provision.finalize!
     global.finalize!
 
