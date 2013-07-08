@@ -43,7 +43,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   # @param root_config [Object] ???
   # @return [void]
   def configure(root_config)
-    merge_config(root_config)
+    late_config_merge(root_config)
 
     unless File.directory? work_dir
       FileUtils.mkdir_p work_dir
@@ -80,11 +80,15 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
   private
 
-  def merge_config(root_config)
-    provisioner = @config
-    global      = root_config.pe_build
+  def late_config_merge(root_config)
+    provision = @config
+    global    = root_config.pe_build
 
-    merged = PEBuild::Util::Config.local_merge(provisioner, global)
+    # Just in case
+    provision.finalize!
+    global.finalize!
+
+    merged = PEBuild::Util::Config.local_merge(provision, global)
 
     @config = merged
   end
