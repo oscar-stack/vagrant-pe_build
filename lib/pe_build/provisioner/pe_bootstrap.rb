@@ -43,6 +43,8 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   # @param root_config [Object] ???
   # @return [void]
   def configure(root_config)
+    late_config_merge(root_config)
+
     unless File.directory? work_dir
       FileUtils.mkdir_p work_dir
     end
@@ -50,9 +52,6 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     unless File.directory? answer_dir
       FileUtils.mkdir_p answer_dir
     end
-
-    @original_config = @config
-    @config          = PEBuild::Util::Config.local_merge(@original_config,@machine.config.pe_build)
 
     archive = PEBuild::Archive.new(@config.filename, @machine.env)
     archive.version = @config.version
@@ -80,6 +79,19 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
   end
 
   private
+
+  def late_config_merge(root_config)
+    provision = @config
+    global    = root_config.pe_build
+
+    # Just in case
+    provision.finalize!
+    global.finalize!
+
+    merged = PEBuild::Util::Config.local_merge(provision, global)
+
+    @config = merged
+  end
 
   def generate_answers
     if @config.answer_file
