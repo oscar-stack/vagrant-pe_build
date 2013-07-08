@@ -56,7 +56,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     archive = PEBuild::Archive.new(@config.filename, @machine.env)
     archive.version = @config.version
 
-    archive.download_from(@config.download_root) if @config.download_root
+    archive.download_from(@config.download_root)
     archive.unpack_to(@work_dir)
   end
 
