@@ -21,8 +21,16 @@ class Global < Vagrant.plugin('2', :config)
   # @!attribute suffix
   attr_accessor :suffix
 
+  # Allow our filename default to use @version and @suffix variables. This
+  # approach will not break the merging meachnism since the merging directly
+  # accesses the instance variables of the configuration objects.
+  def filename
+    return "puppet-enterprise-#{version}-#{suffix}.tar.gz" if @filename == UNSET_VALUE
+    @filename
+  end
+
   # @!attribute filename
-  attr_accessor :filename
+  attr_writer :filename
 
   def initialize
     @download_root = UNSET_VALUE
@@ -36,7 +44,7 @@ class Global < Vagrant.plugin('2', :config)
   def finalize!
     set_default :@suffix,   'all'
     #set_default :@version,  DEFAULT_PE_VERSION
-    set_default :@filename, "puppet-enterprise-:version-#{suffix}.tar.gz"
+    #set_default :@filename, "puppet-enterprise-:version-#{suffix}.tar.gz"
 
     set_default :@download_root, nil
   end
