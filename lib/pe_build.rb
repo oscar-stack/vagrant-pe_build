@@ -6,7 +6,7 @@ module PEBuild
   #
   # @param env [Vagrant::Environment]
   def self.archive_directory(env)
-    File.expand_path(env.home_path, 'pe_builds')
+    File.expand_path('pe_builds', env.home_path)
   end
 
   def self.source_root
