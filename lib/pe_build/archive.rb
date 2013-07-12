@@ -42,7 +42,7 @@ class Archive
     tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
     path = File.join(fs_dir, tar.dirname)
 
-    idempotent(path, "Unpacked archive #{filename}") do
+    idempotent(path, "Unpacked archive #{versioned_path filename}") do
       tar.unpack
     end
   end
