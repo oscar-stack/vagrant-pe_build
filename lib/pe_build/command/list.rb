@@ -5,14 +5,16 @@ module PEBuild
 class Command
 class List < Vagrant.plugin(2, :command)
   def execute
-    if File.directory? PEBuild.archive_directory
-      @env.ui.info "PE versions available (at #{PEBuild.archive_directory})"
+    archive_dir = PEBuild.archive_directory(@env)
+
+    if File.directory? archive_dir
+      @env.ui.info "PE versions available (at #{archive_dir})"
       @env.ui.info "---"
 
-      collection = PEBuild::ArchiveCollection.new(PEBuild.archive_directory, @env)
+      collection = PEBuild::ArchiveCollection.new(archive_dir, @env)
       collection.display
     else
-      @env.ui.warn "No PE versions available at #{PEBuild.archive_directory}"
+      @env.ui.warn "No PE versions available at #{archive_dir}"
     end
   end
 end
