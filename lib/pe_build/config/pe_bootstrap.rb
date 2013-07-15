@@ -87,15 +87,15 @@ class PEBootstrap < PEBuild::Config::Global
     end
 
     unless @verbose == !!@verbose
-      errors << "Verbose must be a boolean, got #{@verbose.class}"
+      errors << "'verbose' must be a boolean, got #{@verbose.class}"
     end
 
     unless @master.is_a? String
-      errors << "Master must be a string, got a #{@master.class}"
+      errors << "'master' must be a string containing the address of the master, got a #{@master.class}"
     end
 
     if @answer_file and !File.readable? @answer_file
-      errors << "Answers must be a readable file if given"
+      errors << "'answers_file' must be a readable file"
     end
 
     if @relocate_manifests and not @role == :master
