@@ -4,7 +4,13 @@ module PEBuild
   module ConfigBuilder
     class PEBootstrap < ::ConfigBuilder::Model::Base
 
+      attr_accessor :master
+      attr_accessor :answer_file
+
+      attr_accessor :verbose
+
       attr_accessor :role
+      #attr_accessor :step
       attr_accessor :relocate_manifests
 
       def to_proc
