@@ -1,8 +1,8 @@
-require 'config_builder'
+require 'config_builder/model'
 
 module PEBuild
   module ConfigBuilder
-    class PEBootstrap < ::ConfigBuilder::Model
+    class PEBootstrap < ::ConfigBuilder::Model::Base
 
       attr_accessor :role
       attr_accessor :relocate_manifests
