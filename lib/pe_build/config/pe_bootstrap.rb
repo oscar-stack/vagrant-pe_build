@@ -78,7 +78,7 @@ class PEBootstrap < PEBuild::Config::Global
     h = super
 
     errors = []
-    if @version == UNSET_VALUE and machine.config.pe_build.version == UNSET_VALUE
+    if @version == UNSET_VALUE and global_config_from(machine).pe_build.version == UNSET_VALUE
       errors << "Version must be set on provisioner when unset globally"
     end
 
@@ -104,6 +104,17 @@ class PEBootstrap < PEBuild::Config::Global
 
     errors |= h.values.flatten
     {"PE Bootstrap" => errors}
+  end
+
+  private
+
+  # Safely access the global config
+  #
+  # If we try to access the global config object directly from a validating
+  # machine, horrible things happen. To avoid this we access the environment's
+  # global config which should already be finalized.
+  def global_config_from(machine)
+    env = machine.env.config_global
   end
 end
 end
