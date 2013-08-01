@@ -65,7 +65,7 @@ class PEBootstrap < PEBuild::Config::Global
     set_default :@master,      'master'
     set_default :@answer_file, nil
 
-    set_default :@relocate_manifests, (@role == :master)
+    set_default :@relocate_manifests, false
   end
 
   def add_step(name, script_path)
