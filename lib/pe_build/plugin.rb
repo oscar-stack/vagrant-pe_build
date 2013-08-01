@@ -73,7 +73,6 @@ module PEBuild
   end
 
   action_hook(:pe_build, :config_builder_extension) do
-    require_relative 'config_builder/pe_bootstrap'
-    require_relative 'config_builder/global'
+    require_relative 'config_builder'
   end
 end

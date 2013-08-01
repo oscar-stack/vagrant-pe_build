@@ -1,28 +1,24 @@
 require 'config_builder/model'
 
-module PEBuild
-  module ConfigBuilder
-    class PEBootstrap < ::ConfigBuilder::Model::Base
+class PEBuild::ConfigBuilder::PEBootstrap < ::ConfigBuilder::Model::Base
 
-      attr_accessor :master
-      attr_accessor :answer_file
+  def_model_attribute :master
+  def_model_attribute :answer_file
 
-      attr_accessor :verbose
+  def_model_attribute :verbose
 
-      attr_accessor :role
-      #attr_accessor :step
-      attr_accessor :relocate_manifests
+  def_model_attribute :role
+  #def_model_attribute :step
+  def_model_attribute :relocate_manifests
 
-      def to_proc
-        Proc.new do |vm_config|
-          vm_config.provision :pe_bootstrap do |pe|
-            pe.role = @role if defined? @role
-            pe.relocate_manifests = @relocate_manifests if defined? @relocate_manifests
-          end
-        end
+  def to_proc
+    Proc.new do |vm_config|
+      vm_config.provision :pe_bootstrap do |pe|
+        pe.role = attr(:role) if attr(:role)
+        pe.relocate_manifests = attr(:relocate_manifests) if attr(:relocate_manifests)
       end
-
-      ::ConfigBuilder::ModelCollection.provisioner.register('pe_bootstrap', self)
     end
   end
+
+  ::ConfigBuilder::Model::Provisioner.register('pe_bootstrap', self)
 end
