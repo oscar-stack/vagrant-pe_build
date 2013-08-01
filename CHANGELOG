@@ -1,0 +1,12 @@
+vagrant-pe_build
+================
+
+0.2.0
+-----
+
+2013-08-01
+
+  * #20 Default `relocate_manifests` option to false on master
+  * Lazy load/interpolate `filename` config value
+  * Safely load global_config from pe_bootstrap
+  * Add license to .gemspec
