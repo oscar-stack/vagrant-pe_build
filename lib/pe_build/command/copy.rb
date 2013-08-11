@@ -2,11 +2,29 @@ require 'pe_build/archive'
 
 class PEBuild::Command::Copy < Vagrant.plugin(2, :command)
 
+  def initialize(argv, env)
+    super
+    @options = {}
+  end
+
   def execute
+    argv = parse_options(parser)
 
-    options = {}
+    filename = File.basename(argv.last)
+    src_dir  = File.dirname(argv.last)
 
-    parser = OptionParser.new do |o|
+    archive = PEBuild::Archive.new(filename, @env)
+    archive.version = @options[:version]
+
+    archive.copy_from(src_dir)
+
+    @env.ui.info "pe-build: #{archive} has been added and is ready for use!", :prefix => true
+  end
+
+  private
+
+  def parser
+    OptionParser.new do |o|
       o.banner = "Usage: vagrant pe-build copy path/to/installer.tar.gz"
       o.separator ''
 
@@ -14,19 +32,5 @@ class PEBuild::Command::Copy < Vagrant.plugin(2, :command)
         options[:version] = val
       end
     end
-
-    argv = parse_options(parser)
-    fpath = argv.last
-
-    basename = File.basename(fpath)
-    dirname  = File.dirname(fpath)
-
-    #unless options[:version]
-    #  raise Vagrant::Errors::CLIInvalidUsage, :help => parser.help.chomp
-    #end
-
-    archive = PEBuild::Archive.new(fpath, @env)
-    archive.version = options[:version]
-    archive.copy_from(dirname)
   end
 end

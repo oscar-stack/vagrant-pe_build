@@ -82,6 +82,10 @@ class Archive
     end
   end
 
+  def to_s
+    versioned_path(@filename)
+  end
+
   private
 
   # Initialize the PE directory
