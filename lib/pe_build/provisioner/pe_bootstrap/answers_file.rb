@@ -1,3 +1,5 @@
+require 'erb'
+
 class PEBuild::Provisioner::PEBootstrap::AnswersFile
 
   # @param machine [Vagrant::Machine]

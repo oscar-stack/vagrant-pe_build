@@ -5,7 +5,6 @@ require 'pe_build/util/config'
 
 require 'log4r'
 require 'fileutils'
-require 'erb'
 
 module PEBuild
   module Provisioner
