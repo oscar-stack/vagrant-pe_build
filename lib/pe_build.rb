@@ -2,6 +2,9 @@ require 'vagrant'
 
 module PEBuild
 
+  require 'pe_build/plugin'
+  require 'pe_build/version'
+
   # Return the path to the archived PE builds
   #
   # @param env [Vagrant::Environment]
@@ -20,6 +23,3 @@ end
 
 # I18n to load the en locale
 I18n.load_path << File.expand_path("locales/en.yml", PEBuild.template_dir)
-
-require 'pe_build/plugin'
-require 'pe_build/version'
