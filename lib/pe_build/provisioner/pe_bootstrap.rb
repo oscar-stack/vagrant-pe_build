@@ -30,8 +30,8 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
     @logger = Log4r::Logger.new('vagrant::provisioners::pe_bootstrap')
 
-    @work_dir    = File.join(@machine.env.root_path, '.pe_build')
-    @answer_dir  = File.join(work_dir, 'answers')
+    @work_dir   = File.join(@machine.env.root_path, '.pe_build')
+    @answer_dir = File.join(work_dir, 'answers')
   end
 
   # Instantiate all working directory content and stage the PE installer.
@@ -48,16 +48,16 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
     unless File.directory? answer_dir
       FileUtils.mkdir_p answer_dir
     end
+  end
+
+  def provision
+    prepare_answers_file
 
     archive = PEBuild::Archive.new(@config.filename, @machine.env)
     archive.version = @config.version
 
     archive.download_from(@config.download_root)
     archive.unpack_to(@work_dir)
-  end
-
-  def provision
-    prepare_answers_file
 
     [:base, @config.role].each do |rolename|
       process_step rolename, :pre
