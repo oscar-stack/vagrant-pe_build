@@ -35,6 +35,8 @@ class Archive
   def initialize(filename, env)
     @filename = filename
     @env      = env
+
+    @logger = Log4r::Logger.new('vagrant::pe_build::archive')
   end
 
   # @param fs_dir [String] The base directory to extract the installer to

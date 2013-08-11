@@ -7,7 +7,7 @@ module Idempotent
     desc ||= fpath
 
     if File.exist? fpath
-      @env.ui.warn "#{desc} is already present.", :prefix => true
+      @logger.info "#{desc} is already present."
     else
       yield
     end
