@@ -4,19 +4,18 @@ class PEBuild::Command::Base < Vagrant.plugin(2, :command)
 
   def initialize(argv, env)
     super
+    split_argv
 
-    @main_args, @subcommand, @sub_args = split_main_and_subcommand(argv)
-
-    @subcommands = Vagrant::Registry.new
-
-    register_subcommands
+    @subcommands = {
+      'list'     => PEBuild::Command::List,
+      'download' => PEBuild::Command::Download,
+      'copy'     => PEBuild::Command::Copy,
+    }
   end
 
   def execute
-    if @subcommand and (klass = @subcommands.get(@subcommand))
-      klass.new(@argv, @env).execute
-    elsif @subcommand
-      raise "Unrecognized subcommand #{@subcommand}"
+    if @subcommand
+      execute_subcommand
     else
       print_help
     end
@@ -24,20 +23,15 @@ class PEBuild::Command::Base < Vagrant.plugin(2, :command)
 
   private
 
-  def register_subcommands
-    @subcommands.register('copy') do
-      require_relative 'copy'
-      PEBuild::Command::Copy
-    end
+  def split_argv
+    @main_args, @subcommand, @sub_args = split_main_and_subcommand(@argv)
+  end
 
-    @subcommands.register('download') do
-      require_relative 'download'
-      PEBuild::Command::Download
-    end
-
-    @subcommands.register('list') do
-      require_relative 'list'
-      PEBuild::Command::List
+  def execute_subcommand
+    if (klass = @subcommands[@subcommand])
+      klass.new(@argv, @env).execute
+    else
+      raise "Unrecognized subcommand #{@subcommand}"
     end
   end
 
@@ -48,12 +42,7 @@ class PEBuild::Command::Base < Vagrant.plugin(2, :command)
       opts.separator ""
       opts.separator "Available subcommands:"
 
-      # Add the available subcommands as separators in order to print them
-      # out as well.
-      keys = []
-      @subcommands.each { |key, value| keys << key.to_s }
-
-      keys.sort.each do |key|
+      @subcommands.keys.sort.each do |key|
         opts.separator "     #{key}"
       end
 

@@ -35,6 +35,8 @@ class Archive
   def initialize(filename, env)
     @filename = filename
     @env      = env
+
+    @logger = Log4r::Logger.new('vagrant::pe_build::archive')
   end
 
   # @param fs_dir [String] The base directory to extract the installer to
@@ -69,7 +71,7 @@ class Archive
         collection = PEBuild::ArchiveCollection.new(archive_dir, @env)
         collection.display
 
-        raise PEBuild::ArchiveNoInstallerSource
+        raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
       else
         str = versioned_path("#{download_dir}/#{@filename}")
 

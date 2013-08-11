@@ -99,7 +99,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
       default_template_path = File.join(PEBuild.template_dir, 'answers', "#{@config.role}.txt.erb")
       template_path = default_template_path
     end
-    @machine.ui.info "Using #{template_path} as answers template"
+    @logger.info "Using #{template_path} as answers template"
     template = File.read(template_path)
     str = ERB.new(template).result(binding)
   end
@@ -109,7 +109,7 @@ class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
     dest_file = File.join(@answer_dir, "#{@machine.name}.txt")
 
-    @machine.ui.info "Writing answers file to #{dest_file}"
+    @logger.info "Writing answers file to #{dest_file}"
     File.open(dest_file, "w") do |file|
       file.write(str)
     end
