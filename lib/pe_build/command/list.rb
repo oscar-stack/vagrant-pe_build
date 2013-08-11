@@ -1,9 +1,6 @@
-require 'vagrant'
 require 'pe_build/archive_collection'
 
-module PEBuild
-class Command
-class List < Vagrant.plugin(2, :command)
+class PEBuild::Command::List < Vagrant.plugin(2, :command)
   def execute
     archive_dir = PEBuild.archive_directory(@env)
 
@@ -17,6 +14,4 @@ class List < Vagrant.plugin(2, :command)
       @env.ui.warn "No PE versions available at #{archive_dir}"
     end
   end
-end
-end
 end
