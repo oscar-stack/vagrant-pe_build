@@ -69,7 +69,7 @@ class Archive
         collection = PEBuild::ArchiveCollection.new(archive_dir, @env)
         collection.display
 
-        raise PEBuild::ArchiveNoInstallerSource
+        raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
       else
         str = versioned_path("#{download_dir}/#{@filename}")
 
