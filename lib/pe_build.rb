@@ -5,6 +5,8 @@ module PEBuild
   require 'pe_build/plugin'
   require 'pe_build/version'
 
+  WORK_DIR = '.pe_build'
+
   # Return the path to the archived PE builds
   #
   # @param env [Vagrant::Environment]

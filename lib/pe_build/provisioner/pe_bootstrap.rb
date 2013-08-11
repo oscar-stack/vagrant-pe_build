@@ -30,7 +30,7 @@ module PEBuild
 
         @logger = Log4r::Logger.new('vagrant::provisioners::pe_bootstrap')
 
-        @work_dir   = File.join(@machine.env.root_path.join, '.pe_build')
+        @work_dir   = File.join(@machine.env.root_path.join, PEBuild::WORK_DIR)
         @answer_dir = File.join(work_dir, 'answers')
       end
 
