@@ -32,7 +32,7 @@ class Plugin < Vagrant.plugin('2')
 
   command(:'pe-build') do
     require_relative 'command'
-    PEBuild::Command
+    PEBuild::Command::Base
   end
 end
 end
