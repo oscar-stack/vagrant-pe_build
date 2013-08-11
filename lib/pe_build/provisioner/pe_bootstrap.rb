@@ -135,11 +135,11 @@ module PEBuild
 
       def perform_installation
         if @machine.communicate.test('test -f /opt/puppet/pe_version')
-          @machine.ui.warn "Puppet Enterprise is already installed, skipping installation.",
+          @machine.ui.warn I18n.t('pe_build.provisioner.pe_bootstrap.already_installed'),
             :name  => @machine.name
         else
           on_remote installer_cmd
-          @machine.ui.info "Scheduling puppet run to prime pe_mcollective"
+          @machine.ui.info I18n.t('pe_build.provisioner.pe_bootstrap.already_installed')
           on_remote "echo '/opt/puppet/bin/puppet agent -t' | at next minute"
         end
       end
