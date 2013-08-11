@@ -48,12 +48,7 @@ module PEBuild
 
       def provision
         prepare_answers_file
-
-        archive = PEBuild::Archive.new(@config.filename, @machine.env)
-        archive.version = @config.version
-
-        archive.download_from(@config.download_root)
-        archive.unpack_to(@work_dir)
+        download_installer
 
         [:base, @config.role].each do |rolename|
           process_step rolename, :pre
@@ -91,6 +86,14 @@ module PEBuild
       def prepare_answers_file
         af = AnswersFile.new(@machine, @config, @work_dir)
         af.generate
+      end
+
+      def download_installer
+        archive = PEBuild::Archive.new(@config.filename, @machine.env)
+        archive.version = @config.version
+
+        archive.download_from(@config.download_root)
+        archive.unpack_to(@work_dir)
       end
 
       def process_step(role, stepname)
