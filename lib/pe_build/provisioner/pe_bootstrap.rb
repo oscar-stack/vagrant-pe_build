@@ -11,6 +11,8 @@ module PEBuild
   module Provisioner
     class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
+      require 'pe_build/provisioner/pe_bootstrap/answers_file'
+
       # @!attribute [r] work_dir
       #   @return [String] The path to the machine pe_build working directory
 
@@ -29,7 +31,7 @@ module PEBuild
 
         @logger = Log4r::Logger.new('vagrant::provisioners::pe_bootstrap')
 
-        @work_dir   = File.join(@machine.env.root_path, '.pe_build')
+        @work_dir   = File.join(@machine.env.root_path.join, '.pe_build')
         @answer_dir = File.join(work_dir, 'answers')
       end
 
@@ -42,10 +44,6 @@ module PEBuild
 
         unless File.directory? work_dir
           FileUtils.mkdir_p work_dir
-        end
-
-        unless File.directory? answer_dir
-          FileUtils.mkdir_p answer_dir
         end
       end
 
@@ -91,28 +89,9 @@ module PEBuild
         @config = merged
       end
 
-      def generate_answers
-        if @config.answer_file
-          template_path = @config.answer_file
-        else
-          default_template_path = File.join(PEBuild.template_dir, 'answers', "#{@config.role}.txt.erb")
-          template_path = default_template_path
-        end
-        @logger.info "Using #{template_path} as answers template"
-        template = File.read(template_path)
-        str = ERB.new(template).result(binding)
-      end
-
       def prepare_answers_file
-        answers = PEBuild::Provisioner::PEBootstrap::AnswersFile.new(@config.answer_file, @env)
-        str = generate_answers
-
-        dest_file = File.join(@answer_dir, "#{@machine.name}.txt")
-
-        @logger.info "Writing answers file to #{dest_file}"
-        File.open(dest_file, "w") do |file|
-          file.write(str)
-        end
+        af = AnswersFile.new(@machine, @config, @work_dir)
+        af.generate
       end
 
       def process_step(role, stepname)
