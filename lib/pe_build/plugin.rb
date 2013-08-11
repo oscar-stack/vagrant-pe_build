@@ -34,5 +34,20 @@ module PEBuild
       require_relative 'command'
       PEBuild::Command::Base
     end
+
+    guest_capability('debian', 'detect_installer') do
+      require_relative 'cap/detect_installer'
+      PEBuild::Cap::DetectInstaller::Debian
+    end
+
+    guest_capability('redhat', 'detect_installer') do
+      require_relative 'cap/detect_installer'
+      PEBuild::Cap::DetectInstaller::Redhat
+    end
+
+    guest_capability('ubuntu', 'detect_installer') do
+      require_relative 'cap/detect_installer'
+      PEBuild::Cap::DetectInstaller::Ubuntu
+    end
   end
 end
