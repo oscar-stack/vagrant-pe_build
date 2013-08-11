@@ -1,10 +1,6 @@
-require 'vagrant'
-require 'optparse'
 require 'pe_build/archive'
 
-module PEBuild
-class Command
-class Download < Vagrant.plugin(2, :command)
+class PEBuild::Command::Download < Vagrant.plugin(2, :command)
 
   def execute
 
@@ -34,6 +30,4 @@ class Download < Vagrant.plugin(2, :command)
     archive.version = options[:version]
     archive.download_from(options[:dir])
   end
-end
-end
 end

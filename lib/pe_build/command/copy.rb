@@ -1,10 +1,6 @@
-require 'vagrant'
-require 'optparse'
 require 'pe_build/archive'
 
-module PEBuild
-class Command
-class Copy < Vagrant.plugin(2, :command)
+class PEBuild::Command::Copy < Vagrant.plugin(2, :command)
 
   def execute
 
@@ -33,6 +29,4 @@ class Copy < Vagrant.plugin(2, :command)
     archive.version = options[:version]
     archive.copy_from(dirname)
   end
-end
-end
 end
