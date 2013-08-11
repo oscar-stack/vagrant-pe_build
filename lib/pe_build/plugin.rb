@@ -6,33 +6,58 @@ if Vagrant::VERSION < "1.1.0"
 end
 
 module PEBuild
-class Plugin < Vagrant.plugin('2')
+  class Plugin < Vagrant.plugin('2')
 
-  name 'pe_build'
+    name 'pe_build'
 
-  description <<-DESC
-  This plugin adds commands and provisioners to automatically install Puppet
-  Enterprise on Vagrant guests.
-  DESC
+    description <<-DESC
+    This plugin adds commands and provisioners to automatically install Puppet
+    Enterprise on Vagrant guests.
+    DESC
 
-  config(:pe_bootstrap, :provisioner) do
-    require_relative 'config/pe_bootstrap'
-    PEBuild::Config::PEBootstrap
+    config(:pe_bootstrap, :provisioner) do
+      require_relative 'config/pe_bootstrap'
+      PEBuild::Config::PEBootstrap
+    end
+
+    config(:pe_build) do
+      require_relative 'config/global'
+      PEBuild::Config::Global
+    end
+
+    provisioner(:pe_bootstrap) do
+      require_relative 'provisioner/pe_bootstrap'
+      PEBuild::Provisioner::PEBootstrap
+    end
+
+    command(:'pe-build') do
+      require_relative 'command'
+      PEBuild::Command::Base
+    end
+
+    guest_capability('debian', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Debian
+    end
+
+    guest_capability('redhat', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Redhat
+    end
+
+    guest_capability('ubuntu', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Ubuntu
+    end
+
+    guest_capability('linux', 'run_install') do
+      require_relative 'cap'
+      PEBuild::Cap::RunInstall::POSIX
+    end
+
+    guest_capability('solaris', 'run_install') do
+      require_relative 'cap'
+      PEBuild::Cap::RunInstall::POSIX
+    end
   end
-
-  config(:pe_build) do
-    require_relative 'config/global'
-    PEBuild::Config::Global
-  end
-
-  provisioner(:pe_bootstrap) do
-    require_relative 'provisioner/pe_bootstrap'
-    PEBuild::Provisioner::PEBootstrap
-  end
-
-  command(:'pe-build') do
-    require_relative 'command'
-    PEBuild::Command::Base
-  end
-end
 end
