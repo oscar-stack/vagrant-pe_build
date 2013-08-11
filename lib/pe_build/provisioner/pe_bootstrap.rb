@@ -50,19 +50,12 @@ module PEBuild
         prepare_answers_file
         download_installer
 
-        [:base, @config.role].each do |rolename|
-          process_step rolename, :pre
-        end
+        [:base, @config.role].each { |rolename| process_step rolename, :pre }
 
         perform_installation
+        relocate_installation if @config.relocate_manifests
 
-        if @config.relocate_manifests
-          relocate_installation
-        end
-
-        [:base, @config.role].each do |rolename|
-          process_step rolename, :post
-        end
+        [:base, @config.role].each { |rolename| process_step rolename, :post }
       end
 
       private
