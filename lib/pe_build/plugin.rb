@@ -49,5 +49,15 @@ module PEBuild
       require_relative 'cap'
       PEBuild::Cap::DetectInstaller::Ubuntu
     end
+
+    guest_capability('linux', 'run_install') do
+      require_relative 'cap'
+      PEBuild::Cap::RunInstall::POSIX
+    end
+
+    guest_capability('solaris', 'run_install') do
+      require_relative 'cap'
+      PEBuild::Cap::RunInstall::POSIX
+    end
   end
 end
