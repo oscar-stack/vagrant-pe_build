@@ -118,29 +118,12 @@ module PEBuild
         end
       end
 
-      # Determine the proper invocation of the PE installer
-      def installer_cmd
-        root = "/vagrant/.pe_build"
-
-        installer_dir = "puppet-enterprise-#{@config.version}-#{@config.suffix}"
-        installer     = "puppet-enterprise-installer"
-
-        answers     = "#{root}/answers/#{@machine.name}.txt"
-        log_file    = "/root/puppet-enterprise-installer-#{Time.now.strftime('%s')}.log"
-
-        cmd = File.join(root, installer_dir, installer)
-
-        @installer_cmd = "#{cmd} -a #{answers} -l #{log_file}"
-      end
-
       def perform_installation
         if @machine.communicate.test('test -f /opt/puppet/pe_version')
           @machine.ui.warn I18n.t('pe_build.provisioner.pe_bootstrap.already_installed'),
             :name  => @machine.name
         else
-          on_remote installer_cmd
-          @machine.ui.info I18n.t('pe_build.provisioner.pe_bootstrap.already_installed')
-          on_remote "echo '/opt/puppet/bin/puppet agent -t' | at next minute"
+          @machine.guest.capability('run_install', @config)
         end
       end
 
