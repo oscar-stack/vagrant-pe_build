@@ -1,3 +1,5 @@
+require 'tempfile'
+
 class PEBuild::Cap::DetectInstaller::Base
 
   def self.detect_installer(machine)

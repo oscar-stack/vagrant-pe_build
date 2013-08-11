@@ -1,5 +1,3 @@
-require 'tempfile'
-
 module PEBuild
   module Cap
     module DetectInstaller
@@ -9,6 +7,10 @@ module PEBuild
       require 'pe_build/cap/detect_installer/debian'
       require 'pe_build/cap/detect_installer/ubuntu'
       require 'pe_build/cap/detect_installer/suse'
+    end
+
+    module RunInstall
+      require 'pe_build/cap/run_install/posix'
     end
   end
 end
