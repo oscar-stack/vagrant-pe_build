@@ -75,7 +75,7 @@ class Archive
         str = versioned_path("#{download_dir}/#{@filename}")
 
         prepare_for_copy!
-        transfer = PEBuild::Transfer::URI.new(str, archive_path)
+        transfer = PEBuild::Transfer::HTTP.new(str, archive_path)
         transfer.copy
       end
     end
