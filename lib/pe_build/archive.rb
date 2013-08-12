@@ -6,8 +6,6 @@ require 'pe_build/transfer'
 
 require 'pe_build/unpack/tar'
 
-require 'fileutils'
-
 module PEBuild
 
 class ArchiveNoInstallerSource < Vagrant::Errors::VagrantError
@@ -53,7 +51,6 @@ class Archive
     file_path = versioned_path(File.join(fs_dir, filename))
 
     idempotent(archive_path, "Installer #{versioned_path @filename}") do
-      prepare_for_copy!
       transfer = PEBuild::Transfer::File.new(file_path, archive_path)
       transfer.copy
     end
@@ -74,7 +71,6 @@ class Archive
       else
         str = versioned_path("#{download_dir}/#{@filename}")
 
-        prepare_for_copy!
         transfer = PEBuild::Transfer::HTTP.new(str, archive_path)
         transfer.copy
       end
@@ -90,18 +86,6 @@ class Archive
   end
 
   private
-
-  # Initialize the PE directory
-  #
-  # @todo respect Vagrant home setting
-  def prepare_for_copy!
-    archive_dir = PEBuild.archive_directory(@env)
-
-    if not File.directory? archive_dir
-      FileUtils.mkdir_p archive_dir
-    end
-  end
-
 
   # @return [String] The interpolated archive path
   def archive_path
