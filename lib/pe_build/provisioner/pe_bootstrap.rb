@@ -115,7 +115,7 @@ module PEBuild
         end
 
         if script_list.empty?
-          @logger.info "No steps for #{role}/#{stepname}", :color => :cyan
+          @logger.info "No steps for #{role}/#{stepname}"
         end
 
         script_list.each do |template_path|
