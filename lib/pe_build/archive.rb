@@ -33,6 +33,8 @@ class Archive
     @filename = filename
     @env      = env
 
+    @archive_dir = PEBuild.archive_directory(@env)
+
     @logger = Log4r::Logger.new('vagrant::pe_build::archive')
   end
 
@@ -62,9 +64,7 @@ class Archive
       if download_dir.nil?
         @env.ui.error "Installer #{versioned_path @filename} is not available."
 
-        archive_dir = PEBuild.archive_directory(@env)
-
-        collection = PEBuild::ArchiveCollection.new(archive_dir, @env)
+        collection = PEBuild::ArchiveCollection.new(@archive_dir, @env)
         collection.display
 
         raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
@@ -89,8 +89,7 @@ class Archive
 
   # @return [String] The interpolated archive path
   def archive_path
-    archive_dir = PEBuild.archive_directory(@env)
-    path = File.join(archive_dir, @filename)
+    path = File.join(@archive_dir, @filename)
     versioned_path(path)
   end
 
