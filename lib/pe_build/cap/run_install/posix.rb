@@ -3,14 +3,14 @@ class PEBuild::Cap::RunInstall::POSIX
 
   extend PEBuild::OnMachine
 
-  def self.run_install(machine, config)
+  def self.run_install(machine, config, archive)
 
     root = File.join('/vagrant', PEBuild::WORK_DIR)
 
     cmd_path = []
     cmd_path << root
 
-    cmd_path << "puppet-enterprise-#{config.version}-#{config.suffix}"
+    cmd_path << archive.installer_dir
     cmd_path << "puppet-enterprise-installer"
 
     cmd     = File.join(cmd_path)

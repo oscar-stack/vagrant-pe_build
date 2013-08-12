@@ -1,8 +1,6 @@
 require 'fileutils'
 
-module PEBuild
-module Transfer
-class File
+class PEBuild::Transfer::File
 
   # @param src [String] The path to the file to copy
   # @param dst [String] The path to destination of the copied file
@@ -13,6 +11,4 @@ class File
   def copy
     FileUtils.cp @src, @dst
   end
-end
-end
 end

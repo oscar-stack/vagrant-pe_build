@@ -3,15 +3,14 @@ require 'pe_build/version'
 require 'open-uri'
 require 'progressbar'
 
-
-module PEBuild
-module Transfer
-class URI
+class PEBuild::Transfer::URI
 
   # @param src [String] The URL to the file to copy
   # @param dst [String] The path to destination of the copied file
   def initialize(src, dst)
     @src, @dst = src, dst
+
+    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::uri')
   end
 
   def copy
@@ -32,7 +31,7 @@ class URI
 
     content_length_proc = lambda do |length|
       if length and length > 0
-        progress = ProgressBar.new('Fetching', length)
+        progress = ProgressBar.new('Fetching file', length)
         progress.file_transfer_mode
       end
     end
@@ -46,8 +45,8 @@ class URI
       :progress_proc       => progress_proc,
     })
 
+    @logger.info "Fetching file from #{uri}"
+
     uri.open(options)
   end
-end
-end
 end

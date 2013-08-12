@@ -48,6 +48,7 @@ module PEBuild
 
       def provision
         prepare_answers_file
+        load_archive
         download_installer
 
         [:base, @config.role].each { |rolename| process_step rolename, :pre }
@@ -81,12 +82,21 @@ module PEBuild
         af.generate
       end
 
-      def download_installer
-        archive = PEBuild::Archive.new(@config.filename, @machine.env)
-        archive.version = @config.version
+      def load_archive
+        if @config.suffix == :detect
+          filename = @machine.guest.capability('detect_installer', @config.version)
+        else
+          filename = @config.filename
+        end
 
-        archive.download_from(@config.download_root)
-        archive.unpack_to(@work_dir)
+        @archive = PEBuild::Archive.new(filename, @machine.env)
+        @archive.version = @config.version
+      end
+
+      def download_installer
+
+        @archive.download_from(@config.download_root)
+        @archive.unpack_to(@work_dir)
       end
 
       def process_step(role, stepname)
@@ -105,7 +115,7 @@ module PEBuild
         end
 
         if script_list.empty?
-          @logger.info "No steps for #{role}/#{stepname}", :color => :cyan
+          @logger.info "No steps for #{role}/#{stepname}"
         end
 
         script_list.each do |template_path|
@@ -120,10 +130,10 @@ module PEBuild
 
       def perform_installation
         if @machine.communicate.test('test -f /opt/puppet/pe_version')
-          @machine.ui.warn I18n.t('pe_build.provisioner.pe_bootstrap.already_installed'),
+          @machine.ui.warn I18n.t('pebuild.provisioner.pe_bootstrap.already_installed'),
             :name  => @machine.name
         else
-          @machine.guest.capability('run_install', @config)
+          @machine.guest.capability('run_install', @config, @archive)
         end
       end
 
