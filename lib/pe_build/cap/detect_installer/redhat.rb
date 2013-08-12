@@ -1,19 +1,18 @@
 class PEBuild::Cap::DetectInstaller::Redhat < PEBuild::Cap::DetectInstaller::Base
 
+  def name
+    'el'
+  end
+
   def release_file
     '/etc/redhat-release'
   end
 
-  def detect
-    supported_releases = %w[5 6]
-    regex              = %r[release (\d+)\.\d+]
+  def release_file_format
+    %r[release (\d+)\.\d+]
+  end
 
-    release = release_content.match(regex)[1].to_i
-
-    unless supported_releases.include? major_release
-      raise "Redhat release #{major_release} not supported"
-    end
-
-    installer_name "el-#{major_release}"
+  def supported_releases
+    %w[5 6]
   end
 end
