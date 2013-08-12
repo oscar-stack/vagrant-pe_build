@@ -2,8 +2,7 @@ require 'pe_build'
 require 'pe_build/idempotent'
 require 'pe_build/archive_collection'
 
-require 'pe_build/transfer/file'
-require 'pe_build/transfer/uri'
+require 'pe_build/transfer'
 
 require 'pe_build/unpack/tar'
 

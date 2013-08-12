@@ -3,10 +3,7 @@ require 'pe_build/version'
 require 'open-uri'
 require 'progressbar'
 
-
-module PEBuild
-module Transfer
-class URI
+class PEBuild::Transfer::URI
 
   # @param src [String] The URL to the file to copy
   # @param dst [String] The path to destination of the copied file
@@ -52,6 +49,4 @@ class URI
 
     uri.open(options)
   end
-end
-end
 end
