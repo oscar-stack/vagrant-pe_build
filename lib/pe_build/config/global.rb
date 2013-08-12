@@ -45,7 +45,8 @@ class Global < Vagrant.plugin('2', :config)
   include PEBuild::ConfigDefault
 
   def finalize!
-    set_default :@suffix,   'all'
+    set_default :@suffix, :detect
+
     #set_default :@version,  DEFAULT_PE_VERSION
 
     set_default :@download_root, nil
