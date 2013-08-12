@@ -86,6 +86,10 @@ class Archive
     versioned_path(@filename)
   end
 
+  def installer_dir
+    versioned_path(@filename).gsub('.tar.gz', '')
+  end
+
   private
 
   # Initialize the PE directory

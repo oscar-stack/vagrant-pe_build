@@ -123,7 +123,7 @@ module PEBuild
           @machine.ui.warn I18n.t('pe_build.provisioner.pe_bootstrap.already_installed'),
             :name  => @machine.name
         else
-          @machine.guest.capability('run_install', @config)
+          @machine.guest.capability('run_install', @config, @archive)
         end
       end
 
