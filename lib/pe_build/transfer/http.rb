@@ -3,14 +3,14 @@ require 'pe_build/version'
 require 'open-uri'
 require 'progressbar'
 
-class PEBuild::Transfer::URI
+class PEBuild::Transfer::HTTP
 
   # @param src [String] The URL to the file to copy
   # @param dst [String] The path to destination of the copied file
   def initialize(src, dst)
     @src, @dst = src, dst
 
-    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::uri')
+    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::http')
   end
 
   def copy
