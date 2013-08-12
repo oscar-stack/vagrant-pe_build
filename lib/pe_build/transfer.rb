@@ -7,15 +7,16 @@ module PEBuild
       'http'  => PEBuild::Transfer::HTTP,
       'https' => PEBuild::Transfer::HTTP,
       'file'  => PEBuild::Transfer::File,
+      nil     => PEBuild::Transfer::File, # Assume that URIs without a scheme are files
     }
 
     def self.generate(src, dst)
-      schema = src.schema
+      scheme = src.scheme
 
-      if (klass = IMPLEMENTATION[schema])
+      if (klass = IMPLEMENTATION[scheme])
         klass.new(src, dst)
       else
-        raise "Schema #{schema.inspect} cannot be handled by any file transferrers"
+        raise "URI scheme #{scheme.inspect} cannot be handled by any file transferrers"
       end
     end
   end
