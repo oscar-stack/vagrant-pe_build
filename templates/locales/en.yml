@@ -2,10 +2,11 @@ en:
   pebuild:
     archive:
       no_installer_source: |-
-        The Puppet Enterprise installer %{filename} is not available. Please specify the
-        `download_root` config option to a valid mirror, or add the installer yourself by
-        using the `vagrant pe-build copy` command. Downloads for Puppet Enterprise are
-        available for download at https://puppetlabs.com/puppet/puppet-enterprise/
+        The Puppet Enterprise installer %{filename} is not available.
+        Please set the `download_root` config option to a valid mirror, or add the
+        installer yourself by using the `vagrant pe-build copy` command. Downloads
+        for Puppet Enterprise are available for download at
+        https://puppetlabs.com/puppet/puppet-enterprise/
     provisioner:
       pe_bootstrap:
         already_installed: |-
