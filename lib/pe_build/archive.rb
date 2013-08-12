@@ -38,6 +38,16 @@ class Archive
     @logger = Log4r::Logger.new('vagrant::pe_build::archive')
   end
 
+  def fetch(base_uri)
+    uri = base_uri.clone
+    uri.path << "/" + versioned_path(@filename)
+
+    dst = File.join(@archive_dir, versioned_path(@filename))
+
+    transfer = PEBuild::Transfer.generate(uri, dst)
+    transfer.copy
+  end
+
   # @param fs_dir [String] The base directory to extract the installer to
   def unpack_to(fs_dir)
     tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)

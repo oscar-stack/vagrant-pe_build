@@ -13,7 +13,7 @@ module PEBuild
     def self.generate(src, dst)
       scheme = src.scheme
 
-      if (klass = IMPLEMENTATION[scheme])
+      if (klass = IMPLEMENTATIONS[scheme])
         klass.new(src, dst)
       else
         raise "URI scheme #{scheme.inspect} cannot be handled by any file transferrers"
