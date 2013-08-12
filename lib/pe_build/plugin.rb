@@ -15,6 +15,8 @@ module PEBuild
     Enterprise on Vagrant guests.
     DESC
 
+    # User facing plugin configuration
+
     config(:pe_bootstrap, :provisioner) do
       require_relative 'config/pe_bootstrap'
       PEBuild::Config::PEBootstrap
@@ -34,6 +36,8 @@ module PEBuild
       require_relative 'command'
       PEBuild::Command::Base
     end
+
+    # Guest capabilities for installing PE
 
     guest_capability('debian', 'detect_installer') do
       require_relative 'cap'
@@ -58,6 +62,13 @@ module PEBuild
     guest_capability('solaris', 'run_install') do
       require_relative 'cap'
       PEBuild::Cap::RunInstall::POSIX
+    end
+
+    # internal action hooks
+
+    action_hook('PE Build: initialize build dir') do |hook|
+      require 'pe_build/action'
+      hook.prepend PEBuild::Action::PEBuildDir
     end
   end
 end
