@@ -130,7 +130,7 @@ module PEBuild
 
       def perform_installation
         if @machine.communicate.test('test -f /opt/puppet/pe_version')
-          @machine.ui.warn I18n.t('pe_build.provisioner.pe_bootstrap.already_installed'),
+          @machine.ui.warn I18n.t('pebuild.provisioner.pe_bootstrap.already_installed'),
             :name  => @machine.name
         else
           @machine.guest.capability('run_install', @config, @archive)
