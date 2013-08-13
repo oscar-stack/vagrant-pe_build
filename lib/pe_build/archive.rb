@@ -62,7 +62,7 @@ class Archive
 
   # @param fs_dir [String] The base directory to extract the installer to
   def unpack_to(fs_dir)
-    unless exists?
+    unless exist?
       raise "Tried to unpack #{@filename} but it was not downloaded!"
     end
 

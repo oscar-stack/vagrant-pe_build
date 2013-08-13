@@ -1,3 +1,5 @@
+require 'pe_build/release'
+
 require 'erb'
 
 class PEBuild::Provisioner::PEBootstrap::AnswersFile
@@ -31,7 +33,9 @@ class PEBuild::Provisioner::PEBootstrap::AnswersFile
       @template = @config.answer_file
       mode = 'explicit'
     else
-      @template = File.join(PEBuild.template_dir, 'answers', "#{@config.role}.txt.erb")
+      release_info = PEBuild::Release[@config.version]
+
+      @template = release_info.answer_file(@config.role)
       mode = 'default'
     end
 
