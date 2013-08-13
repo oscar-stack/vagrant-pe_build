@@ -7,7 +7,7 @@ module PEBuild::Release
     add_release :el, 5
     add_release :el, 6
 
-    add_release :sles, 11
+    #add_release :sles, 11
 
     add_release :solaris, 10
 
