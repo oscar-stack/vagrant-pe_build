@@ -77,6 +77,10 @@ class PEBootstrap < PEBuild::Config::Global
   def validate(machine)
     h = super
 
+    unless @step.empty?
+      machine.ui.warn "pe_bootstrap: explicit steps are deprecated and will be removed soon."
+    end
+
     errors = []
     if @version == UNSET_VALUE and global_config_from(machine).pe_build.version == UNSET_VALUE
       errors << "Version must be set on provisioner when unset globally"
