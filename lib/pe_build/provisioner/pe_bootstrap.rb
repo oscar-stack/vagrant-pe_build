@@ -2,6 +2,7 @@ require 'vagrant'
 
 require 'pe_build/archive'
 require 'pe_build/util/config'
+require 'pe_build/release'
 
 require 'log4r'
 require 'fileutils'
