@@ -6,7 +6,7 @@ require 'progressbar'
 
 class PEBuild::Transfer::HTTP
 
-  # @param src [String] The URL to the file to copy
+  # @param src [URI]    The http(s) URI to the file to copy
   # @param dst [String] The path to destination of the copied file
   def initialize(src, dst)
     @src, @dst = src, dst

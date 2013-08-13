@@ -6,6 +6,7 @@ module PEBuild
     IMPLEMENTATIONS = {
       'http'  => PEBuild::Transfer::HTTP,
       'https' => PEBuild::Transfer::HTTP,
+      'ftp'   => PEBuild::Transfer::HTTP,
       'file'  => PEBuild::Transfer::File,
       nil     => PEBuild::Transfer::File, # Assume that URIs without a scheme are files
     }

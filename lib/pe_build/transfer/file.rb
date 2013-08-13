@@ -3,7 +3,7 @@ require 'pe_build/idempotent'
 
 class PEBuild::Transfer::File
 
-  # @param src [String] The path to the file to copy
+  # @param src [URI] The local file path path to the file to copy
   # @param dst [String] The path to destination of the copied file
   def initialize(uri, dst)
     @src = uri.path
