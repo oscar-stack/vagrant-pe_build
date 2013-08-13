@@ -1,5 +1,3 @@
-require 'tempfile'
-
 class PEBuild::Cap::DetectInstaller::Base
 
   def self.detect_installer(machine, version)
@@ -47,11 +45,17 @@ class PEBuild::Cap::DetectInstaller::Base
   private
 
   def release_content
-    tmpfile = Tempfile.new('pe_build-detect_installer')
+    content = nil
 
-    @machine.communicate.download(release_file, tmpfile.path)
+    @machine.communicate.execute("cat #{release_file}") do |type, data|
+      if type == :stdout
+        content = data
+      else
+        raise "Could not read #{release_file} on #{@machine}: got #{data}"
+      end
+    end
 
-    tmpfile.read
+    content
   end
 
   def parse_release_file
