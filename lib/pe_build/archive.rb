@@ -38,10 +38,22 @@ class Archive
     @logger = Log4r::Logger.new('vagrant::pe_build::archive')
   end
 
-  def fetch(base_uri)
-    uri = base_uri.clone
-    uri.path << "/" + versioned_path(@filename)
+  # @param base_uri [String] A string representation of the download source URI
+  def fetch(str)
+    return if self.exist?
 
+    if base_uri.nil?
+      @env.ui.error "Cannot fetch installer #{versioned_path @filename}; no download source available."
+      @env.ui.error ""
+      @env.ui.error "Installers available for use:"
+
+      collection = PEBuild::ArchiveCollection.new(@archive_dir, @env)
+      collection.display
+
+      raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
+    end
+
+    uri = URI.parse(versioned_path(str + '/' + @filename))
     dst = File.join(@archive_dir, versioned_path(@filename))
 
     transfer = PEBuild::Transfer.generate(uri, dst)
@@ -85,6 +97,8 @@ class Archive
         transfer.copy
       end
     end
+  def exist?
+    File.exist? archive_path
   end
 
   def to_s
