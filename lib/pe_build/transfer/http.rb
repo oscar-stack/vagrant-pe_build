@@ -6,10 +6,10 @@ require 'progressbar'
 
 class PEBuild::Transfer::HTTP
 
-  # @param src [URI]    The http(s) URI to the file to copy
+  # @param uri [URI]    The http(s) URI to the file to copy
   # @param dst [String] The path to destination of the copied file
-  def initialize(src, dst)
-    @src, @dst = src, dst
+  def initialize(uri, dst)
+    @uri, @dst = uri, dst
 
     @logger = Log4r::Logger.new('vagrant::pe_build::transfer::http')
   end
@@ -17,7 +17,7 @@ class PEBuild::Transfer::HTTP
   include PEBuild::Idempotent
 
   def copy
-    idempotent do
+    idempotent(@dst) do
       tmpfile = download_file
       FileUtils.mv(tmpfile, @dst)
     end
