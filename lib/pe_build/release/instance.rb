@@ -9,6 +9,8 @@ class PEBuild::Release::Instance
 
     @supported = Hash.new { |hash, key| hash[key] = Set.new }
 
+    @answer_files = {}
+
     instance_eval(&blk) if blk
   end
 
@@ -25,6 +27,15 @@ class PEBuild::Release::Instance
     @supported[distro].include? dist_release
   end
 
+  # Return the answer file template for the given role and release of PE
+  #
+  # @param role [Symbol] The role for the template
+  #
+  # @return
+  def answer_file(role)
+    @answer_files[role]
+  end
+
   private
 
   # Define a distribution release as supported.
@@ -38,5 +49,15 @@ class PEBuild::Release::Instance
     dist_release = dist_release.to_s unless dist_release.is_a? String
 
     @supported[distro].add dist_release
+  end
+
+  # Set the answer file template for a given role
+  #
+  # @param role [Symbol] The role for the template
+  # @param path [String] The path to the template
+  #
+  # @return [void]
+  def set_answer_file(role, path)
+    @answer_files[role] = path
   end
 end
