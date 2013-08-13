@@ -1,21 +1,26 @@
 require 'pe_build/version'
+require 'pe_build/idempotent'
 
 require 'open-uri'
 require 'progressbar'
 
 class PEBuild::Transfer::HTTP
 
-  # @param src [String] The URL to the file to copy
+  # @param uri [URI]    The http(s) URI to the file to copy
   # @param dst [String] The path to destination of the copied file
-  def initialize(src, dst)
-    @src, @dst = src, dst
+  def initialize(uri, dst)
+    @uri, @dst = uri, dst
 
     @logger = Log4r::Logger.new('vagrant::pe_build::transfer::http')
   end
 
+  include PEBuild::Idempotent
+
   def copy
-    tmpfile = open_uri(@src)
-    FileUtils.mv(tmpfile, @dst)
+    idempotent(@dst) do
+      tmpfile = download_file
+      FileUtils.mv(tmpfile, @dst)
+    end
   end
 
   HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
@@ -25,8 +30,7 @@ class PEBuild::Transfer::HTTP
   # Open a open-uri file handle for the given URL
   #
   # @return [IO]
-  def open_uri(path)
-    uri = ::URI.parse(path)
+  def download_file
     progress = nil
 
     content_length_proc = lambda do |length|
@@ -45,8 +49,8 @@ class PEBuild::Transfer::HTTP
       :progress_proc       => progress_proc,
     })
 
-    @logger.info "Fetching file from #{uri}"
+    @logger.info "Fetching file from #{@uri}"
 
-    uri.open(options)
+    @uri.open(options)
   end
 end

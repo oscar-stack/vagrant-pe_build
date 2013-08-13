@@ -49,7 +49,7 @@ module PEBuild
       def provision
         prepare_answers_file
         load_archive
-        download_installer
+        fetch_installer
 
         [:base, @config.role].each { |rolename| process_step rolename, :pre }
 
@@ -93,9 +93,10 @@ module PEBuild
         @archive.version = @config.version
       end
 
-      def download_installer
-
-        @archive.download_from(@config.download_root)
+      # @todo panic if @config.download_root is undefined
+      def fetch_installer
+        uri = @config.download_root
+        @archive.fetch(@config.download_root)
         @archive.unpack_to(@work_dir)
       end
 

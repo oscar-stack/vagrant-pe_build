@@ -26,8 +26,10 @@ class PEBuild::Command::Download < Vagrant.plugin(2, :command)
       raise Vagrant::Errors::CLIInvalidUsage, :help => parser.help.chomp
     end
 
+    uri = URI.parse(options[:dir])
+
     archive = PEBuild::Archive.new(filename, @env)
     archive.version = options[:version]
-    archive.download_from(options[:dir])
+    archive.fetch(options[:dir])
   end
 end
