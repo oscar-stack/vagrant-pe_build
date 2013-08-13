@@ -2,6 +2,7 @@ require 'uri'
 require 'vagrant'
 
 require 'pe_build/config_default'
+require 'pe_build/transfer'
 
 module PEBuild
 module Config
@@ -67,9 +68,16 @@ class Global < Vagrant.plugin('2', :config)
       errors << "version only accepts a string, got #{@version.class}"
     end
 
-    uri = URI.parse(@download_root) rescue nil
-    unless @download_root == UNSET_VALUE or @download_root.nil? or File.directory?(File.expand_path(@download_root)) or uri.kind_of? (URI::HTTP||URI::HTTPS) or uri.kind_of? URI::FTP
-      errors << "download_root must be valid URL or present local file path, got #{@download_root}"
+    if @download_root and @download_root != UNSET_VALUE
+      begin
+        uri = URI.parse(@download_root)
+
+        if PEBuild::Transfer::IMPLEMENTATIONS[uri.scheme].nil?
+          errors << "No handlers available for URI scheme #{uri.scheme}"
+        end
+      rescue URI::InvalidURIError
+        errors << 'download_root must be a valid URL or nil'
+      end
     end
 
     {"PE Build global config" => errors}

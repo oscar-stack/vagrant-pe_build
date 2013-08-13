@@ -42,7 +42,7 @@ class Archive
   def fetch(str)
     return if self.exist?
 
-    if base_uri.nil?
+    if str.nil?
       @env.ui.error "Cannot fetch installer #{versioned_path @filename}; no download source available."
       @env.ui.error ""
       @env.ui.error "Installers available for use:"
