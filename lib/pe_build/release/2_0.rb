@@ -13,6 +13,9 @@ module PEBuild::Release
     add_release :solaris, 10
 
     add_release :ubuntu, '10.04'
+
+    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-2.x.txt.erb')
+    set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-2.x.txt.erb')
   end
 
   @releases['2.0.0'] = two_oh_x

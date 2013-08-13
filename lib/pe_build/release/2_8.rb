@@ -25,6 +25,9 @@ module PEBuild::Release
     # add_release :aix, '5.3'
     # add_release :aix, '6.1'
     # add_release :aix, '7.1'
+
+    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-2.x.txt.erb')
+    set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-2.x.txt.erb')
   end
 
   @releases['2.8.1'] = two_eight_x

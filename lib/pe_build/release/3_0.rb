@@ -26,6 +26,9 @@ module PEBuild::Release
     # add_release :aix, '5.3'
     # add_release :aix, '6.1'
     # add_release :aix, '7.1'
+
+    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-3.x.txt.erb')
+    set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
   end
 
   @releases['3.0.0'] = three_oh_x

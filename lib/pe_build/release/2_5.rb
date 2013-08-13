@@ -16,6 +16,9 @@ module PEBuild::Release
     add_release :windows, '2003'
     add_release :windows, '2008R2'
     add_release :windows, 7
+
+    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-2.x.txt.erb')
+    set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-2.x.txt.erb')
   end
 
   @releases['2.5.0'] = two_five_x
