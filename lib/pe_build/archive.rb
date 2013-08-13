@@ -70,33 +70,6 @@ class Archive
     end
   end
 
-  # @param fs_dir [String] The base directory holding the archive
-  def copy_from(fs_dir)
-    file_path = versioned_path(File.join(fs_dir, filename))
-
-    idempotent(archive_path, "Installer #{versioned_path @filename}") do
-      transfer = PEBuild::Transfer::File.new(file_path, archive_path)
-      transfer.copy
-    end
-  end
-
-  # @param download_dir [String] The URL base containing the archive
-  def download_from(download_dir)
-    idempotent(archive_path, "Installer #{versioned_path @filename}") do
-      if download_dir.nil?
-        @env.ui.error "Installer #{versioned_path @filename} is not available."
-
-        collection = PEBuild::ArchiveCollection.new(@archive_dir, @env)
-        collection.display
-
-        raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
-      else
-        str = versioned_path("#{download_dir}/#{@filename}")
-
-        transfer = PEBuild::Transfer::HTTP.new(str, archive_path)
-        transfer.copy
-      end
-    end
   def exist?
     File.exist? archive_path
   end
