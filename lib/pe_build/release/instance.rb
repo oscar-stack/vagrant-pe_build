@@ -19,6 +19,9 @@ class PEBuild::Release::Instance
   #
   # @return [true, false]
   def supports?(distro, dist_release)
+    distro       = distro.to_sym     unless distro.is_a? Symbol
+    dist_release = dist_release.to_s unless dist_release.is_a? String
+
     @supported[distro].include? dist_release
   end
 
@@ -31,6 +34,9 @@ class PEBuild::Release::Instance
   #
   # @return [void]
   def add_release(distro, dist_release)
+    distro       = distro.to_sym     unless distro.is_a? Symbol
+    dist_release = dist_release.to_s unless dist_release.is_a? String
+
     @supported[distro].add dist_release
   end
 end
