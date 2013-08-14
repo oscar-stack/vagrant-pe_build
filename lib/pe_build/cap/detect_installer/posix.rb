@@ -39,6 +39,8 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
       content << data.chomp
     end
 
+    content = 'i386' if content.match /i\d86/
+
     content
   end
 
