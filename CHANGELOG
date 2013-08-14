@@ -1,6 +1,65 @@
 vagrant-pe_build
 ================
 
+0.3.0
+-----
+
+2013-08-14
+
+This is a backwards compatible feature and bugfix release.
+
+### User notes:
+
+#### Enhancements:
+
+  * Puppet Enterprise 3 is now fully supported and should have answers that
+    work out of the box.
+  * (GH-25) The installer for a given platform will be detected based on the
+    guest platform, which means that the most precise installer will be used
+    instead of the `all` installer.
+  * pe_build.download_root now fully supports a local directory with URIs using
+    the "file" URI.
+  * As part of GH-25 pe_build.suffix defaults to detect, which will auto-select
+    the correct installer name
+
+#### Fixes:
+
+  * (GH-23) Removed double expansion of files when running `vagrant pe-build copy`
+  * (GH-24) Installer files are downloaded at provision time instead of before
+    VMs are constructed
+
+#### Deprecations:
+
+  * Shell scripts run with the `add_step` hash are deprecated and will be
+    removed in the next 'major development' release (either 0.4.0, 0.5.0,
+    or 1.0.0). This behavior is effectively provided by the `shell` provisioner.
+
+### Developer notes (AKA the gory details):
+
+  * Informational logging has been expanded and is directed to the Vagrant
+    internal loggers.
+  * Answers file generation has been extracted out of the pe_bootstrap
+    provisioner and into an independent class to respect the single
+    responsibility principle.
+  * New guest capability: "detect_installer" detects the correct installer
+    for the given guest platform. Initial supported platforms are Debian,
+    Ubuntu, and Redhat.
+  * New guest capability: "run_install" extracts the actual command generation
+    and execution to install PE on a guest. Initial supported platforms are
+    Linux and Solaris.
+  * Installer file transfer has been fully extracted from the PEBuild::Archive
+    class and pushed into pe_build/transfer classes.
+  * File transfer behavior has been abstracted behind the PEBuild::Transfer
+    module and the implementing class is selected based on the scheme of the
+    requested URI.
+  * Almost everything ever has been beaten with the refactor hammer.
+
+### Thanks
+
+  * Thanks to Tom Linkin as always for his awesome work and contributions to
+    this plugin.
+  * Thanks to Jon Mosco for reporting GH-23.
+
 0.2.0
 -----
 
