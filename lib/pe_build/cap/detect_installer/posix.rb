@@ -3,7 +3,7 @@
 #
 # @abstract
 # @protected
-class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::CAP::DetectInstaller::Base
+class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
 
   # @!method name
   #   @abstract
