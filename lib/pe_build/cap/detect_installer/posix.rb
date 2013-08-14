@@ -33,10 +33,10 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
   end
 
   def arch
-    content = nil
+    content = ""
     @machine.communicate.execute("uname -m") do |type, data|
       raise "Could not run 'uname -m' on #{@machine}: got #{data}" if type == :stderr
-      content = data.chomp
+      content << data.chomp
     end
 
     content
@@ -49,11 +49,11 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
   private
 
   def release_content
-    content = nil
+    content = ""
 
     @machine.communicate.execute("cat #{release_file}") do |type, data|
       raise "Could not read #{release_file} on #{@machine}: got #{data}" if type == :stderr
-      content = data
+      content << data
     end
 
     content
