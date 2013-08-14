@@ -168,8 +168,7 @@ added with `vagrant pe-build copy`.
       config.vm.define 'agent1' do |node|
         node.vm.box = 'centos-6-i386'
 
-        node.vm.provision :pe_bootstrap do |provisioner|
-          provisioner.role = :agent end
+        node.vm.provision :pe_bootstrap
       end
     end
 
