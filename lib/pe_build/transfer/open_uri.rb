@@ -4,14 +4,14 @@ require 'pe_build/idempotent'
 require 'open-uri'
 require 'progressbar'
 
-class PEBuild::Transfer::HTTP
+class PEBuild::Transfer::OpenURI
 
   # @param uri [URI]    The http(s) URI to the file to copy
   # @param dst [String] The path to destination of the copied file
   def initialize(uri, dst)
     @uri, @dst = uri, dst
 
-    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::http')
+    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::open_uri')
   end
 
   include PEBuild::Idempotent

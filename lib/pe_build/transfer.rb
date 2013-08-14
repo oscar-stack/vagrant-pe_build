@@ -1,12 +1,12 @@
 module PEBuild
   module Transfer
-    require 'pe_build/transfer/http'
+    require 'pe_build/transfer/open_uri'
     require 'pe_build/transfer/file'
 
     IMPLEMENTATIONS = {
-      'http'  => PEBuild::Transfer::HTTP,
-      'https' => PEBuild::Transfer::HTTP,
-      'ftp'   => PEBuild::Transfer::HTTP,
+      'http'  => PEBuild::Transfer::OpenURI,
+      'https' => PEBuild::Transfer::OpenURI,
+      'ftp'   => PEBuild::Transfer::OpenURI,
       'file'  => PEBuild::Transfer::File,
       nil     => PEBuild::Transfer::File, # Assume that URIs without a scheme are files
     }
