@@ -13,3 +13,8 @@ en:
           Puppet Enterprise is already installed, skipping installation.
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
+    transfer:
+      open_uri:
+        download_failed: |-
+          An error occurred while trying to download the given resource (%{uri}),
+          and the transfer could not complete. The error message generated was "%{msg}".

@@ -6,6 +6,10 @@ require 'progressbar'
 
 class PEBuild::Transfer::OpenURI
 
+  class DownloadFailed < Vagrant::Errors::VagrantError
+    error_key(:download_failed, 'pebuild.transfer.open_uri')
+  end
+
   # @param uri [URI]    The http(s) URI to the file to copy
   # @param dst [String] The path to destination of the copied file
   def initialize(uri, dst)
@@ -21,6 +25,8 @@ class PEBuild::Transfer::OpenURI
       tmpfile = download_file
       FileUtils.mv(tmpfile, @dst)
     end
+  rescue ::OpenURI::HTTPError => e
+    raise DownloadFailed, :uri => @uri, :msg => e.message
   end
 
   HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
