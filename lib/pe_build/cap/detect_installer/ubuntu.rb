@@ -15,4 +15,9 @@ class PEBuild::Cap::DetectInstaller::Ubuntu < PEBuild::Cap::DetectInstaller::Bas
   def supported_releases
     %w[10.04 12.04]
   end
+
+  def arch
+    retval = super
+    (retval == 'x86_64') ? 'amd64' : retval
+  end
 end

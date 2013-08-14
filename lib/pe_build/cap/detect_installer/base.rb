@@ -19,7 +19,13 @@ class PEBuild::Cap::DetectInstaller::Base
   end
 
   def arch
-    'i386'
+    content = nil
+    @machine.communicate.execute("uname -m") do |type, data|
+      raise "Could not run 'uname -m' on #{@machine}: got #{data}" if type == :stderr
+      content = data.chomp
+    end
+
+    content
   end
 
   def ext
@@ -48,11 +54,9 @@ class PEBuild::Cap::DetectInstaller::Base
     content = nil
 
     @machine.communicate.execute("cat #{release_file}") do |type, data|
-      if type == :stdout
-        content = data
-      else
-        raise "Could not read #{release_file} on #{@machine}: got #{data}"
-      end
+      raise "Could not read #{release_file} on #{@machine}: got #{data}" if type == :stderr
+
+      content = data
     end
 
     content

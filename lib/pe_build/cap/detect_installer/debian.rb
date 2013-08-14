@@ -15,4 +15,9 @@ class PEBuild::Cap::DetectInstaller::Debian < PEBuild::Cap::DetectInstaller::Bas
   def supported_releases
     %w[6 7]
   end
+
+  def arch
+    retval = super
+    (retval == 'x86_64') ? 'amd64' : retval
+  end
 end
