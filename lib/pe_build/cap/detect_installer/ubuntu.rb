@@ -1,4 +1,4 @@
-class PEBuild::Cap::DetectInstaller::Ubuntu < PEBuild::Cap::DetectInstaller::Base
+class PEBuild::Cap::DetectInstaller::Ubuntu < PEBuild::Cap::DetectInstaller::POSIX
 
   def name
     'ubuntu'

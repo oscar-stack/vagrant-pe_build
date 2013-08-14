@@ -2,6 +2,7 @@ module PEBuild
   module Cap
     module DetectInstaller
       require 'pe_build/cap/detect_installer/base'
+      require 'pe_build/cap/detect_installer/posix'
 
       require 'pe_build/cap/detect_installer/redhat'
       require 'pe_build/cap/detect_installer/debian'

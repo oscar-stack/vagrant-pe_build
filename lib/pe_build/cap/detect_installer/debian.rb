@@ -1,4 +1,4 @@
-class PEBuild::Cap::DetectInstaller::Debian < PEBuild::Cap::DetectInstaller::Base
+class PEBuild::Cap::DetectInstaller::Debian < PEBuild::Cap::DetectInstaller::POSIX
 
   def name
     'debian'

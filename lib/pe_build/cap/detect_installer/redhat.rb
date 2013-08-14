@@ -1,4 +1,4 @@
-class PEBuild::Cap::DetectInstaller::Redhat < PEBuild::Cap::DetectInstaller::Base
+class PEBuild::Cap::DetectInstaller::Redhat < PEBuild::Cap::DetectInstaller::POSIX
 
   def name
     'el'
