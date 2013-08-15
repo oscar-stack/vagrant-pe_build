@@ -1,7 +1,7 @@
 module PEBuild
   module Transfer
 
-    class UnhandledURIScheme < Vagrant::Errors::Error
+    class UnhandledURIScheme < Vagrant::Errors::VagrantError
       error_key('unhandled_uri_scheme', 'pebuild.transfer')
     end
 
