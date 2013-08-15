@@ -1,5 +1,10 @@
 module PEBuild
   module Transfer
+
+    class UnhandledURIScheme < Vagrant::Errors::Error
+      error_key('unhandled_uri_scheme', 'pebuild.transfer')
+    end
+
     require 'pe_build/transfer/open_uri'
     require 'pe_build/transfer/file'
 
@@ -17,7 +22,8 @@ module PEBuild
       if (klass = IMPLEMENTATIONS[scheme])
         klass.new(src, dst)
       else
-        raise "URI scheme #{scheme.inspect} cannot be handled by any file transferrers"
+        raise UnhandledURIScheme, :scheme => scheme,
+                                  :supported => IMPLEMENTATIONS.keys
       end
     end
   end
