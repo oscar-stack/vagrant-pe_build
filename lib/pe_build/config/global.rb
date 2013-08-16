@@ -93,10 +93,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
           )
         end
       rescue URI::InvalidURIError
-        errors << I18n.t(
-          'pebuild.config.global.errors.invalid_download_root_uri',
-          :download_root => @download_root,
-        )
+        errors << I18n.t('pebuild.config.global.errors.invalid_download_root_uri')
       end
     end
   end

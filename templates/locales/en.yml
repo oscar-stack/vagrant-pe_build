@@ -31,7 +31,8 @@ en:
             The URI scheme "%{scheme}" for the download_root "%{download_root}"
             cannot be handled by any file transferrers.
             Supported URI schemes: %{supported}
-          malformed_
+          invalid_download_root_uri: |-
+            The download_root config option must be either unset or a valid URI.
       pe_bootstrap:
         steps_deprecated: |-
           Explicit :pre, :provision, and :post steps are deprecated and will be removed soon.
