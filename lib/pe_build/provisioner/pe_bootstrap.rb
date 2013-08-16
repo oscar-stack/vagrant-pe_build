@@ -101,6 +101,9 @@ module PEBuild
         @archive.unpack_to(@work_dir)
       end
 
+      require 'pe_build/on_machine'
+      include PEBuild::OnMachine
+
       def process_step(role, stepname)
 
         if role != :base && config.step[stepname]
@@ -126,7 +129,7 @@ module PEBuild
           template = File.read(template_path)
           contents = ERB.new(template).result(binding)
 
-          on_remote contents
+          on_machine(@machine, contents)
         end
       end
 
@@ -166,20 +169,6 @@ module PEBuild
 
         @machine.communicate.upload(tmp.path, autosign_path)
         @machine.communicate.sudo("chmod a+r #{autosign_path}")
-      end
-
-      def on_remote(cmd)
-        @machine.communicate.sudo(cmd) do |type, data|
-          if type == :stdout
-            if @config.verbose
-              @machine.ui.info(data.chomp, :color => :green, :prefix => true)
-            else
-              @machine.ui.info('.', :color => :green)
-            end
-          else
-            @machine.ui.info(data.chomp, :color => :red, :prefix => true)
-          end
-        end
       end
     end
   end
