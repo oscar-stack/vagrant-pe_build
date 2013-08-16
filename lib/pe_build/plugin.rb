@@ -70,5 +70,9 @@ module PEBuild
       require 'pe_build/action'
       hook.prepend PEBuild::Action::PEBuildDir
     end
+
+    def self.config_builder_hook
+      require_relative 'config_builder'
+    end
   end
 end
