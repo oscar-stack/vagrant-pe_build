@@ -24,13 +24,23 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #                                  keys are directories to optional steps.
   attr_accessor :step
 
-  attr_accessor :relocate_manifests
   # @!attribute relocate_manifests
   #   @return [TrueClass, FalseClass] if the puppet master should use manifests
   #                                   out of the vagrant directory.
+  attr_accessor :relocate_manifests
 
-  # @todo config option for autosigning.
-  #attr_accessor :autosign
+  # @!attribute [rw] autosign
+  #   Configure the certificates that will be autosigned by the puppet master.
+  #
+  #   @return [TrueClass] All CSRs will be signed
+  #   @return [FalseClass] The autosign config file will be unmanaged
+  #   @return [Array<String>] CSRs with the given addresses
+  #
+  #   @see http://docs.puppetlabs.com/guides/configuring.html#autosignconf
+  #
+  #   @since 0.4.0
+  #
+  attr_accessor :autosign
 
   def initialize
     super
@@ -41,7 +51,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
     @relocate_manifests = UNSET_VALUE
 
-    #@autosign    = UNSET_VALUE
+    @autosign = UNSET_VALUE
 
     @step    = {}
   end
@@ -58,6 +68,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@verbose,     true
     set_default :@master,      'master'
     set_default :@answer_file, nil
+    set_default :@autosign,     true
 
     set_default :@relocate_manifests, false
   end
