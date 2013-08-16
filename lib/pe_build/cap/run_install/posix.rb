@@ -5,6 +5,12 @@ class PEBuild::Cap::RunInstall::POSIX
 
   def self.run_install(machine, config, archive)
 
+    if machine.communicate.test('test -f /opt/puppet/pe_version')
+      machine.ui.warn I18n.t('pebuild.cap.run_install.posix..already_installed'),
+                      :name  => machine.name
+      return
+    end
+
     root = File.join('/vagrant', PEBuild::WORK_DIR)
 
     cmd_path = []

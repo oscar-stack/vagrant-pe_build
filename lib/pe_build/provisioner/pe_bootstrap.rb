@@ -53,7 +53,8 @@ module PEBuild
 
         [:base, @config.role].each { |rolename| process_step rolename, :pre }
 
-        perform_installation
+        @machine.guest.capability('run_install', @config, @archive)
+
         relocate_installation if @config.relocate_manifests
 
         [:base, @config.role].each { |rolename| process_step rolename, :post }
@@ -126,15 +127,6 @@ module PEBuild
           contents = ERB.new(template).result(binding)
 
           on_remote contents
-        end
-      end
-
-      def perform_installation
-        if @machine.communicate.test('test -f /opt/puppet/pe_version')
-          @machine.ui.warn I18n.t('pebuild.provisioner.pe_bootstrap.already_installed'),
-            :name  => @machine.name
-        else
-          @machine.guest.capability('run_install', @config, @archive)
         end
       end
 
