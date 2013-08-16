@@ -19,5 +19,22 @@ en:
           An error occurred while trying to download the given resource (%{uri}),
           and the transfer could not complete. The error message generated was "%{msg}".
       unhandled_uri_scheme: |-
-        The URI scheme %{scheme} cannot be handled by any file transferrers.
+        The URI scheme "%{scheme}" cannot be handled by any file transferrers.
         Supported URI schemes: %{supported}
+    config:
+      global:
+        errors:
+          malformed_version: |-
+            The Puppet Enterprise version "%{version}":%{version_class} is malformed; it must be a String of
+            the format "x.y.z"
+          unhandled_download_root_scheme: |-
+            The URI scheme "%{scheme}" for the download_root "%{download_root}"
+            cannot be handled by any file transferrers.
+            Supported URI schemes: %{supported}
+          malformed_
+      pe_bootstrap:
+        steps_deprecated: |-
+          Explicit :pre, :provision, and :post steps are deprecated and will be removed soon.
+          This functionality can be replaced by directly invoking the `shell` provisioner. More
+          information on the shell provisioner can be found on the Vagrant website at
+          http://docs.vagrantup.com/v2/provisioning/shell.html
