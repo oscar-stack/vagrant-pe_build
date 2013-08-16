@@ -28,8 +28,10 @@ class ConfigBuilder::Model::Root
   def_model_delegator :pe_build
 
   def eval_pe_build(root_config)
-    p = PEBuild::ConfigBuilder::Global.new_from_hash(attr(:pe_build))
-    p.call(root_config)
+    if attr(:pe_build)
+      p = PEBuild::ConfigBuilder::Global.new_from_hash(attr(:pe_build))
+      p.call(root_config)
+    end
   end
   private :eval_pe_build
 end
