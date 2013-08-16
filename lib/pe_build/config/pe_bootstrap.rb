@@ -72,39 +72,66 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     h = super
 
     unless @step.empty?
-      machine.ui.warn "pe_bootstrap: explicit steps are deprecated and will be removed soon."
+      machine.ui.warn I18n.t('pebuild.config.pe_bootstrap.steps_deprecated')
     end
 
     errors = []
-    if @version == UNSET_VALUE and global_config_from(machine).pe_build.version == UNSET_VALUE
-      errors << "Version must be set on provisioner when unset globally"
-    end
 
-    unless VALID_ROLES.any? {|sym| @role == sym}
-      errors << "Role must be one of #{VALID_ROLES.inspect}, was #{@role.inspect}"
-    end
-
-    unless @verbose == !!@verbose
-      errors << "'verbose' must be a boolean, got #{@verbose.class}"
-    end
-
-    unless @master.is_a? String
-      errors << "'master' must be a string containing the address of the master, got a #{@master.class}"
-    end
-
-    if @answer_file and !File.readable? @answer_file
-      errors << "'answers_file' must be a readable file"
-    end
-
-    if @relocate_manifests and not @role == :master
-      errors << "'relocate_manifests' can only be applied to a master"
-    end
+    validate_version(errors)
+    validate_role(errors)
+    validate_verbose(errors)
+    validate_master(errors)
+    validate_answer_file(errors)
+    validate_relocate_manifests(errors)
 
     errors |= h.values.flatten
     {"PE Bootstrap" => errors}
   end
 
   private
+
+  def validate_version(errors)
+    if @version == UNSET_VALUE and global_config_from(machine).pe_build.version == UNSET_VALUE
+      errors << I18n.t('pebuild.config.pe_bootstrap.errors.unset_version')
+    end
+  end
+
+  def validate_role(errors)
+    unless VALID_ROLES.any? {|sym| @role == sym}
+      errors << I18n.t(
+        'pebuild.config.pe_bootstrap.errors.unhandled_role',
+        :role        => @role.inspect,
+        :known_roles => VALID_ROLES,
+      )
+    end
+  end
+
+  def validate_verbose(errors)
+    unless @verbose == !!@verbose
+      errors << I18n.t(
+        'pebuild.config.pe_bootstrap.errors.malformed_verbose',
+        :verbose => @verbose.inspect,
+      )
+    end
+  end
+
+  def validate_master(errors)
+    unless @master.is_a? String
+      errors << "'master' must be a string containing the address of the master, got a #{@master.class}"
+    end
+  end
+
+  def validate_answer_file(errors)
+    if @answer_file and !File.readable? @answer_file
+      errors << "'answers_file' must be a readable file"
+    end
+  end
+
+  def validate_relocate_manifests(errors)
+    if @relocate_manifests and not @role == :master
+      errors << "'relocate_manifests' can only be applied to a master"
+    end
+  end
 
   # Safely access the global config
   #
