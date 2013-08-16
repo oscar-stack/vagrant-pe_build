@@ -1,13 +1,9 @@
-require 'uri'
-require 'vagrant'
-
 require 'pe_build/config_default'
 require 'pe_build/transfer'
 
-module PEBuild
-module Config
+require 'uri'
 
-class Global < Vagrant.plugin('2', :config)
+class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
   # @todo This value should be discovered based on what versions of the
   #       installer are cached.
@@ -104,7 +100,4 @@ class Global < Vagrant.plugin('2', :config)
       end
     end
   end
-end
-
-end
 end

@@ -1,12 +1,6 @@
-require 'vagrant'
-
 require 'pe_build/config/global'
-require 'pe_build/config_default'
 
-module PEBuild
-module Config
-
-class PEBootstrap < PEBuild::Config::Global
+class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
   # @!attribute master
   #   @return The DNS hostname of the Puppet master for this node.
@@ -120,6 +114,4 @@ class PEBootstrap < PEBuild::Config::Global
   def global_config_from(machine)
     env = machine.env.config_global
   end
-end
-end
 end
