@@ -11,6 +11,7 @@ module PEBuild
     class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
       require 'pe_build/provisioner/pe_bootstrap/answers_file'
+      require 'pe_build/provisioner/pe_bootstrap/post_install'
 
       # @!attribute [r] work_dir
       #   @return [String] The path to the machine pe_build working directory
@@ -134,41 +135,8 @@ module PEBuild
       end
 
       def run_postinstall_tasks
-        relocate_installation if @config.relocate_manifests
-        update_autosign if @config.autosign
-      end
-
-      # Modify the PE puppet master config to use alternate /manifests and /modules
-      #
-      # Manifests and modules need to be mounted on the master via shared folders,
-      # but the default /vagrant mount has permissions and ownership that conflicts
-      # with the puppet master process and the pe-puppet user. Those directories
-      # need to be mounted with permissions like 'fmode=644,dmode=755,fmask=022,dmask=022'
-      #
-      def relocate_installation
-        script_path = File.join(PEBuild.template_dir, 'scripts', 'relocate_installation.sh')
-        script = File.read script_path
-        on_remote script
-      end
-
-      def update_autosign
-        require 'tempfile'
-
-        tmp = Tempfile.new
-
-        case @config.autosign
-        when TrueClass
-          content = '*'
-        when Array
-          content = @config.autosign.join("\n")
-        end
-
-        tmp.open('w') { |fh| fh.write(content) }
-
-        autosign_path = '/etc/puppetlabs/puppet/autosign.conf'
-
-        @machine.communicate.upload(tmp.path, autosign_path)
-        @machine.communicate.sudo("chmod a+r #{autosign_path}")
+        postinstall = PostInstall.new(@machine, @config, @work_dir)
+        postinstall.run
       end
     end
   end

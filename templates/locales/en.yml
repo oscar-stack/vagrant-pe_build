@@ -13,6 +13,8 @@ en:
           Puppet Enterprise is already installed, skipping installation.
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
+        post_install: |-
+          Applying post-install configuration to Puppet Enterprise.
     transfer:
       open_uri:
         download_failed: |-
