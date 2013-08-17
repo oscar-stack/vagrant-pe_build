@@ -3,30 +3,40 @@ require 'pe_build/config/global'
 class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
   # @!attribute master
-  #   @return The DNS hostname of the Puppet master for this node.
+  #   @return [String] The DNS hostname of the Puppet master for this node.
+  #   @since 0.1.0
   attr_accessor :master
 
   # @!attribute answer_file
   #   @return [String] The path to a user specified answer_file file (Optional)
+  #   @since 0.1.0
   attr_accessor :answer_file
 
   # @!attribute verbose
   #   @return [TrueClass, FalseClass] if stdout will be displayed when installing
+  #   @since 0.1.0
   attr_accessor :verbose
 
   # @!attribute role
   #   @return [Symbol] The type of the PE installation role. One of [:master, :agent]
+  #   @since 0.1.0
   attr_accessor :role
+
+  # @api private
   VALID_ROLES = [:agent, :master]
 
   # @!attribute step
   #   @return [Hash<Symbol, String>] a hash whose keys are step levels, and whose
   #                                  keys are directories to optional steps.
+  #   @deprecated This duplicates the behavior of the shell provider and will
+  #               be removed in a future release.
+  #   @since 0.1.0
   attr_accessor :step
 
   # @!attribute relocate_manifests
   #   @return [TrueClass, FalseClass] if the puppet master should use manifests
   #                                   out of the vagrant directory.
+  #   @since 0.1.0
   attr_accessor :relocate_manifests
 
   # @!attribute [rw] autosign
@@ -41,6 +51,8 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   @since 0.4.0
   #
   attr_accessor :autosign
+
+  # @api private
   VALID_AUTOSIGN_VALUES = [TrueClass, FalseClass, Array]
 
   def initialize
@@ -74,12 +86,14 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@relocate_manifests, false
   end
 
+  # @deprecated This duplicates the behavior of the shell provider and will
+  #             be removed in a future release.
   def add_step(name, script_path)
     name = (name.is_a?(Symbol)) ? name : name.intern
     step[name] = script_path
   end
 
-  # @todo Convert error strings to I18n
+  # @param machine [Vagrant::Machine]
   def validate(machine)
     h = super
 
