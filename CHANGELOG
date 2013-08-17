@@ -1,6 +1,35 @@
 vagrant-pe_build
 ================
 
+0.4.0
+-----
+
+This is a backwards compatible feature and bugfix release.
+
+### User notes:
+
+#### Enhancements
+
+  * New pe_bootstrap configuration option: `autosign` adds the ability to
+    configure the Puppet master autosign.conf
+
+#### Bugfixes
+
+  * The pe_bootstrap provisioner restarts the pe-httpd service if changes were
+    made to the master configuration that require a restart.
+
+### Developer notes:
+
+  * pe_bootstrap post-install configuration has been extracted out of the
+    provisioner and into the PostInstall module.
+  * post-install configuration is now handled by generating a Puppet manifest
+    instead of executing sed and a shell script.
+
+### Thanks
+
+Thanks to Tom Linkin for his work on handling post-install configuration with
+Augeas and Puppet.
+
 0.3.0
 -----
 
