@@ -18,12 +18,12 @@ module PEBuild
     # User facing plugin configuration
 
     config(:pe_bootstrap, :provisioner) do
-      require_relative 'config/pe_bootstrap'
+      require_relative 'config'
       PEBuild::Config::PEBootstrap
     end
 
     config(:pe_build) do
-      require_relative 'config/global'
+      require_relative 'config'
       PEBuild::Config::Global
     end
 

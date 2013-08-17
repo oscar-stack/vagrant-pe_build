@@ -11,6 +11,7 @@ module PEBuild
     class PEBootstrap < Vagrant.plugin('2', :provisioner)
 
       require 'pe_build/provisioner/pe_bootstrap/answers_file'
+      require 'pe_build/provisioner/pe_bootstrap/post_install'
 
       # @!attribute [r] work_dir
       #   @return [String] The path to the machine pe_build working directory
@@ -55,7 +56,7 @@ module PEBuild
 
         @machine.guest.capability('run_install', @config, @archive)
 
-        relocate_installation if @config.relocate_manifests
+        run_postinstall_tasks
 
         [:base, @config.role].each { |rolename| process_step rolename, :post }
       end
@@ -101,6 +102,9 @@ module PEBuild
         @archive.unpack_to(@work_dir)
       end
 
+      require 'pe_build/on_machine'
+      include PEBuild::OnMachine
+
       def process_step(role, stepname)
 
         if role != :base && config.step[stepname]
@@ -126,35 +130,13 @@ module PEBuild
           template = File.read(template_path)
           contents = ERB.new(template).result(binding)
 
-          on_remote contents
+          on_machine(@machine, contents)
         end
       end
 
-      # Modify the PE puppet master config to use alternate /manifests and /modules
-      #
-      # Manifests and modules need to be mounted on the master via shared folders,
-      # but the default /vagrant mount has permissions and ownership that conflicts
-      # with the puppet master process and the pe-puppet user. Those directories
-      # need to be mounted with permissions like 'fmode=644,dmode=755,fmask=022,dmask=022'
-      #
-      def relocate_installation
-        script_path = File.join(PEBuild.template_dir, 'scripts', 'relocate_installation.sh')
-        script = File.read script_path
-        on_remote script
-      end
-
-      def on_remote(cmd)
-        @machine.communicate.sudo(cmd) do |type, data|
-          if type == :stdout
-            if @config.verbose
-              @machine.ui.info(data.chomp, :color => :green, :prefix => true)
-            else
-              @machine.ui.info('.', :color => :green)
-            end
-          else
-            @machine.ui.info(data.chomp, :color => :red, :prefix => true)
-          end
-        end
+      def run_postinstall_tasks
+        postinstall = PostInstall.new(@machine, @config, @work_dir)
+        postinstall.run
       end
     end
   end

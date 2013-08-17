@@ -13,11 +13,37 @@ en:
           Puppet Enterprise is already installed, skipping installation.
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
+        post_install: |-
+          Applying post-install configuration to Puppet Enterprise.
     transfer:
       open_uri:
         download_failed: |-
           An error occurred while trying to download the given resource (%{uri}),
           and the transfer could not complete. The error message generated was "%{msg}".
       unhandled_uri_scheme: |-
-        The URI scheme %{scheme} cannot be handled by any file transferrers.
+        The URI scheme "%{scheme}" cannot be handled by any file transferrers.
         Supported URI schemes: %{supported}
+    config:
+      global:
+        errors:
+          malformed_version: |-
+            The Puppet Enterprise version "%{version}":%{version_class} is malformed; it must be a String of
+            the format "x.y.z"
+          unhandled_download_root_scheme: |-
+            The URI scheme "%{scheme}" for the download_root "%{download_root}"
+            cannot be handled by any file transferrers.
+            Supported URI schemes: %{supported}
+          invalid_download_root_uri: |-
+            The download_root config option must be either unset or a valid URI.
+      pe_bootstrap:
+        steps_deprecated: |-
+          Explicit :pre, :provision, and :post steps are deprecated and will be removed soon.
+          This functionality can be replaced by directly invoking the `shell` provisioner. More
+          information on the shell provisioner can be found on the Vagrant website at
+          http://docs.vagrantup.com/v2/provisioning/shell.html
+        errors:
+          unset_version: |-
+            The Puppet Enterprise version must be set either on the global pe_build config
+            object or specified on a per-provisioner basis, but both were unset.
+          unknown_role: |-
+            The specified role %{role} is unhandled, must be one of %{known_roles}.

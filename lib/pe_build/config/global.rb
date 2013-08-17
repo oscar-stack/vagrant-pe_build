@@ -1,13 +1,9 @@
-require 'uri'
-require 'vagrant'
-
 require 'pe_build/config_default'
 require 'pe_build/transfer'
 
-module PEBuild
-module Config
+require 'uri'
 
-class Global < Vagrant.plugin('2', :config)
+class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
   # @todo This value should be discovered based on what versions of the
   #       installer are cached.
@@ -57,32 +53,48 @@ class Global < Vagrant.plugin('2', :config)
   def validate(machine)
     errors = []
 
+    validate_version(errors)
+    validate_download_root(errors)
+
+    {"PE build global config" => errors}
+  end
+
+  private
+
+  def validate_version(version)
+
+    errmsg = I18n.t(
+      'pebuild.config.global.errors.malformed_version',
+      :version       => @version,
+      :version_class => @version.class
+    )
+
     # Allow Global version to be unset, rendering it essentially optional. If it is
     # discovered to be unset by a configuration on the next level up who cannot provide a
     # value, it is that configuration's job to take action.
-    if @version.kind_of? String
-      unless @version.match /\d+\.\d+(\.\d+)?/
-        errors << "version must be a valid version string, got #{@version.inspect}"
-      end
+    if @version.kind_of? String and !(@version.match /\d+\.\d+(\.\d+)?/)
+      errors << errmsg
     elsif @version != UNSET_VALUE
-      errors << "version only accepts a string, got #{@version.class}"
+      errors << errmsg
     end
+  end
 
+  def validate_download_root(errors)
     if @download_root and @download_root != UNSET_VALUE
       begin
         uri = URI.parse(@download_root)
 
         if PEBuild::Transfer::IMPLEMENTATIONS[uri.scheme].nil?
-          errors << "No handlers available for URI scheme #{uri.scheme}"
+          errors << I18n.t(
+            'pebuild.config.global.errors.unhandled_download_root_scheme',
+            :download_root => @download_root,
+            :scheme        => uri.scheme,
+            :supported     => PEBuild::Transfer::IMPLEMENTATIONS.keys
+          )
         end
       rescue URI::InvalidURIError
-        errors << 'download_root must be a valid URL or nil'
+        errors << I18n.t('pebuild.config.global.errors.invalid_download_root_uri')
       end
     end
-
-    {"PE Build global config" => errors}
   end
-end
-
-end
 end
