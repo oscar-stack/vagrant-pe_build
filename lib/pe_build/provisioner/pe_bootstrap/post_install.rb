@@ -34,6 +34,7 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
   private
 
   def write_manifest(manifest)
+    @post_install_dir.mkpath unless @post_install_dir.exist?
     @post_install_manifest.open('w') { |fh| fh.write(manifest) }
   end
 
