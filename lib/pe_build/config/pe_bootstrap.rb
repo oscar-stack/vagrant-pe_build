@@ -41,6 +41,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   @since 0.4.0
   #
   attr_accessor :autosign
+  VALID_AUTOSIGN_VALUES = [TrueClass, FalseClass, Array]
 
   def initialize
     super
@@ -68,7 +69,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@verbose,     true
     set_default :@master,      'master'
     set_default :@answer_file, nil
-    set_default :@autosign,     true
+    set_default :@autosign,    (@role == :master)
 
     set_default :@relocate_manifests, false
   end
@@ -94,6 +95,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     validate_master(errors)
     validate_answer_file(errors)
     validate_relocate_manifests(errors)
+    validate_autosign(errors)
 
     errors |= h.values.flatten
     {"PE Bootstrap" => errors}
@@ -141,6 +143,23 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   def validate_relocate_manifests(errors)
     if @relocate_manifests and not @role == :master
       errors << "'relocate_manifests' can only be applied to a master"
+    end
+  end
+
+  def validate_autosign(errors)
+    if (@autosign and @role != :master)
+      errors << I18n.t(
+        'pebuild.config.pe_bootstrap.errors.invalid_autosign_role',
+        :role => @role
+      )
+    end
+
+    unless VALID_AUTOSIGN_VALUES.include?(@autosign.class)
+      errors << I18n.t(
+        'pebuild.config.pe_bootstrap.errors.invalid_autosign_class',
+        :autosign_class   => @autosign.class,
+        :autosign_classes => VALID_AUTOSIGN_VALUES,
+      )
     end
   end
 
