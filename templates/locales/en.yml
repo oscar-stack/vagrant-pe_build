@@ -9,10 +9,6 @@ en:
         https://puppetlabs.com/puppet/puppet-enterprise/
     provisioner:
       pe_bootstrap:
-        already_installed: |-
-          Puppet Enterprise is already installed, skipping installation.
-        scheduling_run: |-
-          Scheduling Puppet run to kickstart node classification.
         post_install: |-
           Applying post-install configuration to Puppet Enterprise.
     transfer:
@@ -51,3 +47,9 @@ en:
             Autosign can only be specified if the pe_bootstrap role is 'master', not %{role}.
           invalid_autosign_class: |-
             Autosign must be one of %{autosign_classes}, but was of type %{autosign}.
+    cap:
+      run_install:
+        already_installed: |-
+          Puppet Enterprise is already installed, skipping installation.
+        scheduling_run: |-
+          Scheduling Puppet run to kickstart node classification.
