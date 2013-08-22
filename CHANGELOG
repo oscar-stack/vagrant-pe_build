@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.4.2
+-----
+
+2013-08-22
+
+This is a backwards compatible bugfix release.
+
+  * Define PE 3.0.1 release
+  * Define latest PE release at PEBuild::Release::LATEST
+
 0.4.1
 -----
 
