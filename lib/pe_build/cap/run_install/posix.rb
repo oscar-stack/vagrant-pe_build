@@ -6,7 +6,7 @@ class PEBuild::Cap::RunInstall::POSIX
   def self.run_install(machine, config, archive)
 
     if machine.communicate.test('test -f /opt/puppet/pe_version')
-      machine.ui.warn I18n.t('pebuild.cap.run_install.posix.already_installed'),
+      machine.ui.warn I18n.t('pebuild.cap.run_install.already_installed'),
                       :name  => machine.name
       return
     end
@@ -28,7 +28,7 @@ class PEBuild::Cap::RunInstall::POSIX
 
 
     if machine.communicate.test('which at')
-      machine.ui.info I18n.t('pebuild.cap.run_install.posix.scheduling_run')
+      machine.ui.info I18n.t('pebuild.cap.run_install.scheduling_run')
       machine.communicate.sudo("echo '/opt/puppet/bin/puppet agent -t --waitforcert 10' | at next minute")
     end
   end
