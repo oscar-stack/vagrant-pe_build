@@ -1,12 +1,13 @@
 module PEBuild::Release
 
-  three_oh_x = newrelease do
+  three_oh_oh = newrelease do
 
     add_release :debian, 6
 
     add_release :el, 5
     add_release :el, 6
 
+    # 3.0.0 didn't support SLES 11
     #add_release :sles, 11
 
     add_release :solaris, 10
@@ -31,6 +32,31 @@ module PEBuild::Release
     set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
   end
 
-  @releases['3.0.0'] = three_oh_x
+  @releases['3.0.0'] = three_oh_oh
+
+  three_oh_one = newrelease do
+
+    add_release :debian, 6
+
+    add_release :el, 5
+    add_release :el, 6
+
+    add_release :sles, 11
+
+    add_release :solaris, 10
+
+    add_release :ubuntu, '10.04'
+    add_release :ubuntu, '12.04'
+
+    add_release :windows, '2003'
+    add_release :windows, '2008R2'
+    add_release :windows, 7
+    add_release :windows, '2012'
+
+    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-3.x.txt.erb')
+    set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
+  end
+
+  @releases['3.0.1'] = three_oh_one
 end
 
