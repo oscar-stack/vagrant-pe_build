@@ -2,17 +2,23 @@ require 'config_builder/model'
 
 class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
 
-  # @!attribute [rw] download_root
-  def_model_attribute :download_root
-
   # @!attribute [rw] version
+  #   @return [String] The version of Puppet Enterprise to install.
   def_model_attribute :version
 
   # @!attribute [rw] suffix
+  #   @return [String] The distribution specifix suffix of the Puppet
+  #     Enterprise installer to use.
   def_model_attribute :suffix
 
   # @!attribute [rw] filename
+  #   @return [String] The filename of the Puppet Enterprise installer.
   def_model_attribute :filename
+
+  # @!attribute [rw] download_root
+  #   @return [String] The URI to the directory containing Puppet Enterprise
+  #     installers if the installer is not yet cached. This setting is optional.
+  def_model_attribute :download_root
 
   def to_proc
     Proc.new do |global_config|
