@@ -17,7 +17,7 @@ q_puppet_enterpriseconsole_database_password=aX5nCiKbkjKEBVzW0tCx
 q_puppet_enterpriseconsole_database_user=console
 q_puppet_enterpriseconsole_httpd_port=443
 q_puppet_enterpriseconsole_install=y
-q_puppet_enterpriseconsole_master_hostname=master
+q_puppet_enterpriseconsole_master_hostname=<%= machine_hostname %>
 q_puppet_enterpriseconsole_smtp_host=localhost
 q_puppet_enterpriseconsole_smtp_password=
 q_puppet_enterpriseconsole_smtp_port=25
@@ -25,17 +25,17 @@ q_puppet_enterpriseconsole_smtp_use_tls=n
 q_puppet_enterpriseconsole_smtp_user_auth=n
 q_puppet_enterpriseconsole_smtp_username=
 q_puppet_symlinks_install=y
-q_puppetagent_certname=<%= @machine.name %>
+q_puppetagent_certname=<%= machine_hostname %>
 q_puppetagent_install=y
-q_puppetagent_server=<%= @machine.name %>
+q_puppetagent_server=<%= machine_hostname %>
 q_puppetdb_database_name=pe-puppetdb
 q_puppetdb_database_password=MCPaKB0ERo0FlAN60sny
 q_puppetdb_database_user=pe-puppetdb
-q_puppetdb_hostname=<%= @machine.name %>
+q_puppetdb_hostname=<%= machine_hostname %>
 q_puppetdb_install=y
 q_puppetdb_port=8081
-q_puppetmaster_certname=<%= @machine.name %>
-q_puppetmaster_dnsaltnames=<%= @machine.name %>,puppet
+q_puppetmaster_certname=<%= machine_hostname %>
+q_puppetmaster_dnsaltnames=<%= machine_hostname %>,puppet
 q_puppetmaster_enterpriseconsole_hostname=localhost
 q_puppetmaster_enterpriseconsole_port=443
 q_puppetmaster_install=y
