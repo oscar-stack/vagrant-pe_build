@@ -46,4 +46,8 @@ class PEBuild::Provisioner::PEBootstrap::AnswersFile
     template_data = File.read(@template)
     ERB.new(template_data).result(binding)
   end
+
+  def machine_hostname
+    @machine.config.vm.hostname || @machine.name
+  end
 end

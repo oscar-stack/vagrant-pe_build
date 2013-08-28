@@ -6,7 +6,7 @@ q_puppet_symlinks_install=y
 q_puppet_enterpriseconsole_auth_database_name=console_auth
 q_puppet_enterpriseconsole_auth_database_password=console_auth
 q_puppet_enterpriseconsole_auth_database_user=console_auth
-q_puppet_enterpriseconsole_auth_password=pe-console
+q_puppet_enterpriseconsole_auth_password=puppetlabs
 q_puppet_enterpriseconsole_auth_user_email=admin@puppetlabs.com
 
 q_puppet_enterpriseconsole_database_install=y
@@ -17,9 +17,9 @@ q_puppet_enterpriseconsole_database_root_password=UHJn4CrTp5UgLnPJbDB5
 
 q_puppet_enterpriseconsole_httpd_port=20443
 q_puppet_enterpriseconsole_install=y
-q_puppet_enterpriseconsole_inventory_hostname=master
+q_puppet_enterpriseconsole_inventory_hostname=<%= machine_hostname %>
 q_puppet_enterpriseconsole_inventory_port=8140
-q_puppet_enterpriseconsole_master_hostname=master
+q_puppet_enterpriseconsole_master_hostname=<%= machine_hostname %>
 q_puppet_enterpriseconsole_smtp_host=localhost
 q_puppet_enterpriseconsole_smtp_password=
 q_puppet_enterpriseconsole_smtp_port=25
@@ -27,12 +27,12 @@ q_puppet_enterpriseconsole_smtp_use_tls=n
 q_puppet_enterpriseconsole_smtp_user_auth=n
 q_puppet_enterpriseconsole_smtp_username=
 
-q_puppetagent_certname=<%= @machine.name %>
+q_puppetagent_certname=<%= machine_hostname %>
 q_puppetagent_install=y
-q_puppetagent_server=<%= @machine.name %>
+q_puppetagent_server=<%= machine_hostname %>
 q_puppetca_install=y
-q_puppetmaster_certname=master
-q_puppetmaster_dnsaltnames=master,puppet
+q_puppetmaster_certname=<%= machine_hostname %>
+q_puppetmaster_dnsaltnames=<%= machine_hostname %>,puppet
 q_puppetmaster_enterpriseconsole_hostname=localhost
 q_puppetmaster_enterpriseconsole_port=20443
 q_puppetmaster_install=y
