@@ -25,7 +25,7 @@ class PEBuild::Transfer::OpenURI
       tmpfile = download_file
       FileUtils.mv(tmpfile, @dst)
     end
-  rescue ::OpenURI::HTTPError => e
+  rescue ::OpenURI::HTTPError, ::OpenSSL::SSL::SSLError, ::SocketError => e
     raise DownloadFailed, :uri => @uri, :msg => e.message
   end
 
