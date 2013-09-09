@@ -1,6 +1,17 @@
 vagrant-pe_build
 ================
 
+0.4.3
+
+2013-09-09
+
+This is a backwards compatible bugfix release.
+
+  * (GH-27) Fully implement global pe_build options in pe_bootstrap config_builder model
+  * Standardize answer file variables across 2.x and 3.x for console password, listen port
+  * Add PE 2.8.3 to supported releases
+  * Trap network errors in transfer/openuri
+
 0.4.2
 -----
 
