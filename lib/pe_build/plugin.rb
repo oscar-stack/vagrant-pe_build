@@ -44,6 +44,11 @@ module PEBuild
       PEBuild::Cap::DetectInstaller::Debian
     end
 
+    guest_capability('suse', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Suse
+    end
+
     guest_capability('redhat', 'detect_installer') do
       require_relative 'cap'
       PEBuild::Cap::DetectInstaller::Redhat
