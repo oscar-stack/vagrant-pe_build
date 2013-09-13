@@ -1,6 +1,11 @@
 module PEBuild
   module Cap
     module DetectInstaller
+
+      class DetectFailed < Vagrant::Errors::VagrantError
+        error_key(:detect_failed, 'pebuild.cap.detect_installer')
+      end
+
       require 'pe_build/cap/detect_installer/base'
       require 'pe_build/cap/detect_installer/posix'
 
