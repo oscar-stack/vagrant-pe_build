@@ -53,3 +53,8 @@ en:
           Puppet Enterprise is already installed, skipping installation.
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
+      detect_installer:
+        detect_failed: |-
+          The VM "%{name}" could not detect the version of Puppet Enterprise and failed with
+          the following error:
+          "%{error}"
