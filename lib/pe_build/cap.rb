@@ -13,6 +13,7 @@ module PEBuild
       require 'pe_build/cap/detect_installer/debian'
       require 'pe_build/cap/detect_installer/ubuntu'
       require 'pe_build/cap/detect_installer/sles'
+      require 'pe_build/cap/detect_installer/solaris'
     end
 
     module RunInstall
