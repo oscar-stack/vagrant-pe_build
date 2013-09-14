@@ -21,23 +21,28 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
   #   @abstract
   #   @return [Array<String>] All supported releases for the distribution
 
-
   def detect
     dist_version = parse_release_file
 
     unless supported_releases.include? dist_version
-      raise "#{self.class.name} release #{dist_version} not supported"
+      raise PEBuild::Cap::DetectInstaller::DetectFailed,
+        :name  => @machine.name,
+        :error => "#{self.class.name} release #{dist_version} not supported"
     end
 
     "puppet-enterprise-#{@version}-#{name}-#{dist_version}-#{arch}.#{ext}"
   end
 
   def arch
-    content = ""
-    @machine.communicate.execute("uname -m") do |type, data|
-      raise "Could not run 'uname -m' on #{@machine}: got #{data}" if type == :stderr
-      content << data.chomp
+    results = execute_command("uname -m")
+
+    unless results[:retval] == 0
+      raise PEBuild::Cap::DetectInstaller::DetectFailed,
+        :name  => @machine.name,
+        :error => "Could not run 'uname -m' on #{@machine.name}: got #{results[:stderr]}"
     end
+
+    content = results[:stdout]
 
     content = 'i386' if content.match /i\d86/
 
@@ -51,23 +56,41 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
   private
 
   def release_content
-    content = ""
+    results = execute_command("cat #{release_file}")
 
-    @machine.communicate.execute("cat #{release_file}") do |type, data|
-      raise "Could not read #{release_file} on #{@machine}: got #{data}" if type == :stderr
-      content << data
+    unless results[:retval] == 0
+      raise PEBuild::Cap::DetectInstaller::DetectFailed,
+        :name  => @machine.name,
+        :error => "Could not read #{release_file} on #{@machine.name}: got #{results[:stderr]}"
     end
 
-    content
+    results[:stdout]
   end
 
   def parse_release_file
     matchdata = release_content.match(release_file_format)
 
     if matchdata.nil? or matchdata[1].nil?
-      raise "#{self.class.name} could not determine release value: content #{release_content.inspect} did not match #{release_file_format}"
+      raise PEBuild::Cap::DetectInstaller::DetectFailed,
+        :name  => @machine.name,
+        :error => "#{self.class.name} could not determine release value: content #{release_content.inspect} did not match #{release_file_format}"
     end
 
     matchdata[1]
+  end
+
+  def execute_command(cmd)
+    stdout = ''
+    stderr = ''
+
+    retval = @machine.communicate.execute(cmd, :error_check => false) do |type, data|
+      if type == :stderr
+        stderr << data
+      else
+        stdout << data
+      end
+    end
+
+    {:stdout => stdout.chomp, :stderr => stderr.chomp, :retval => retval}
   end
 end

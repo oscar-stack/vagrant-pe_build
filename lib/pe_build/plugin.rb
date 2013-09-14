@@ -39,6 +39,8 @@ module PEBuild
 
     # Guest capabilities for installing PE
 
+    ## Detect installer
+
     guest_capability('debian', 'detect_installer') do
       require_relative 'cap'
       PEBuild::Cap::DetectInstaller::Debian
@@ -53,6 +55,18 @@ module PEBuild
       require_relative 'cap'
       PEBuild::Cap::DetectInstaller::Ubuntu
     end
+
+    guest_capability('suse', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::SLES
+    end
+
+    guest_capability('solaris', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Solaris
+    end
+
+    ## Run install
 
     guest_capability('linux', 'run_install') do
       require_relative 'cap'
