@@ -6,10 +6,16 @@ require 'pe_build/transfer'
 
 require 'pe_build/unpack/tar'
 
+require 'fileutils'
+
 module PEBuild
 
 class ArchiveNoInstallerSource < Vagrant::Errors::VagrantError
   error_key(:no_installer_source, "pebuild.archive")
+end
+
+class ArchiveUnknownInstallerType < Vagrant::Errors::VagrantError
+  error_key(:unknown_installer_type, "pebuild.archive")
 end
 
 class Archive
@@ -66,11 +72,21 @@ class Archive
       raise "Tried to unpack #{@filename} but it was not downloaded!"
     end
 
-    tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
-    path = File.join(fs_dir, tar.dirname)
+    case
+    when @filename =~ %r[\.tar\.gz$]
+      tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
+      path = File.join(fs_dir, tar.dirname)
 
-    idempotent(path, "Unpacked archive #{versioned_path filename}") do
-      tar.unpack
+      idempotent(path, "Unpacked archive #{versioned_path filename}") do
+        tar.unpack
+      end
+    when @filename =~ %r[\.msi$]
+      deploy_path = File.join(fs_dir, @filename)
+      idempotent(deploy_path, "Deployed archive #{versioned_path filename}") do
+        FileUtils.cp(archive_path, deploy_path)
+      end
+    else
+      raise PEBuild::ArchiveUnknownInstallerType, :filename => versioned_path(@filename)
     end
   end
 

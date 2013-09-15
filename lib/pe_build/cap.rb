@@ -19,6 +19,7 @@ module PEBuild
 
     module RunInstall
       require 'pe_build/cap/run_install/posix'
+      require 'pe_build/cap/run_install/windows'
     end
   end
 end

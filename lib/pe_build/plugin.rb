@@ -83,6 +83,11 @@ module PEBuild
       PEBuild::Cap::RunInstall::POSIX
     end
 
+    guest_capability('windows', 'run_install') do
+      require_relative 'cap'
+      PEBuild::Cap::RunInstall::Windows
+    end
+
     # internal action hooks
 
     action_hook('PE Build: initialize build dir') do |hook|
