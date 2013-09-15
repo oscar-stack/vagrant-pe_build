@@ -1,3 +1,5 @@
+require 'pe_buld/release'
+
 module PEBuild::Release
 
   three_oh_oh = newrelease do

@@ -1,3 +1,5 @@
+require 'pe_build'
+
 module PEBuild
   module Release
 

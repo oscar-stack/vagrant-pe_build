@@ -1,3 +1,5 @@
+require 'pe_buld/release'
+
 module PEBuild::Release
 
   two_five_x = newrelease do
