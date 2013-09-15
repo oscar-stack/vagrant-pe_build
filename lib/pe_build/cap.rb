@@ -8,6 +8,7 @@ module PEBuild
 
       require 'pe_build/cap/detect_installer/base'
       require 'pe_build/cap/detect_installer/posix'
+      require 'pe_build/cap/detect_installer/windows'
 
       require 'pe_build/cap/detect_installer/redhat'
       require 'pe_build/cap/detect_installer/debian'

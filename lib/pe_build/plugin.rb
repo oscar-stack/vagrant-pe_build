@@ -66,6 +66,11 @@ module PEBuild
       PEBuild::Cap::DetectInstaller::Solaris
     end
 
+    guest_capability('windows', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Windows
+    end
+
     ## Run install
 
     guest_capability('linux', 'run_install') do
