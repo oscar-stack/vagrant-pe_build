@@ -1,4 +1,4 @@
-require 'pe_buld/release'
+require 'pe_build/release'
 
 module PEBuild::Release
 
