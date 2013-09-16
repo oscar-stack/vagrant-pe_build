@@ -15,6 +15,11 @@ class Tar
     ::Archive::Tar::Minitar.unpack(zip, @dst)
   end
 
+  # @return [String] The file/dir that will be created as a result of unpack
+  def creates
+    File.join(@dst, dirname)
+  end
+
   # @return [String] The base directory contained in the tar archive
   def dirname
     input = ::Archive::Tar::Minitar::Input.new(zip)
