@@ -66,6 +66,11 @@ module PEBuild
       PEBuild::Cap::DetectInstaller::Solaris
     end
 
+    guest_capability('windows', 'detect_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::DetectInstaller::Windows
+    end
+
     ## Run install
 
     guest_capability('linux', 'run_install') do
@@ -76,6 +81,11 @@ module PEBuild
     guest_capability('solaris', 'run_install') do
       require_relative 'cap'
       PEBuild::Cap::RunInstall::POSIX
+    end
+
+    guest_capability('windows', 'run_install') do
+      require_relative 'cap'
+      PEBuild::Cap::RunInstall::Windows
     end
 
     # internal action hooks

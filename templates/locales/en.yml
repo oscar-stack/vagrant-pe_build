@@ -19,6 +19,10 @@ en:
       unhandled_uri_scheme: |-
         The URI scheme "%{scheme}" cannot be handled by any file transferrers.
         Supported URI schemes: %{supported}
+    unpack:
+      unknown_installer_type: |-
+        PEBuild does not know how to unpack the installer archive file type.
+        The installer file is %{src}.
     config:
       global:
         errors:
