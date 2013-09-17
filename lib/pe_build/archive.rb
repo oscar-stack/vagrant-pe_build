@@ -3,8 +3,7 @@ require 'pe_build/idempotent'
 require 'pe_build/archive_collection'
 
 require 'pe_build/transfer'
-
-require 'pe_build/unpack/tar'
+require 'pe_build/unpack'
 
 module PEBuild
 
@@ -66,11 +65,9 @@ class Archive
       raise "Tried to unpack #{@filename} but it was not downloaded!"
     end
 
-    tar  = PEBuild::Unpack::Tar.new(archive_path, fs_dir)
-    path = File.join(fs_dir, tar.dirname)
-
-    idempotent(path, "Unpacked archive #{versioned_path filename}") do
-      tar.unpack
+    archive = PEBuild::Unpack.generate(archive_path, fs_dir)
+    idempotent(archive.creates, "Unpacked archive #{versioned_path filename}") do
+      archive.unpack
     end
   end
 
