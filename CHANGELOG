@@ -1,7 +1,38 @@
 vagrant-pe_build
 ================
 
+0.5.0
+-----
+
+2013-09-17
+
+This is a backwards compatible bugfix and feature release.
+
+### User notes:
+
+  * Added detect_installer capability for SLES
+  * (GH-32) Added detect_installer capability for Solaris
+  * (GH-32) run_install capability uses posix compliant `at` command syntax
+  * (GH-33) Added detect_installer and run_install capabilities for Windows
+
+### Developer notes:
+
+  * All StandardError exceptions emitted from transfer/open_uri are now rescued,
+    so errors generated during downloads won't cause Vagrant to die with a
+    stacktrace.
+  * cap/detect_installer exceptions now subclass Vagrant::Errors::VagrantErrors
+    so that detection errors don't cause stacktraces.
+  * Archive unpacking logic has been generalized to support multiple implementations
+    like 'pe_build/transfer'
+
+Thanks to Reid Vandewiele for implementing the Windows and Solaris fixes and
+extracting the 'unpack' logic.
+
+Thanks to Charlie Sharpsteen for validating the new platform support and
+correcting the issues around open_uri error handling.
+
 0.4.3
+-----
 
 2013-09-09
 
