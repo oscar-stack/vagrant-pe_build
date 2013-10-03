@@ -103,13 +103,12 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
     errors = []
 
-    validate_version(errors)
-    validate_role(errors)
-    validate_verbose(errors)
-    validate_master(errors)
-    validate_answer_file(errors)
-    validate_relocate_manifests(errors)
-    validate_autosign(errors)
+    validate_role(errors, machine)
+    validate_verbose(errors, machine)
+    validate_master(errors, machine)
+    validate_answer_file(errors, machine)
+    validate_relocate_manifests(errors, machine)
+    validate_autosign(errors, machine)
 
     errors |= h.values.flatten
     {"PE Bootstrap" => errors}
@@ -117,13 +116,13 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
   private
 
-  def validate_version(errors)
+  def validate_version(errors, machine)
     if @version == UNSET_VALUE and global_config_from(machine).pe_build.version == UNSET_VALUE
       errors << I18n.t('pebuild.config.pe_bootstrap.errors.unset_version')
     end
   end
 
-  def validate_role(errors)
+  def validate_role(errors, machine)
     unless VALID_ROLES.any? {|sym| @role == sym}
       errors << I18n.t(
         'pebuild.config.pe_bootstrap.errors.unhandled_role',
@@ -133,7 +132,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     end
   end
 
-  def validate_verbose(errors)
+  def validate_verbose(errors, machine)
     unless @verbose == !!@verbose
       errors << I18n.t(
         'pebuild.config.pe_bootstrap.errors.malformed_verbose',
@@ -142,25 +141,25 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     end
   end
 
-  def validate_master(errors)
+  def validate_master(errors, machine)
     unless @master.is_a? String
       errors << "'master' must be a string containing the address of the master, got a #{@master.class}"
     end
   end
 
-  def validate_answer_file(errors)
+  def validate_answer_file(errors, machine)
     if @answer_file and !File.readable? @answer_file
       errors << "'answers_file' must be a readable file"
     end
   end
 
-  def validate_relocate_manifests(errors)
+  def validate_relocate_manifests(errors, machine)
     if @relocate_manifests and not @role == :master
       errors << "'relocate_manifests' can only be applied to a master"
     end
   end
 
-  def validate_autosign(errors)
+  def validate_autosign(errors, machine)
     if (@autosign and @role != :master)
       errors << I18n.t(
         'pebuild.config.pe_bootstrap.errors.invalid_autosign_role',

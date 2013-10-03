@@ -71,8 +71,8 @@ module PEBuild
         # is being used for default values and was never directly touched then it
         # may have bad values, so we re-finalize everything. This may not be
         # generally safe but inside of this plugin it should be ok.
-        provision.finalize!
         global.finalize!
+        provision.finalize!
 
         merged = PEBuild::Util::Config.local_merge(provision, global)
 
