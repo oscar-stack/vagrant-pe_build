@@ -1,5 +1,4 @@
 require 'archive/tar/minitar'
-require 'zlib'
 
 module PEBuild
 module Unpack
@@ -12,7 +11,7 @@ class Tar
   end
 
   def unpack
-    ::Archive::Tar::Minitar.unpack(zip, @dst)
+    ::Archive::Tar::Minitar.unpack(file_stream, @dst)
   end
 
   # @return [String] The file/dir that will be created as a result of unpack
@@ -22,7 +21,7 @@ class Tar
 
   # @return [String] The base directory contained in the tar archive
   def dirname
-    input = ::Archive::Tar::Minitar::Input.new(zip)
+    input = ::Archive::Tar::Minitar::Input.new(file_stream)
 
     base = nil
     input.each do |entry|
@@ -35,8 +34,8 @@ class Tar
 
   private
 
-  def zip
-    Zlib::GzipReader.new(File.open(@src, 'rb'))
+  def file_stream
+    File.open(@src, 'rb')
   end
 end
 end

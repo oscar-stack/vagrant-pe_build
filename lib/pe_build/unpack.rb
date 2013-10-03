@@ -6,10 +6,12 @@ module PEBuild
     end
 
     require 'pe_build/unpack/tar'
+    require 'pe_build/unpack/tar_gz'
     require 'pe_build/unpack/copy'
 
     IMPLEMENTATIONS = {
-      '.tar.gz' => PEBuild::Unpack::Tar,
+      '.tar'    => PEBuild::Unpack::Tar,
+      '.tar.gz' => PEBuild::Unpack::TarGZ,
       '.msi'    => PEBuild::Unpack::Copy,
     }
 

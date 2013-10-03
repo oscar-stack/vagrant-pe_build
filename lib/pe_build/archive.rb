@@ -80,7 +80,7 @@ class Archive
   end
 
   def installer_dir
-    versioned_path(@filename).gsub('.tar.gz', '')
+    versioned_path(@filename).gsub(/.tar(?:\.gz)?/, '')
   end
 
   private
