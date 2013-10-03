@@ -61,7 +61,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
   private
 
-  def validate_version(version)
+  def validate_version(errors, machine)
 
     errmsg = I18n.t(
       'pebuild.config.global.errors.malformed_version',
@@ -79,7 +79,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
     end
   end
 
-  def validate_download_root(errors)
+  def validate_download_root(errors, machine)
     if @download_root and @download_root != UNSET_VALUE
       begin
         uri = URI.parse(@download_root)
