@@ -8,7 +8,17 @@ module PEBuild
     @releases = {}
 
     def self.[](ver)
-      @releases[ver]
+      release = @releases[ver]
+
+      if release.nil?
+        logger = Log4r::Logger.new('vagrant::pe_build::release')
+        logger.warn I18n.t 'pebuild.release.unknown_version',
+          :missing_version => ver,
+          :latest_version  => LATEST_VERSION
+        release = @releases[LATEST_VERSION]
+      end
+
+      release
     end
 
     def self.newrelease(&blk)

@@ -62,3 +62,7 @@ en:
           The VM "%{name}" could not detect the version of Puppet Enterprise and failed with
           the following error:
           "%{error}"
+    release:
+      unknown_version: |-
+        Release information for PE version %{missing_version} could not be found. Falling back
+        Falling back to %{latest_version}.
