@@ -5,10 +5,6 @@ require 'uri'
 
 class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
-  # @todo This value should be discovered based on what versions of the
-  #       installer are cached.
-  #DEFAULT_PE_VERSION = '2.7.2'
-
   # @!attribute download_root
   attr_accessor :download_root
 
@@ -43,9 +39,6 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
   def finalize!
     set_default :@suffix, :detect
-
-    #set_default :@version,  DEFAULT_PE_VERSION
-
     set_default :@download_root, nil
   end
 
@@ -53,13 +46,15 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   def validate(machine)
     errors = []
 
-    validate_version(errors)
-    validate_download_root(errors)
+    validate_version(errors, machine)
+    validate_download_root(errors, machine)
 
     {"PE build global config" => errors}
   end
 
   private
+
+  PE_VERSION_REGEX = %r[\d+\.\d+\.\d+[\w-]*]
 
   def validate_version(errors, machine)
 
@@ -72,8 +67,10 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
     # Allow Global version to be unset, rendering it essentially optional. If it is
     # discovered to be unset by a configuration on the next level up who cannot provide a
     # value, it is that configuration's job to take action.
-    if @version.kind_of? String and !(@version.match /\d+\.\d+(\.\d+)?/)
-      errors << errmsg
+    if @version.kind_of? String
+      if !(@version.match PE_VERSION_REGEX)
+        errors << errmsg
+      end
     elsif @version != UNSET_VALUE
       errors << errmsg
     end
