@@ -103,8 +103,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
     errors = []
 
-    validate_version(errors, machine)
-
     validate_role(errors, machine)
     validate_verbose(errors, machine)
     validate_master(errors, machine)
