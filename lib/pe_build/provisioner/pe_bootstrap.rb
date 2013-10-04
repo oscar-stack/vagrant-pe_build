@@ -85,7 +85,7 @@ module PEBuild
       end
 
       def load_archive
-        if @config.suffix == :detect
+        if @config.suffix == :detect and @config.filename.nil?
           filename = @machine.guest.capability('detect_installer', @config.version)
         else
           filename = @config.filename

@@ -14,19 +14,8 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   # @!attribute suffix
   attr_accessor :suffix
 
-  # Allow our filename default to use @version and @suffix variables. This
-  # approach will not break the merging mechanism since the merging directly
-  # accesses the instance variables of the configuration objects.
-  def filename
-    if @filename == UNSET_VALUE
-      "puppet-enterprise-#{version}-#{suffix}.tar.gz"
-    else
-      @filename
-    end
-  end
-
   # @!attribute filename
-  attr_writer :filename
+  attr_accessor :filename
 
   def initialize
     @download_root = UNSET_VALUE
@@ -40,6 +29,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   def finalize!
     set_default :@suffix, :detect
     set_default :@download_root, nil
+    set_default :@filename, nil
   end
 
   # @todo Convert error strings to I18n
