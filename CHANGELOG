@@ -1,6 +1,24 @@
 vagrant-pe_build
 ================
 
+0.6.0
+-----
+
+2013-10-03
+
+This is a backwards compatible bugfix and feature release.
+
+### User notes:
+
+  * The tar archive unpacker has been split into a true tar unpacker and a
+    tar.gz unpacker. Archives with either '.tar' and '.tar.gz' will be
+    extracted with the correct unpacker.
+  * If a version of PE is requested but there's no definition for it, release
+    information for the latest version of PE will be used. This means that the
+    new versions of PE that aren't yet supported should work without having to
+    specify an explicit answer file.
+  * PE versions with trailing version information can now be used.
+
 0.5.0
 -----
 
