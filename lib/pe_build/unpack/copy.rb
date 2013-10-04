@@ -1,8 +1,7 @@
+require 'pe_build/unpack'
 require 'fileutils'
 
-module PEBuild
-module Unpack
-class Copy
+class PEBuild::Unpack::Copy
 
   # @param src [String]
   # @param dst [String]
@@ -20,6 +19,4 @@ class Copy
     deploy_path = File.join(@dst, basename)
   end
 
-end
-end
 end

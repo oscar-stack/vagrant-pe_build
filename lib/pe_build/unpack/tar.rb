@@ -1,8 +1,7 @@
+require 'pe_build/unpack'
 require 'archive/tar/minitar'
 
-module PEBuild
-module Unpack
-class Tar
+class PEBuild::Unpack::Tar
 
   # @param src [String]
   # @param dst [String]
@@ -37,6 +36,4 @@ class Tar
   def file_stream
     File.open(@src, 'rb')
   end
-end
-end
 end

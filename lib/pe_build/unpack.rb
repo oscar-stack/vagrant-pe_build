@@ -25,6 +25,5 @@ module PEBuild
       raise UnknownInstallerType, :src => src unless klass
       klass.new(src, dst)
     end
-
   end
 end
