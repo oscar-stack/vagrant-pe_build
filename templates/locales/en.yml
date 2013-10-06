@@ -7,6 +7,8 @@ en:
         mirror, or add the installer yourself by using the `vagrant pe-build copy`
         command. Downloads for Puppet Enterprise are available for download at
         https://puppetlabs.com/puppet/puppet-enterprise/
+      archive: |-
+        Tried to unpack %{filename} but it was not downloaded!
     provisioner:
       pe_bootstrap:
         post_install: |-
