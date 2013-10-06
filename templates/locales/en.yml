@@ -9,6 +9,10 @@ en:
         https://puppetlabs.com/puppet/puppet-enterprise/
       archive: |-
         Tried to unpack %{filename} but it was not downloaded!
+      unreadable: |-
+        Failed to unpack %{filename}.
+        Archive corrupted or otherwise unreadable. The error message generated was:
+        "%{message}"
     provisioner:
       pe_bootstrap:
         post_install: |-

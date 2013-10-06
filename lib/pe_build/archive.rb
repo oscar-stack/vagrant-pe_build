@@ -14,6 +14,10 @@ module PEBuild
     error_key(:missing, "pebuild.archive")
   end
 
+  class ArchiveUnreadable < Vagrant::Errors::VagrantError
+    error_key(:unreadable, "pebuild.archive")
+  end
+
   # Represents a packed Puppet Enterprise archive
   class Archive
 
@@ -69,8 +73,12 @@ module PEBuild
       end
 
       archive = PEBuild::Unpack.generate(archive_path, fs_dir)
-      idempotent(archive.creates, "Unpacked archive #{versioned_path filename}") do
-        archive.unpack
+      begin
+        idempotent(archive.creates, "Unpacked archive #{versioned_path filename}") do
+          archive.unpack
+        end
+      rescue Zlib::GzipFile::Error => e
+        raise PEBuild::ArchiveUnreadable, :filename => @filename, :message => e.message
       end
     end
 
