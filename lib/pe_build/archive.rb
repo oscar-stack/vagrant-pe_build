@@ -10,6 +10,14 @@ module PEBuild
     error_key(:no_installer_source, "pebuild.archive")
   end
 
+  class ArchiveMissing < Vagrant::Errors::VagrantError
+    error_key(:missing, "pebuild.archive")
+  end
+
+  class ArchiveUnreadable < Vagrant::Errors::VagrantError
+    error_key(:unreadable, "pebuild.archive")
+  end
+
   # Represents a packed Puppet Enterprise archive
   class Archive
 
@@ -61,12 +69,16 @@ module PEBuild
     # @param fs_dir [String] The base directory to extract the installer to
     def unpack_to(fs_dir)
       unless exist?
-        raise "Tried to unpack #{@filename} but it was not downloaded!"
+        raise PEBuild::ArchiveMissing, :filename => @filename
       end
 
       archive = PEBuild::Unpack.generate(archive_path, fs_dir)
-      idempotent(archive.creates, "Unpacked archive #{versioned_path filename}") do
-        archive.unpack
+      begin
+        idempotent(archive.creates, "Unpacked archive #{versioned_path filename}") do
+          archive.unpack
+        end
+      rescue Zlib::GzipFile::Error => e
+        raise PEBuild::ArchiveUnreadable, :filename => @filename, :message => e.message
       end
     end
 
