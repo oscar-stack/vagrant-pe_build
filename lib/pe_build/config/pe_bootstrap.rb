@@ -71,11 +71,17 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
 
   include PEBuild::ConfigDefault
 
+  # Finalize all configuration variables
+  #
+  # @note This does _not_ finalize values for config options inherited from the
+  #   global configuration; it's assumed that the late configuration merging in
+  #   the provisioner will handle that.
   def finalize!
-    # This does _not_ set default values for config options inherited from the
-    # global configuration. If configuration is not set for a value on the
-    # global config or here it will be passed through as `UNSET_VALUE`, which
-    # is not ideal.
+
+    # The value of role is normalized to a symbol so that users don't have to
+    # know the underlying representation, and we don't have to cast everything
+    # to a string and symbols later on.
+    @role &&= @role.intern
 
     set_default :@role,        :agent
     set_default :@verbose,     true
@@ -123,7 +129,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   end
 
   def validate_role(errors, machine)
-    unless VALID_ROLES.any? {|sym| @role == sym}
+    unless VALID_ROLES.any? {|sym| @role == sym.intern}
       errors << I18n.t(
         'pebuild.config.pe_bootstrap.errors.unhandled_role',
         :role        => @role.inspect,
