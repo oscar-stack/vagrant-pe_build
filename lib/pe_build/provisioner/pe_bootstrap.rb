@@ -52,13 +52,9 @@ module PEBuild
         load_archive
         fetch_installer
 
-        [:base, @config.role].each { |rolename| process_step rolename, :pre }
-
         @machine.guest.capability('run_install', @config, @archive)
 
         run_postinstall_tasks
-
-        [:base, @config.role].each { |rolename| process_step rolename, :post }
       end
 
       private
@@ -100,38 +96,6 @@ module PEBuild
         uri = @config.download_root
         @archive.fetch(@config.download_root)
         @archive.unpack_to(@work_dir)
-      end
-
-      require 'pe_build/on_machine'
-      include PEBuild::OnMachine
-
-      def process_step(role, stepname)
-
-        if role != :base && config.step[stepname]
-          if File.file? config.step[stepname]
-            script_list = [*config.step[stepname]]
-          else
-            script_list = []
-            @machine.ui.warn "Cannot find defined step for #{role}/#{stepname.to_s} at \'#{config.step[stepname]}\'"
-          end
-        else
-          # We do not have a user defined step for this role or we're processing the :base step
-          script_dir  = File.join(PEBuild.source_root, 'bootstrap', role.to_s, stepname.to_s)
-          script_list = Dir.glob("#{script_dir}/*")
-        end
-
-        if script_list.empty?
-          @logger.info "No steps for #{role}/#{stepname}"
-        end
-
-        script_list.each do |template_path|
-          # A message to show which step's action is running
-          @machine.ui.info "Running action for #{role}/#{stepname}"
-          template = File.read(template_path)
-          contents = ERB.new(template).result(binding)
-
-          on_machine(@machine, contents)
-        end
       end
 
       def run_postinstall_tasks

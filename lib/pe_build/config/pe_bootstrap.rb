@@ -25,14 +25,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   # @api private
   VALID_ROLES = [:agent, :master]
 
-  # @!attribute step
-  #   @return [Hash<Symbol, String>] a hash whose keys are step levels, and whose
-  #                                  keys are directories to optional steps.
-  #   @deprecated This duplicates the behavior of the shell provider and will
-  #               be removed in a future release.
-  #   @since 0.1.0
-  attr_accessor :step
-
   # @!attribute relocate_manifests
   #   @return [TrueClass, FalseClass] if the puppet master should use manifests
   #                                   out of the vagrant directory.
@@ -65,8 +57,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     @relocate_manifests = UNSET_VALUE
 
     @autosign = UNSET_VALUE
-
-    @step    = {}
   end
 
   include PEBuild::ConfigDefault
@@ -92,20 +82,9 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@relocate_manifests, false
   end
 
-  # @deprecated This duplicates the behavior of the shell provider and will
-  #             be removed in a future release.
-  def add_step(name, script_path)
-    name = (name.is_a?(Symbol)) ? name : name.intern
-    step[name] = script_path
-  end
-
   # @param machine [Vagrant::Machine]
   def validate(machine)
     h = super
-
-    unless @step.empty?
-      machine.ui.warn I18n.t('pebuild.config.pe_bootstrap.steps_deprecated')
-    end
 
     errors = []
 
