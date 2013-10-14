@@ -110,7 +110,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   def validate_role(errors, machine)
     unless VALID_ROLES.any? {|sym| @role == sym.intern}
       errors << I18n.t(
-        'pebuild.config.pe_bootstrap.errors.unhandled_role',
+        'pebuild.config.pe_bootstrap.errors.unknown_role',
         :role        => @role.inspect,
         :known_roles => VALID_ROLES,
       )
