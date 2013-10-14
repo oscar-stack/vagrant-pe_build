@@ -1,7 +1,18 @@
 vagrant-pe_build
 ================
 
+0.7.1
+-----
+
+2013-10-14
+
+This is a backwards compatible bugfix release.
+
+  * Fixed pe_bootstrap config normalization to safely handle UNSET_VALUE as a
+    role value.
+
 0.7.0
+-----
 
 2013-10-14
 
