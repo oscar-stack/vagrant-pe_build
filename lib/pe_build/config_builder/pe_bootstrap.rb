@@ -28,6 +28,18 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
   #     remounted on the guest.
   def_model_attribute :relocate_manifests
 
+  # @!attribute [rw] autosign
+  #   Configure the certificates that will be autosigned by the puppet master.
+  #
+  #   @return [TrueClass] All CSRs will be signed
+  #   @return [FalseClass] The autosign config file will be unmanaged
+  #   @return [Array<String>] CSRs with the given addresses
+  #
+  #   @see http://docs.puppetlabs.com/guides/configuring.html#autosignconf
+  #
+  #   @since 0.4.0
+  def_model_attribute :autosign
+
   def to_proc
     Proc.new do |vm_config|
       vm_config.provision :pe_bootstrap do |pe|
@@ -42,6 +54,7 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         pe.master             = attr(:master)             if attr(:master)
         pe.answer_file        = attr(:answer_file)        if attr(:answer_file)
         pe.relocate_manifests = attr(:relocate_manifests) if attr(:relocate_manifests)
+        pe.autosign           = attr(:autosign)           if attr(:autosign)
       end
     end
   end
