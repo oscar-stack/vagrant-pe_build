@@ -1,6 +1,25 @@
 vagrant-pe_build
 ================
 
+0.7.0
+
+2013-10-14
+
+This is a backwards incompatible bugfix and feature release.
+
+### User notes:
+
+  * At long last, The pe_bootstrap `steps` option has been entirely removed.
+  * The pe_bootstrap role value is now normalized; users can specify a string
+    or symbol and the right thing will happen.
+
+### Developer notes:
+
+  * Error handling and messages around missing and unreadable archives have
+    been improved.
+
+Thanks to Charlie Sharpsteen for his contributions to this release.
+
 0.6.0
 -----
 
