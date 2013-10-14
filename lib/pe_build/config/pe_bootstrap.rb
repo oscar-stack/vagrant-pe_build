@@ -68,11 +68,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   the provisioner will handle that.
   def finalize!
 
-    # The value of role is normalized to a symbol so that users don't have to
-    # know the underlying representation, and we don't have to cast everything
-    # to a string and symbols later on.
-    @role &&= @role.intern
-
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'
@@ -80,6 +75,15 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@autosign,    (@role == :master)
 
     set_default :@relocate_manifests, false
+
+    # The value of role is normalized to a symbol so that users don't have to
+    # know the underlying representation, and we don't have to cast everything
+    # to a string and symbols later on.
+    #
+    # We also need to run this after a default was set, otherwise we'll try to
+    # normalize UNSET_VALUE
+    @role = @role.intern
+
   end
 
   # @param machine [Vagrant::Machine]
