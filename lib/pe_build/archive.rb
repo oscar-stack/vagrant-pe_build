@@ -59,7 +59,7 @@ module PEBuild
         raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
       end
 
-      uri = URI.parse(versioned_path(str + '/' + @filename))
+      uri = URI.parse(versioned_path("#{str}/#{@filename}"))
       dst = File.join(@archive_dir, versioned_path(@filename))
 
       transfer = PEBuild::Transfer.generate(uri, dst)
