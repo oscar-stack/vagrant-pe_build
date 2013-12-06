@@ -16,8 +16,7 @@ class PEBuild::Command::Copy < Vagrant.plugin(2, :command)
     archive = PEBuild::Archive.new(filename, @env)
     archive.version = @options[:version]
 
-    uri = URI.parse src_dir
-    archive.fetch(uri)
+    archive.fetch(src_dir)
 
     @env.ui.info "pe-build: #{archive} has been added and is ready for use!", :prefix => true
   end
