@@ -25,11 +25,27 @@ class PEBuild::Command::Copy < Vagrant.plugin(2, :command)
 
   def parser
     OptionParser.new do |o|
-      o.banner = "Usage: vagrant pe-build copy path/to/installer.tar.gz"
+      o.banner = <<-BANNER
+      Usage: vagrant pe-build copy installer-uri
+
+      Examples:
+
+          # Copy a local file
+          vagrant pe-build copy path/to/installer.tar.gz"
+
+          # Download a file via http
+          vagrant pe-build copy http://site-downloads.local/path/to/installer.tar.gz"
+      BANNER
+
       o.separator ''
 
       o.on('-v', '--version=val', String, "The version of PE to fetch") do |val|
         @options[:version] = val
+      end
+
+      o.on('-h', '--help', 'Display this help') do
+        puts o
+        exit(0)
       end
     end
   end
