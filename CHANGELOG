@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.8.1
+-----
+
+2013-12-05
+
+This is a backwards compatible bugfix release.
+
+  * (vagrant-pe_build-#43) Better path interpolation when fetching arguments
+  * (maint) Fix for a silly variable error inside of pe-build copy
+
 0.8.0
 -----
 
