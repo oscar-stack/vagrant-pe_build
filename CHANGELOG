@@ -1,6 +1,19 @@
 vagrant-pe_build
 ================
 
+0.8.2
+-----
+
+2013-01-13
+
+This is a backwards compatible bugfix release.
+
+  * Download and copy commands have been refactored to reduce duplication confusion.
+  * Support for Puppet Enterprise versions 3.1.1 and 2.8.4
+  * Safely access @env[:home_path] in middleware
+
+Thanks to Gary Larizza for his help in tracking down issues in this release.
+
 0.8.1
 -----
 
