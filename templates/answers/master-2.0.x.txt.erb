@@ -1,0 +1,27 @@
+q_install=y
+q_puppet_cloud_install=y
+
+q_puppet_enterpriseconsole_database_install=y
+q_puppet_enterpriseconsole_database_name=console
+q_puppet_enterpriseconsole_database_password=console
+q_puppet_enterpriseconsole_database_root_password=root
+q_puppet_enterpriseconsole_auth_password=admin@puppetlabs.com
+q_puppet_enterpriseconsole_auth_user=puppetlabs
+
+q_puppet_enterpriseconsole_database_user=console
+q_puppet_enterpriseconsole_httpd_port=443
+q_puppet_enterpriseconsole_install=y
+q_puppet_enterpriseconsole_inventory_hostname=<%= machine_hostname %>
+q_puppet_enterpriseconsole_inventory_port=8140
+q_puppet_enterpriseconsole_master_hostname=<%= machine_hostname %>
+q_puppet_symlinks_install=y
+q_puppetagent_certname=<%= machine_hostname %>
+q_puppetagent_install=y
+q_puppetagent_server=<%= machine_hostname %>
+q_puppetmaster_certname=<%= machine_hostname %>
+q_puppetmaster_dnsaltnames=<%= machine_hostname %>,puppet
+q_puppetmaster_enterpriseconsole_hostname=localhost
+q_puppetmaster_enterpriseconsole_port=443
+q_puppetmaster_forward_facts=n
+q_puppetmaster_install=y
+q_vendor_packages_install=y
