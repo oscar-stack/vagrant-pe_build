@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.8.3
+-----
+
+This is a backwards compatible bugfix release.
+
+  * (GH-39) Add PE 2.0.x compatible answer files instead of reusing 2.x answer
+    files.
+
+Thanks to Zachary Stern for his help in this release.
+
 0.8.2
 -----
 
