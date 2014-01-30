@@ -1,6 +1,19 @@
 vagrant-pe_build
 ================
 
+0.8.4
+-----
+
+This is a backwards compatibility maintenance release.
+
+  * Support for Puppet Enterprise for 2.8.5
+  * Support for Puppet Enterprise for 3.1.2
+  * (GH-53) Intelligently set ext for posix pre-release builds
+
+### Thanks
+
+Thanks to Zachary Stern and Reid Vandewiele for their work on this release.
+
 0.8.3
 -----
 
