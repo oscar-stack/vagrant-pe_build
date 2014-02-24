@@ -25,3 +25,4 @@ end
 
 # I18n to load the en locale
 I18n.load_path << File.expand_path("locales/en.yml", PEBuild.template_dir)
+I18n.reload!
