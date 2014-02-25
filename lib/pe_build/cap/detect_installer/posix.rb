@@ -50,7 +50,16 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
   end
 
   def ext
-    'tar.gz'
+    # Posix release versions of Puppet Enterprise are packaged as .tar.gz
+    # files. Pre-release builds are not gzip'd. Select a default extension
+    # accordingly. As usual, for exceptional circumstances it's always possible
+    # to specify an explicit filename rather than relying on the
+    # detect_installer capability.
+    if @version =~ /^\d+\.\d+\.\d+$/
+      'tar.gz'
+    else
+      'tar'
+    end
   end
 
   private
