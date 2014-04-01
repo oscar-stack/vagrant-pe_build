@@ -1,10 +1,21 @@
 vagrant-pe_build
 ================
 
+0.8.5
+-----
+
+This is a backwards compatible maintenance release.
+
+  * (GH-56) Add support for Vagrant 1.5.
+
+### Thanks
+
+Thanks to Reid Vandewiele for his work on this release.
+
 0.8.4
 -----
 
-This is a backwards compatibility maintenance release.
+This is a backwards compatible maintenance release.
 
   * Support for Puppet Enterprise for 2.8.5
   * Support for Puppet Enterprise for 3.1.2
