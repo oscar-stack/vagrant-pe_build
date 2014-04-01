@@ -166,11 +166,19 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   end
 
   # Safely access the global config
-  #
-  # If we try to access the global config object directly from a validating
-  # machine, horrible things happen. To avoid this we access the environment's
-  # global config which should already be finalized.
   def global_config_from(machine)
-    env = machine.env.config_global
+    case Vagrant::VERSION
+    when /^1\.[1234]/
+      # If we try to access the global config object directly from a validating
+      # machine, horrible things happen. To avoid this we access the environment's
+      # global config which should already be finalized.
+      env = machine.env.config_global
+    else # Vagrant 1.5.x and above
+      # This kinda seemed like the most direct replacement for config_global,
+      # but turned out not to really work. Returned a dummy object of some
+      # kind.
+      #env = vagrantfile.config
+      env = machine.config
+    end
   end
 end
