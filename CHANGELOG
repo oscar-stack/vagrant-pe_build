@@ -1,6 +1,20 @@
 vagrant-pe_build
 ================
 
+0.8.6
+-----
+
+2014-04-15
+
+This is a backwards compatible release.
+
+  * (GH-57) Add support for Debian 7 on PE 3.x
+  * (GH-57) Add support for PE 2.8.6 and 3.2.2
+
+### Thanks
+
+Thanks to Charlie Sharpsteen for his work on this release.
+
 0.8.5
 -----
 
