@@ -5,6 +5,7 @@ module PEBuild::Release
   three_oh_oh = newrelease do
 
     add_release :debian, 6
+    add_release :debian, 7
 
     add_release :el, 5
     add_release :el, 6
@@ -39,6 +40,7 @@ module PEBuild::Release
   three_oh_one = newrelease do
 
     add_release :debian, 6
+    add_release :debian, 7
 
     add_release :el, 5
     add_release :el, 6

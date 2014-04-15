@@ -2,7 +2,7 @@ require 'pe_build/release'
 
 module PEBuild::Release
 
-  three_one_x = newrelease do
+  three_two_x = newrelease do
 
     add_release :debian, '6'
     add_release :debian, '7'
@@ -14,6 +14,7 @@ module PEBuild::Release
     add_release :sles, '11'
 
     add_release :solaris, '10'
+    add_release :solaris, '11'
 
     add_release :ubuntu, '10.04'
     add_release :ubuntu, '12.04'
@@ -35,8 +36,8 @@ module PEBuild::Release
     set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
   end
 
-  @releases['3.1.0'] = three_one_x
-  @releases['3.1.1'] = three_one_x
-  @releases['3.1.2'] = three_one_x
+  @releases['3.2.0'] = three_two_x
+  @releases['3.2.1'] = three_two_x
+  @releases['3.2.2'] = three_two_x
 end
 
