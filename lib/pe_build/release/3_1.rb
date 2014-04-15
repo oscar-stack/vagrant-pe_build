@@ -5,6 +5,7 @@ module PEBuild::Release
   three_one_x = newrelease do
 
     add_release :debian, '6'
+    add_release :debian, '7'
 
     add_release :el, '4'
     add_release :el, '5'
