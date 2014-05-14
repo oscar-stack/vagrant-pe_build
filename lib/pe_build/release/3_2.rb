@@ -39,5 +39,6 @@ module PEBuild::Release
   @releases['3.2.0'] = three_two_x
   @releases['3.2.1'] = three_two_x
   @releases['3.2.2'] = three_two_x
+  @releases['3.2.3'] = three_two_x
 end
 
