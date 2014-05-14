@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.8.7
+-----
+
+2014-05-14
+
+This is a backwards compatible release.
+
+  * Fully enabled support for PE 1.2.x.
+  * Bumped default PE version to 3.2.3.
+
 0.8.6
 -----
 
