@@ -25,6 +25,7 @@ module PEBuild
       PEBuild::Release::Instance.new(&blk)
     end
 
+    require 'pe_build/release/1_2'
     require 'pe_build/release/2_0'
     require 'pe_build/release/2_5'
     require 'pe_build/release/2_6'
