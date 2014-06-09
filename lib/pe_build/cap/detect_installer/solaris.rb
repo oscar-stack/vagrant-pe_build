@@ -13,7 +13,7 @@ class PEBuild::Cap::DetectInstaller::Solaris < PEBuild::Cap::DetectInstaller::PO
   end
 
   def supported_releases
-    %w[10]
+    %w[10 11]
   end
 
   def arch
