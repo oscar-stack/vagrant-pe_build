@@ -13,6 +13,6 @@ class PEBuild::Cap::DetectInstaller::Redhat < PEBuild::Cap::DetectInstaller::POS
   end
 
   def supported_releases
-    %w[5 6]
+    %w[5 6 7]
   end
 end
