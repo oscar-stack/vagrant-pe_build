@@ -6,15 +6,27 @@ require 'uri'
 class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
   # @!attribute download_root
+  #   @return [String] The root URI from which to download packages. The URI
+  #     scheme must be one of the values listed in {PEBuild::Transfer::IMPLEMENTATIONS}.
+  #   @since 0.1.0
   attr_accessor :download_root
 
   # @!attribute version
+  #   @return [String] The version of PE to install. Must conform to
+  #     `x.y.x[-optional-arbitrary-stuff]`. Ignored if {#filename} is set.
+  #   @since 0.1.0
   attr_accessor :version
 
   # @!attribute suffix
+  #   @return [String] The distribution specifix suffix of the Puppet
+  #     Enterprise installer to use.
+  #   @since 0.1.0
   attr_accessor :suffix
 
   # @!attribute filename
+  #   @return [String] The exact name of the PE installer archive. Overrides
+  #     {#version} if set.
+  #   @since 0.1.0
   attr_accessor :filename
 
   def initialize
@@ -32,7 +44,6 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
     set_default :@filename, nil
   end
 
-  # @todo Convert error strings to I18n
   def validate(machine)
     errors = []
 
