@@ -13,11 +13,15 @@ Gem::Specification.new do |gem|
 
   gem.summary     = "Vagrant provisioner for installing Puppet Enterprise"
 
-  gem.add_dependency 'progressbar'
-  gem.add_dependency 'minitar'
-
   gem.files        = %x{git ls-files -z}.split("\0")
   gem.require_path = 'lib'
 
   gem.license = 'Apache 2.0'
+
+  gem.add_runtime_dependency 'progressbar'
+  gem.add_runtime_dependency 'minitar'
+
+  gem.add_development_dependency 'rake'
+  # Pin to 2.14.x for compatibility with vagrant-spec.
+  gem.add_development_dependency 'rspec', '~> 2.14.0'
 end
