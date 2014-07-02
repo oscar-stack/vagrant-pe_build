@@ -41,7 +41,8 @@ class PEBuild::Transfer::OpenURI
 
     content_length_proc = lambda do |length|
       if length and length > 0
-        progress = ProgressBar.new('Fetching file', length)
+        STDERR.puts "Fetching: #{@uri}"
+        progress = ProgressBar.new("Fetching file", length, STDERR)
         progress.file_transfer_mode
       end
     end
@@ -54,8 +55,6 @@ class PEBuild::Transfer::OpenURI
       :content_length_proc => content_length_proc,
       :progress_proc       => progress_proc,
     })
-
-    @logger.info "Fetching file from #{@uri}"
 
     @uri.open(options)
   end
