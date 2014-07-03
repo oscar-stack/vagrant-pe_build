@@ -100,6 +100,7 @@ module PEBuild
         end
 
         @archive = PEBuild::Archive.new(filename, @machine.env)
+        @archive.release = @config.release
         @archive.version = @config.version
       end
 

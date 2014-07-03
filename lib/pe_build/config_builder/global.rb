@@ -12,6 +12,8 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
   #   @since 0.9.0
   def_model_attribute :version_file
 
+  def_model_attribute :release
+
   # @!attribute [rw] suffix
   #   @return [String] The distribution specifix suffix of the Puppet
   #     Enterprise installer to use.

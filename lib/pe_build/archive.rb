@@ -27,6 +27,11 @@ module PEBuild
     #   @return [String] The version of Puppet Enterprise
     attr_accessor :version
 
+    # (see PEBuild::Config::Global#release)
+    #
+    # @see PEBuild::Config::Global#release
+    attr_accessor :release
+
     # @!attribute [rw] filename
     #   @return [String] The filename. Thing
     attr_accessor :filename
@@ -102,11 +107,11 @@ module PEBuild
     end
 
     def versioned_path(path)
-      if @version
-        path.gsub(/:version/, @version)
-      else
-        path
-      end
+      result = path.dup
+      result.gsub!(/:version/, @version) if @version
+      result.gsub!(/:release/, @release) if @release
+
+      result
     end
   end
 end
