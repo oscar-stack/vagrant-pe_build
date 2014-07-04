@@ -17,6 +17,10 @@ en:
       pe_bootstrap:
         post_install: |-
           Applying post-install configuration to Puppet Enterprise.
+        errors:
+          unset_version: |-
+            The Puppet Enterprise version must be set either on the global pe_build config
+            object or specified on a per-provisioner basis, but both were unset.
     transfer:
       open_uri:
         download_failed: |-
@@ -48,9 +52,6 @@ en:
           information on the shell provisioner can be found on the Vagrant website at
           http://docs.vagrantup.com/v2/provisioning/shell.html
         errors:
-          unset_version: |-
-            The Puppet Enterprise version must be set either on the global pe_build config
-            object or specified on a per-provisioner basis, but both were unset.
           unknown_role: |-
             The specified role %{role} is unhandled, must be one of %{known_roles}.
           invalid_autosign_role: |-

@@ -68,6 +68,10 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   the provisioner will handle that.
   def finalize!
 
+    # NOTE: The version default is copied from Config::Global. Can't call
+    # `super` here as it does weird things to `download_root`.
+    set_default :@version,     nil
+
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'
@@ -83,7 +87,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     # We also need to run this after a default was set, otherwise we'll try to
     # normalize UNSET_VALUE
     @role = @role.intern
-
   end
 
   # @param machine [Vagrant::Machine]
@@ -104,12 +107,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   end
 
   private
-
-  def validate_version(errors, machine)
-    if @version == UNSET_VALUE and global_config_from(machine).pe_build.version == UNSET_VALUE
-      errors << I18n.t('pebuild.config.pe_bootstrap.errors.unset_version')
-    end
-  end
 
   def validate_role(errors, machine)
     unless VALID_ROLES.any? {|sym| @role == sym.intern}
@@ -162,23 +159,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
         :autosign_class   => @autosign.class,
         :autosign_classes => VALID_AUTOSIGN_VALUES,
       )
-    end
-  end
-
-  # Safely access the global config
-  def global_config_from(machine)
-    case Vagrant::VERSION
-    when /^1\.[1234]/
-      # If we try to access the global config object directly from a validating
-      # machine, horrible things happen. To avoid this we access the environment's
-      # global config which should already be finalized.
-      env = machine.env.config_global
-    else # Vagrant 1.5.x and above
-      # This kinda seemed like the most direct replacement for config_global,
-      # but turned out not to really work. Returned a dummy object of some
-      # kind.
-      #env = vagrantfile.config
-      env = machine.config
     end
   end
 end

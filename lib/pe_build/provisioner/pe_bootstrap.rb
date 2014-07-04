@@ -13,6 +13,10 @@ module PEBuild
       require 'pe_build/provisioner/pe_bootstrap/answers_file'
       require 'pe_build/provisioner/pe_bootstrap/post_install'
 
+      class UnsetVersionError < Vagrant::Errors::VagrantError
+        error_key(:unset_version, 'pebuild.provisioner.pe_bootstrap.errors')
+      end
+
       # @!attribute [r] work_dir
       #   @return [String] The path to the machine pe_build working directory
 
@@ -71,6 +75,8 @@ module PEBuild
         provision.finalize!
 
         merged = PEBuild::Util::Config.local_merge(provision, global)
+
+        raise UnsetVersionError if merged.version.nil?
 
         @config = merged
       end

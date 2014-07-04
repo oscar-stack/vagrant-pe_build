@@ -40,6 +40,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   include PEBuild::ConfigDefault
 
   def finalize!
+    set_default :@version, nil
     set_default :@suffix, :detect
     set_default :@download_root, nil
     set_default :@filename, nil
@@ -73,7 +74,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
       if !(@version.match PE_VERSION_REGEX)
         errors << errmsg
       end
-    elsif @version != UNSET_VALUE
+    elsif @version != nil
       errors << errmsg
     end
   end
