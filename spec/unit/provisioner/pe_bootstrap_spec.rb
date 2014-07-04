@@ -2,8 +2,6 @@ require 'spec_helper'
 
 require 'pe_build/provisioner/pe_bootstrap'
 
-require 'pry'
-
 describe PEBuild::Provisioner::PEBootstrap do
   include_context 'vagrant-unit'
 
