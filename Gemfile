@@ -20,6 +20,9 @@ group :test do
   else
     gem 'vagrant', :github => 'mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
+
+  # Pinned on 05/05/2014. Compatible with Vagrant 1.5.x and 1.6.x.
+  gem 'vagrant-spec', :github => 'mitchellh/vagrant-spec', :ref => 'aae28ee'
 end
 
 eval_gemfile "#{__FILE__}.local" if File.exists? "#{__FILE__}.local"

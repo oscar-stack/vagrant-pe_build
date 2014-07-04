@@ -4,4 +4,5 @@ $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 # Acceptance tests are not loaded.
 ENV['VAGRANT_NO_PLUGINS'] = '1'
 
+require 'vagrant-spec/unit'
 require 'pe_build'
