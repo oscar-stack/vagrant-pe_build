@@ -2,6 +2,8 @@
 .ruby-version
 .yardoc
 /doc
+/acceptance/artifacts
 Gemfile.lock
 Gemfile.local
 *.gem
+vagrant-spec.config.rb
