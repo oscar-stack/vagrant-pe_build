@@ -5,7 +5,6 @@ shared_examples 'provider/provisioner/pe_build' do |provider, options|
   end
 
   include_context 'acceptance'
-  let(:extra_env) { options[:env_vars] }
 
   before(:each) do
     environment.skeleton('pe_build')
@@ -17,7 +16,33 @@ shared_examples 'provider/provisioner/pe_build' do |provider, options|
     assert_execute('vagrant', 'destroy', '--force', log: false)
   end
 
-  it 'provisions with pe_build' do
-    result = assert_execute('vagrant', 'up', "--provider=#{provider}")
+  context 'when download_root is set to a local directory' do
+    let(:extra_env) do
+      vars = options[:env_vars].dup
+      vars['PE_BUILD_DOWNLOAD_ROOT'] = options[:archive_path]
+
+      vars
+    end
+
+    it 'provisions with pe_build' do
+      result = assert_execute('vagrant', 'up', "--provider=#{provider}")
+    end
+  end
+
+  context 'when download_root is set to a webserver' do
+    let(:webserver_port) { 3838 }
+    let(:webserver_path) { options[:archive_path] }
+    include_context 'webserver'
+
+    let(:extra_env) do
+      vars = options[:env_vars].dup
+      vars['PE_BUILD_DOWNLOAD_ROOT'] = "http://localhost:#{webserver_port}/"
+
+      vars
+    end
+
+    it 'provisions with pe_build' do
+      result = assert_execute('vagrant', 'up', "--provider=#{provider}")
+    end
   end
 end
