@@ -62,8 +62,7 @@ module PEBuild
       uri = URI.parse(versioned_path("#{str}/#{@filename}"))
       dst = File.join(@archive_dir, versioned_path(@filename))
 
-      transfer = PEBuild::Transfer.generate(uri, dst)
-      transfer.copy
+      PEBuild::Transfer.copy(uri, dst)
     end
 
     # @param fs_dir [String] The base directory to extract the installer to

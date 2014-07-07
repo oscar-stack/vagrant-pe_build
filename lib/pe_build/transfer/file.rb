@@ -1,20 +1,15 @@
 require 'fileutils'
 require 'pe_build/idempotent'
 
-class PEBuild::Transfer::File
+# @todo These methods fail in a messy way if something goes wrong. They should
+#   be refactored to raise proper errors.
+# @api private
+module PEBuild::Transfer::File
+  extend PEBuild::Idempotent
 
   # @param src [URI] The local file path path to the file to copy
   # @param dst [String] The path to destination of the copied file
-  def initialize(uri, dst)
-    @src = uri.path
-    @dst = dst
-
-    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::file')
-  end
-
-  include PEBuild::Idempotent
-
-  def copy
-    idempotent(@dst) { FileUtils.cp @src, @dst }
+  def self.copy(src, dst)
+    idempotent(dst) { FileUtils.cp src.path, dst }
   end
 end

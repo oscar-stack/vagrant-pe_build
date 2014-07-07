@@ -4,7 +4,9 @@ require 'pe_build/idempotent'
 require 'open-uri'
 require 'progressbar'
 
-class PEBuild::Transfer::OpenURI
+# @api private
+module PEBuild::Transfer::OpenURI
+  extend PEBuild::Idempotent
 
   class DownloadFailed < Vagrant::Errors::VagrantError
     error_key(:download_failed, 'pebuild.transfer.open_uri')
@@ -12,36 +14,27 @@ class PEBuild::Transfer::OpenURI
 
   # @param uri [URI]    The http(s) URI to the file to copy
   # @param dst [String] The path to destination of the copied file
-  def initialize(uri, dst)
-    @uri, @dst = uri, dst
-
-    @logger = Log4r::Logger.new('vagrant::pe_build::transfer::open_uri')
-  end
-
-  include PEBuild::Idempotent
-
-  def copy
-    idempotent(@dst) do
-      tmpfile = download_file
-      FileUtils.mv(tmpfile, @dst)
+  def self.copy(uri, dst)
+    idempotent(dst) do
+      tmpfile = download_file(uri)
+      FileUtils.mv(tmpfile, dst)
     end
   rescue StandardError => e
-    raise DownloadFailed, :uri => @uri, :msg => e.message
+    raise DownloadFailed, :uri => uri, :msg => e.message
   end
 
   HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
 
-  private
-
   # Open a open-uri file handle for the given URL
   #
+  # @param uri [URI]
   # @return [IO]
-  def download_file
+  def self.download_file(uri)
     progress = nil
 
     content_length_proc = lambda do |length|
       if length and length > 0
-        STDERR.puts "Fetching: #{@uri}"
+        STDERR.puts "Fetching: #{uri}"
         progress = ProgressBar.new("Fetching file", length, STDERR)
         progress.file_transfer_mode
       end
@@ -56,6 +49,6 @@ class PEBuild::Transfer::OpenURI
       :progress_proc       => progress_proc,
     })
 
-    @uri.open(options)
+    uri.open(options)
   end
 end

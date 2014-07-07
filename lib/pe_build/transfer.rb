@@ -16,11 +16,13 @@ module PEBuild
       nil     => PEBuild::Transfer::File, # Assume that URIs without a scheme are files
     }
 
-    def self.generate(src, dst)
+    # @param src [URI] The local file path path to the file to copy
+    # @param dst [String] The path to destination of the copied file
+    def self.copy(src, dst)
       scheme = src.scheme
 
-      if (klass = IMPLEMENTATIONS[scheme])
-        klass.new(src, dst)
+      if (mod = IMPLEMENTATIONS[scheme])
+        mod.copy(src, dst)
       else
         raise UnhandledURIScheme, :scheme => scheme,
                                   :supported => IMPLEMENTATIONS.keys
@@ -28,4 +30,3 @@ module PEBuild
     end
   end
 end
-
