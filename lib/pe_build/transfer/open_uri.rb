@@ -8,6 +8,8 @@ require 'progressbar'
 module PEBuild::Transfer::OpenURI
   extend PEBuild::Idempotent
 
+  HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
+
   class DownloadFailed < Vagrant::Errors::VagrantError
     error_key(:download_failed, 'pebuild.transfer.open_uri')
   end
@@ -23,7 +25,16 @@ module PEBuild::Transfer::OpenURI
     raise DownloadFailed, :uri => uri, :msg => e.message
   end
 
-  HEADERS = {'User-Agent' => "Vagrant/PEBuild (v#{PEBuild::VERSION})"}
+  # @param uri [URI] The http(s) URI to the file to copy
+  # @return [String] The contents of the file with leading and trailing
+  #   whitespace removed.
+  #
+  # @since 0.9.0
+  def self.read(uri)
+    uri.read(HEADERS.merge({'Accept' => 'text/plain'})).strip
+  rescue StandardError => e
+    raise DownloadFailed, :uri => uri, :msg => e.message
+  end
 
   # Open a open-uri file handle for the given URL
   #
