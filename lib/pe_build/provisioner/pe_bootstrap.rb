@@ -2,6 +2,7 @@ require 'vagrant'
 
 require 'pe_build/archive'
 require 'pe_build/util/config'
+require 'pe_build/util/versioned_path'
 
 require 'log4r'
 require 'fileutils'
@@ -87,8 +88,9 @@ module PEBuild
       def load_archive
         # If a version file is set, use its contents to specify the PE version.
         unless @config.version_file.nil?
-          uri = URI.parse("#{@config.download_root}/#{@config.version_file}")
-          @config.version = PEBuild::Transfer.read(uri)
+          path = "#{@config.download_root}/#{@config.version_file}"
+          path = PEBuild::Util::VersionedPath.versioned_path(path, @config.version, @config.release)
+          @config.version = PEBuild::Transfer.read(URI.parse(path))
         end
 
         raise UnsetVersionError if @config.version.nil?
