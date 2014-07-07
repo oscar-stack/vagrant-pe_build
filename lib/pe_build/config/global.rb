@@ -18,6 +18,12 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   #   @since 0.1.0
   attr_accessor :version
 
+  # @!attribute version_file
+  #   @return [String] The path to a file relative to {#download_root}. The
+  #     contents of this file will be read and used to specify {#version}.
+  #   @since 0.9.0
+  attr_accessor :version_file
+
   # @!attribute suffix
   #   @return [String] The distribution specifix suffix of the Puppet
   #     Enterprise installer to use.
@@ -33,6 +39,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   def initialize
     @download_root = UNSET_VALUE
     @version       = UNSET_VALUE
+    @version_file  = UNSET_VALUE
     @suffix        = UNSET_VALUE
     @filename      = UNSET_VALUE
   end
@@ -41,6 +48,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
 
   def finalize!
     set_default :@version, nil
+    set_default :@version_file, nil
     set_default :@suffix, :detect
     set_default :@download_root, nil
     set_default :@filename, nil

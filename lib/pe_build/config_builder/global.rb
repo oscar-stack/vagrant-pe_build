@@ -6,6 +6,12 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
   #   @return [String] The version of Puppet Enterprise to install.
   def_model_attribute :version
 
+  # @!attribute [rw] version_file
+  #   @return [String] The path to a file relative to {#download_root}. The
+  #     contents of this file will be read and used to specify {#version}.
+  #   @since 0.9.0
+  def_model_attribute :version_file
+
   # @!attribute [rw] suffix
   #   @return [String] The distribution specifix suffix of the Puppet
   #     Enterprise installer to use.
@@ -24,6 +30,7 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
     Proc.new do |global_config|
       global_config.pe_build.download_root = attr(:download_root) if attr(:download_root)
       global_config.pe_build.version       = attr(:version)       if attr(:version)
+      global_config.pe_build.version_file  = attr(:version_file)  if attr(:version_file)
       global_config.pe_build.suffix        = attr(:suffix)        if attr(:suffix)
       global_config.pe_build.filename      = attr(:filename)      if attr(:filename)
     end

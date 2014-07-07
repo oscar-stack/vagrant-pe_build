@@ -46,6 +46,7 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         # Globally settable attributes
         pe.download_root = attr(:download_root) if attr(:download_root)
         pe.version       = attr(:version)       if attr(:version)
+        pe.version_file  = attr(:version_file)  if attr(:version_file)
         pe.suffix        = attr(:suffix)        if attr(:suffix)
         pe.filename      = attr(:filename)      if attr(:filename)
 

@@ -25,7 +25,8 @@ shared_examples 'provider/provisioner/pe_build' do |provider, options|
     end
 
     it 'provisions with pe_build' do
-      result = assert_execute('vagrant', 'up', "--provider=#{provider}")
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'explicit-version')
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'latest-version')
     end
   end
 
@@ -42,7 +43,8 @@ shared_examples 'provider/provisioner/pe_build' do |provider, options|
     end
 
     it 'provisions with pe_build' do
-      result = assert_execute('vagrant', 'up', "--provider=#{provider}")
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'explicit-version')
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'latest-version')
     end
   end
 end

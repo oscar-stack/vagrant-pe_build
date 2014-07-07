@@ -76,8 +76,6 @@ module PEBuild
 
         merged = PEBuild::Util::Config.local_merge(provision, global)
 
-        raise UnsetVersionError if merged.version.nil?
-
         @config = merged
       end
 
@@ -87,6 +85,14 @@ module PEBuild
       end
 
       def load_archive
+        # If a version file is set, use its contents to specify the PE version.
+        unless @config.version_file.nil?
+          uri = URI.parse("#{@config.download_root}/#{@config.version_file}")
+          @config.version = PEBuild::Transfer.read(uri)
+        end
+
+        raise UnsetVersionError if @config.version.nil?
+
         if @config.suffix == :detect and @config.filename.nil?
           filename = @machine.guest.capability('detect_installer', @config.version)
         else

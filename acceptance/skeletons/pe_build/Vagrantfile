@@ -1,12 +1,24 @@
 Vagrant.configure('2') do |config|
   config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
-
   config.vm.box = 'box'
-  config.vm.provision :pe_bootstrap do |p|
-    p.version = '3.2.3'
-    p.role = :agent
-    # Basically the stock answer file with:
-    #   q_fail_on_unsuccessful_master_lookup=n
-    p.answer_file = File.join(File.dirname(__FILE__), 'agent-3.x.txt.erb')
+
+  config.vm.define 'explicit-version' do |node|
+    node.vm.provision :pe_bootstrap do |p|
+      p.version = '3.2.3'
+      p.role = :agent
+      # Basically the stock answer file with:
+      #   q_fail_on_unsuccessful_master_lookup=n
+      p.answer_file = File.join(File.dirname(__FILE__), 'agent-3.x.txt.erb')
+    end
+  end
+
+  config.vm.define 'latest-version' do |node|
+    node.vm.provision :pe_bootstrap do |p|
+      p.version_file = 'LATEST'
+      p.role = :agent
+      # Basically the stock answer file with:
+      #   q_fail_on_unsuccessful_master_lookup=n
+      p.answer_file = File.join(File.dirname(__FILE__), 'agent-3.x.txt.erb')
+    end
   end
 end
