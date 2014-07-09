@@ -177,6 +177,8 @@ Requirements
 
 [vagranthosts]: https://github.com/adrienthebo/vagrant-hosts
 
+Ensure VMs have a FQDN set before installing PE. The easiest way to do this is by setting the `hostname` attribute of the VM configuration.
+
 Puppet Enterprise relies on SSL for security so you'll need to ensure that your
 SSL configuration isn't borked. [vagrant-hosts][vagranthosts] is recommended to
 configure VMs with semi-sane DNS.
