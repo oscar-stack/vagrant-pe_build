@@ -1,6 +1,18 @@
 vagrant-pe_build
 ================
 
+0.9.0
+-----
+
+2014-07-09
+
+This is a backwards compatible feature release.
+
+  * Add two new config attributes, `version_file` and `series`, that add
+    flexibility to the installation location.
+  * Internal code cleanup and re-organization.
+  * Add unit and acceptance tests.
+
 0.8.8
 -----
 
