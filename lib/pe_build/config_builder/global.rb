@@ -12,7 +12,13 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
   #   @since 0.9.0
   def_model_attribute :version_file
 
-  def_model_attribute :release
+  # @!attribute [rw] series
+  #   @return [String] The release series of PE. Completely optional and
+  #     currently has no effect other than being an interpolation token
+  #     available for use in {#download_root}.
+  #
+  #   @since 0.9.0
+  def_model_attribute :series
 
   # @!attribute [rw] suffix
   #   @return [String] The distribution specifix suffix of the Puppet
@@ -33,6 +39,7 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
       global_config.pe_build.download_root = attr(:download_root) if attr(:download_root)
       global_config.pe_build.version       = attr(:version)       if attr(:version)
       global_config.pe_build.version_file  = attr(:version_file)  if attr(:version_file)
+      global_config.pe_build.series        = attr(:series)        if attr(:series)
       global_config.pe_build.suffix        = attr(:suffix)        if attr(:suffix)
       global_config.pe_build.filename      = attr(:filename)      if attr(:filename)
     end

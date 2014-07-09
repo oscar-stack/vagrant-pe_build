@@ -89,7 +89,7 @@ module PEBuild
         # If a version file is set, use its contents to specify the PE version.
         unless @config.version_file.nil?
           path = "#{@config.download_root}/#{@config.version_file}"
-          path = PEBuild::Util::VersionedPath.versioned_path(path, @config.version, @config.release)
+          path = PEBuild::Util::VersionedPath.versioned_path(path, @config.version, @config.series)
           @config.version = PEBuild::Transfer.read(URI.parse(path))
         end
 
@@ -102,7 +102,7 @@ module PEBuild
         end
 
         @archive = PEBuild::Archive.new(filename, @machine.env)
-        @archive.release = @config.release
+        @archive.series = @config.series
         @archive.version = @config.version
       end
 

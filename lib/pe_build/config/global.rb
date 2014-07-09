@@ -24,14 +24,13 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   #   @since 0.9.0
   attr_accessor :version_file
 
-  # @!attribute release
+  # @!attribute series
   #   @return [String] The release series of PE. Completely optional and
   #     currently has no effect other than being an interpolation token
   #     available for use in {#download_root}.
-  #     `x.y`.
   #
   #   @since 0.9.0
-  attr_accessor :release
+  attr_accessor :series
 
   # @!attribute suffix
   #   @return [String] The distribution specifix suffix of the Puppet
@@ -49,7 +48,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
     @download_root = UNSET_VALUE
     @version       = UNSET_VALUE
     @version_file  = UNSET_VALUE
-    @release       = UNSET_VALUE
+    @series        = UNSET_VALUE
     @suffix        = UNSET_VALUE
     @filename      = UNSET_VALUE
   end
@@ -59,7 +58,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   def finalize!
     set_default :@version, nil
     set_default :@version_file, nil
-    set_default :@release, nil
+    set_default :@series, nil
     set_default :@suffix, :detect
     set_default :@download_root, nil
     set_default :@filename, nil

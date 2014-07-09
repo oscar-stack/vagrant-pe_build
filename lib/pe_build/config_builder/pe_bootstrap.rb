@@ -47,7 +47,7 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         pe.download_root = attr(:download_root) if attr(:download_root)
         pe.version       = attr(:version)       if attr(:version)
         pe.version_file  = attr(:version_file)  if attr(:version_file)
-        pe.release       = attr(:release)       if attr(:release)
+        pe.series        = attr(:series)        if attr(:series)
         pe.suffix        = attr(:suffix)        if attr(:suffix)
         pe.filename      = attr(:filename)      if attr(:filename)
 

@@ -10,14 +10,14 @@ module PEBuild
       # @param path [String] A path.
       # @param version [String, nil] A string that will be substituted for any
       #   `:version` token in `path`.
-      # @param release [String, nil] A string that will be substituted for any
-      #   `:release` token in `path`.
+      # @param series [String, nil] A string that will be substituted for any
+      #   `:series` token in `path`.
       #
       # @return [String]
-      def self.versioned_path(path, version = nil, release = nil)
+      def self.versioned_path(path, version = nil, series = nil)
         result = path.dup
         result.gsub!(/:version/, version) unless version.nil?
-        result.gsub!(/:release/, release) unless release.nil?
+        result.gsub!(/:series/, series) unless series.nil?
 
         result
       end
