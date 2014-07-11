@@ -49,7 +49,7 @@ module PEBuild
       @logger = Log4r::Logger.new('vagrant::pe_build::archive')
     end
 
-    # @param base_uri [String] A string representation of the download source URI
+    # @param str [String] A string representation of the download source URI
     def fetch(str)
       return if self.exist?
 

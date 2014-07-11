@@ -2,7 +2,7 @@
 # POSIX systems.
 #
 # @abstract
-# @protected
+# @api protected
 class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
 
   # @!method name

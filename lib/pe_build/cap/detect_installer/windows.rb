@@ -2,7 +2,7 @@
 # POSIX systems.
 #
 # @abstract
-# @protected
+# @api protected
 class PEBuild::Cap::DetectInstaller::Windows < PEBuild::Cap::DetectInstaller::Base
 
   def detect

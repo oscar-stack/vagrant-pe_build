@@ -14,20 +14,20 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   # @!attribute version
   #   @return [String] The version of PE to install. Must conform to
   #     `x.y.x[-optional-arbitrary-stuff]`. Used to determine the name of the
-  #     PE installer archive if {#filename} is unset.
+  #     PE installer archive if `filename` is unset.
   #   @since 0.1.0
   attr_accessor :version
 
   # @!attribute version_file
-  #   @return [String] The path to a file relative to {#download_root}. The
-  #     contents of this file will be read and used to specify {#version}.
+  #   @return [String] The path to a file relative to `download_root`. The
+  #     contents of this file will be read and used to specify `version`.
   #   @since 0.9.0
   attr_accessor :version_file
 
   # @!attribute series
   #   @return [String] The release series of PE. Completely optional and
   #     currently has no effect other than being an interpolation token
-  #     available for use in {#download_root}.
+  #     available for use in `download_root`.
   #
   #   @since 0.9.0
   attr_accessor :series

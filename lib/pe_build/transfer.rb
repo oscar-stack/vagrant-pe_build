@@ -32,7 +32,7 @@ module PEBuild
     # Return the contents of a local or remote file.
     #
     # @param src [URI] The URI of the source file.
-    # @raises [UnhandledURIScheme] If the URI uses an unsupported scheme.
+    # @raise [UnhandledURIScheme] If the URI uses an unsupported scheme.
     # @return [String] The contents of the source file.
     #
     # @since 0.9.0
