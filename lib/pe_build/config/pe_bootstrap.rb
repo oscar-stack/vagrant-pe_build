@@ -67,11 +67,6 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   global configuration; it's assumed that the late configuration merging in
   #   the provisioner will handle that.
   def finalize!
-
-    # NOTE: The version default is copied from Config::Global. Can't call
-    # `super` here as it does weird things to `download_root`.
-    set_default :@version,     nil
-
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'

@@ -92,7 +92,8 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
       if !(@version.match PE_VERSION_REGEX)
         errors << errmsg
       end
-    elsif @version != nil
+    # Allow the version to be either unset or nil. Anything else is an error.
+    elsif ![nil, UNSET_VALUE].include? @version
       errors << errmsg
     end
   end
