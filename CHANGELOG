@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.9.1
+-----
+
+2014-07-13
+
+This is a backwards compatible bugfix release.
+
+  * (GH-68) Fix a regression in merging version numbers set in global config.
+
 0.9.0
 -----
 
