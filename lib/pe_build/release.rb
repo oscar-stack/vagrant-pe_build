@@ -34,7 +34,8 @@ module PEBuild
     require 'pe_build/release/3_0'
     require 'pe_build/release/3_1'
     require 'pe_build/release/3_2'
+    require 'pe_build/release/3_3'
 
-    LATEST_VERSION = '3.2.3'
+    LATEST_VERSION = '3.3.0'
   end
 end
