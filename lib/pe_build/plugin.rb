@@ -61,9 +61,11 @@ module PEBuild
       PEBuild::Cap::DetectInstaller::SLES
     end
 
-    guest_capability('solaris', 'detect_installer') do
-      require_relative 'cap'
-      PEBuild::Cap::DetectInstaller::Solaris
+    [:solaris, :solaris11].each do |os|
+      guest_capability(os, 'detect_installer') do
+        require_relative 'cap'
+        PEBuild::Cap::DetectInstaller::Solaris
+      end
     end
 
     guest_capability('windows', 'detect_installer') do
@@ -78,9 +80,11 @@ module PEBuild
       PEBuild::Cap::RunInstall::POSIX
     end
 
-    guest_capability('solaris', 'run_install') do
-      require_relative 'cap'
-      PEBuild::Cap::RunInstall::POSIX
+    [:solaris, :solaris11].each do |os|
+      guest_capability(os, 'run_install') do
+        require_relative 'cap'
+        PEBuild::Cap::RunInstall::POSIX
+      end
     end
 
     guest_capability('windows', 'run_install') do
