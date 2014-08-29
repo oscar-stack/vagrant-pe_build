@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.9.4
+-----
+
+2014-08-29
+
+This is a backwards compatible patch release.
+
+  * Fix detection of Solaris 11 as a Solaris operating system.
+
 0.9.3
 -----
 
