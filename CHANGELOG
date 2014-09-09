@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.9.5
+-----
+
+2014-09-09
+
+This is a backwards compatible patch release.
+
+  * Add release info for PE 3.3.2 and 2.8.8.
+
 0.9.4
 -----
 
