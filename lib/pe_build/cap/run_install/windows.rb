@@ -15,7 +15,8 @@ class PEBuild::Cap::RunInstall::Windows
       return
     end
 
-    root = File.join('\\\\VBOXSVR\\vagrant', PEBuild::WORK_DIR)
+    root = machine.communicate.shell.cmd('ECHO %SYSTEMDRIVE%')[:data][0][:stdout].chomp
+    root = File.join("#{root}\\vagrant", PEBuild::WORK_DIR)
 
     # The installer will be fed to msiexec. That means the File.join() method
     # is of limited use since it won't execute on the Windows system
