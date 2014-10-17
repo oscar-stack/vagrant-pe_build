@@ -1,6 +1,19 @@
 vagrant-pe_build
 ================
 
+0.9.6
+-----
+
+2014-10-17
+
+This is a backwards compatible patch release.
+
+  * (GH-74) Change the q_database_host answer on 3.x masters to the hostname of
+    the box instead of localhost.
+
+  * (GH-75) Generalize Windows installation so that it no longer searches for
+    the installer in Virtualbox specific mount points.
+
 0.9.5
 -----
 
