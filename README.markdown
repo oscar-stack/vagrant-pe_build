@@ -3,6 +3,8 @@ Vagrant PE build
 
 Download and install Puppet Enterprise with Vagrant.
 
+[![Build Status](https://travis-ci.org/adrienthebo/vagrant-pe_build?branch=master)](https://travis-ci.org/adrienthebo/vagrant-pe_build)
+
 Synopsis
 --------
 
