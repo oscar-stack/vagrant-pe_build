@@ -9,7 +9,7 @@ group :plugins do
   gemspec
 end
 
-group :doc do
+group :development do
   gem 'yard', '~> 0.8.7'
   gem 'redcarpet'
 end
