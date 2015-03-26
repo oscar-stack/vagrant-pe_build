@@ -10,8 +10,7 @@ This is a backwards compatible patch release.
 
   * Add support for 3.7.x patch releases.
 
-  * (GH-81) Generalize Windows installation so that it no longer searches for
-    the installer in Virtualbox specific mount points.
+  * (GH-81) Add support for upcoming future parser settings.
 
 0.9.6
 -----
