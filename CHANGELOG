@@ -1,6 +1,18 @@
 vagrant-pe_build
 ================
 
+0.9.7
+-----
+
+2015-03-26
+
+This is a backwards compatible patch release.
+
+  * Add support for 3.7.x patch releases.
+
+  * (GH-81) Generalize Windows installation so that it no longer searches for
+    the installer in Virtualbox specific mount points.
+
 0.9.6
 -----
 
