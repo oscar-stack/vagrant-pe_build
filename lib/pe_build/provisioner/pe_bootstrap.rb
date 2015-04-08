@@ -7,6 +7,8 @@ require 'pe_build/util/versioned_path'
 require 'log4r'
 require 'fileutils'
 
+require 'uri'
+
 module PEBuild
   module Provisioner
     class PEBootstrap < Vagrant.plugin('2', :provisioner)
@@ -88,7 +90,12 @@ module PEBuild
       def load_archive
         # If a version file is set, use its contents to specify the PE version.
         unless @config.version_file.nil?
-          path = "#{@config.download_root}/#{@config.version_file}"
+          if URI.parse(@config.version_file).scheme.nil?
+            # Non-URI paths are joined to the download root.
+            path = "#{@config.download_root}/#{@config.version_file}"
+          else
+            path = @config.version_file
+          end
           path = PEBuild::Util::VersionedPath.versioned_path(path, @config.version, @config.series)
           @config.version = PEBuild::Transfer.read(URI.parse(path))
         end

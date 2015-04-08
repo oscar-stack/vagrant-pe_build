@@ -19,8 +19,9 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   attr_accessor :version
 
   # @!attribute version_file
-  #   @return [String] The path to a file relative to `download_root`. The
-  #     contents of this file will be read and used to specify `version`.
+  #   @return [String, URI] A fully-qualified URI or a path relative to
+  #     `download_root`. The contents of this file will be read and used to
+  #     Specify `version`.
   #   @since 0.9.0
   attr_accessor :version_file
 
