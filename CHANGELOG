@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.10.0
+------
+
+2015-04-08
+
+This is a backwards compatible feature release.
+
+  * Allow `version_file` to be a URI. This allows an external service to
+	  determine the version of PE to install on a machine.
+
 0.9.7
 -----
 
