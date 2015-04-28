@@ -22,9 +22,13 @@ module PEBuild::Release
     add_release :ubuntu, '14.04'
 
     add_release :windows, '2003'
+    add_release :windows, '2003R2'
+    add_release :windows, '2008'
     add_release :windows, '2008R2'
     add_release :windows, '7'
     add_release :windows, '2012'
+    add_release :windows, '2012R2'
+    add_release :windows, '8'
 
     # TODO: PE 3.3 has support for OS X, but we weed to add some capabilities
     # to make this functional.
