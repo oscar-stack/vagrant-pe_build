@@ -45,6 +45,11 @@ module PEBuild::Release
     # add_release :aix, '6.1'
     # add_release :aix, '7.1'
 
+    # Starting with PE 3.7, Network Device agents are also supported
+    #
+    #  add_release :arista,  'see forge module'
+    #  add_release :cumulus, 'see forge module'
+
     set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-3.x.txt.erb')
     set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
   end
