@@ -50,7 +50,7 @@ overridden at this point.
 
   * `role`
     * Description: The role of the Puppet Enterprise install.
-    * Options: `:agent`, `:master`
+    * Options: `:agent`, `:master`, `:camom`, `:puppetdb`, `:console`, `:cmaster`
     * Default: `:agent`
   * `verbose`
     * Description: Whether or not to show the verbose output of the Puppet
