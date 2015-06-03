@@ -23,7 +23,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   attr_accessor :role
 
   # @api private
-  VALID_ROLES = [:agent, :master]
+  VALID_ROLES = [:agent, :master, :camom, :puppetdb, :console, :cmaster]
 
   # @!attribute relocate_manifests
   #   @return [TrueClass, FalseClass] if the puppet master should use manifests
