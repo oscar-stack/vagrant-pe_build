@@ -1,4 +1,5 @@
 require 'pe_build/on_machine'
+require 'pe_build/util/version_string'
 
 class PEBuild::Provisioner::PEBootstrap::PostInstall
 
@@ -24,7 +25,12 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
       manifest = resources.join("\n\n")
       write_manifest(manifest)
 
-      puppet_apply  = "/opt/puppet/bin/puppet apply"
+      if PEBuild::Util::VersionString.compare(@config.version, '4.0.0') < 0 then
+        puppet_apply  = "/opt/puppet/bin/puppet apply"
+      else
+        puppet_apply  = "/opt/puppetlabs/bin/puppet apply"
+      end
+
       manifest_path = "/vagrant/.pe_build/post-install/#{@machine.name}.pp"
 
       on_machine(@machine, "#{puppet_apply} #{manifest_path}")
