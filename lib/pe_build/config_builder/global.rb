@@ -36,12 +36,12 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
 
   def to_proc
     Proc.new do |global_config|
-      global_config.pe_build.download_root = attr(:download_root) if attr(:download_root)
-      global_config.pe_build.version       = attr(:version)       if attr(:version)
-      global_config.pe_build.version_file  = attr(:version_file)  if attr(:version_file)
-      global_config.pe_build.series        = attr(:series)        if attr(:series)
-      global_config.pe_build.suffix        = attr(:suffix)        if attr(:suffix)
-      global_config.pe_build.filename      = attr(:filename)      if attr(:filename)
+      with_attr(:download_root) { |val| global_config.pe_build.download_root = val }
+      with_attr(:version)       { |val| global_config.pe_build.version       = val }
+      with_attr(:version_file)  { |val| global_config.pe_build.version_file  = val }
+      with_attr(:series)        { |val| global_config.pe_build.series        = val }
+      with_attr(:suffix)        { |val| global_config.pe_build.suffix        = val }
+      with_attr(:filename)      { |val| global_config.pe_build.filename      = val }
     end
   end
 end

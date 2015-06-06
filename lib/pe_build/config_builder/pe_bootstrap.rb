@@ -44,19 +44,19 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
     Proc.new do |vm_config|
       vm_config.provision :pe_bootstrap do |pe|
         # Globally settable attributes
-        pe.download_root = attr(:download_root) if attr(:download_root)
-        pe.version       = attr(:version)       if attr(:version)
-        pe.version_file  = attr(:version_file)  if attr(:version_file)
-        pe.series        = attr(:series)        if attr(:series)
-        pe.suffix        = attr(:suffix)        if attr(:suffix)
-        pe.filename      = attr(:filename)      if attr(:filename)
+        with_attr(:download_root) { |val| pe.download_root = val }
+        with_attr(:version)       { |val| pe.version       = val }
+        with_attr(:version_file)  { |val| pe.version_file  = val }
+        with_attr(:series)        { |val| pe.series        = val }
+        with_attr(:suffix)        { |val| pe.suffix        = val }
+        with_attr(:filename)      { |val| pe.filename      = val }
 
-        pe.role               = attr(:role)               if attr(:role)
-        pe.verbose            = attr(:verbose)            if attr(:verbose)
-        pe.master             = attr(:master)             if attr(:master)
-        pe.answer_file        = attr(:answer_file)        if attr(:answer_file)
-        pe.relocate_manifests = attr(:relocate_manifests) if attr(:relocate_manifests)
-        pe.autosign           = attr(:autosign)           if attr(:autosign)
+        with_attr(:role)               { |val| pe.role               = val }
+        with_attr(:verbose)            { |val| pe.verbose            = val }
+        with_attr(:master)             { |val| pe.master             = val }
+        with_attr(:answer_file)        { |val| pe.answer_file        = val }
+        with_attr(:relocate_manifests) { |val| pe.relocate_manifests = val }
+        with_attr(:autosign)           { |val| pe.autosign           = val }
       end
     end
   end
