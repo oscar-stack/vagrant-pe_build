@@ -1,24 +1,34 @@
+def set_resources box, max_ram=512, max_cpu=1
+  box.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--cpus", max_cpu]
+    vb.customize ["modifyvm", :id, "--memory", max_ram]
+  end
+end
+
 Vagrant.configure('2') do |config|
   config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
+  # This is the box name used by the setup helpers in the acceptance tests.
   config.vm.box = 'box'
 
-  config.vm.define 'explicit-version' do |node|
+  config.vm.define 'pe-3x' do |node|
+    node.vm.hostname = 'pe-3x.pe-bootstrap.vlan'
+    # All-in-one master nodes need a generous amount of RAM for all the Java.
+    set_resources node, 4096, 1
+
     node.vm.provision :pe_bootstrap do |p|
-      p.version = '3.2.3'
-      p.role = :agent
-      # Basically the stock answer file with:
-      #   q_fail_on_unsuccessful_master_lookup=n
-      p.answer_file = File.join(File.dirname(__FILE__), 'agent-3.x.txt.erb')
+      p.version = '3.8.0'
+      p.role = :master
     end
   end
 
-  config.vm.define 'latest-version' do |node|
+  config.vm.define 'pe-latest' do |node|
+    node.vm.hostname = 'pe-latest.pe-bootstrap.vlan'
+    # All-in-one master nodes need a generous amount of RAM for all the Java.
+    set_resources node, 4096, 1
+
     node.vm.provision :pe_bootstrap do |p|
-      p.version_file = 'LATEST'
-      p.role = :agent
-      # Basically the stock answer file with:
-      #   q_fail_on_unsuccessful_master_lookup=n
-      p.answer_file = File.join(File.dirname(__FILE__), 'agent-3.x.txt.erb')
+      p.version_file  = 'LATEST'
+      p.role = :master
     end
   end
 end
