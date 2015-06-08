@@ -18,9 +18,13 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
 
       resources = []
 
+      if PEBuild::Util::VersionString.compare(@config.version, '3.7.0') < 0 then
+        resources << gen_httpd
+      else
+        resources << gen_puppetserver
+      end
       resources << gen_relocate if @config.relocate_manifests
       resources << gen_autosign if @config.autosign
-      resources << gen_service
 
       manifest = resources.join("\n\n")
       write_manifest(manifest)
@@ -52,14 +56,14 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
     manifest = <<-MANIFEST.gsub(/^\s{6}/, '')
       augeas { 'move_manifestdir':
         changes => 'set etc/puppetlabs/puppet/puppet.conf/main/manifestdir /manifests',
-        notify  => Service['pe-httpd'],
+        notify  => Service[$pe_master_service],
       }
 
       # Update puppet.conf to add the modulepath directive to point to the
       # /module mount, if it hasn't already been set.
       augeas { 'move_modulepath':
         changes => 'set etc/puppetlabs/puppet/puppet.conf/main/modulepath /modules',
-        notify  => Service['pe-httpd'],
+        notify  => Service[$pe_master_service],
       }
 
       # Rewrite the olde site.pp config since it's not used, and warn people
@@ -68,7 +72,7 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
         ensure  => file,
         path    => '/etc/puppetlabs/puppet/manifests/site.pp',
         content => '# /etc/puppetlabs/puppet/manifests is not used; see /manifests.',
-        notify  => Service['pe-httpd'],
+        notify  => Service[$pe_master_service],
       }
     MANIFEST
 
@@ -95,16 +99,30 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
         owner   => 'root',
         group   => 'pe-puppet',
         mode    => '0644',
-        notify  => Service['pe-httpd'],
+        notify  => Service[$pe_master_service],
       }
     MANIFEST
 
     manifest
   end
 
-  def gen_service
+  def gen_httpd
     manifest = <<-MANIFEST.gsub(/^\s{6}/, '')
-      service { 'pe-httpd':
+      $pe_master_service = 'pe-httpd'
+
+      service { "$pe_master_service":
+        ensure => running,
+      }
+    MANIFEST
+
+    manifest
+  end
+
+  def gen_puppetserver
+    manifest = <<-MANIFEST.gsub(/^\s{6}/, '')
+      $pe_master_service = 'pe-puppetserver'
+
+      service { "$pe_master_service":
         ensure => running,
       }
     MANIFEST
