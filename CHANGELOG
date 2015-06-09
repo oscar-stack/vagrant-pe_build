@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.10.2
+------
+
+2015-06-08
+
+This is a backwards compatible bugfix release.
+
+  * Fix compatibility issues with Puppet Server and Puppet 4.
+
 0.10.1
 ------
 
