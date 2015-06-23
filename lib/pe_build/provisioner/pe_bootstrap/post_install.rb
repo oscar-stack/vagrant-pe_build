@@ -81,7 +81,7 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
 
   def gen_autosign
 
-    autosign_entries = ['pe-internal-dashboard', @machine.name ]
+    autosign_entries = ['pe-internal-dashboard', @machine.name, @config.cmaster, @config.puppetdb, @config.console ]
 
     case @config.autosign
     when TrueClass
