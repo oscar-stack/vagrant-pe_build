@@ -29,7 +29,7 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
       manifest = resources.join("\n\n")
       write_manifest(manifest)
 
-      if PEBuild::Util::VersionString.compare(@config.version, '4.0.0') < 0 then
+      if PEBuild::Util::VersionString.compare(@config.version, '2015.2.0') < 0 then
         puppet_apply  = "/opt/puppet/bin/puppet apply"
       else
         puppet_apply  = "/opt/puppetlabs/bin/puppet apply"
