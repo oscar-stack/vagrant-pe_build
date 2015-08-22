@@ -2,6 +2,10 @@ require 'vagrant'
 
 class PEBuild::Command::Base < Vagrant.plugin(2, :command)
 
+  def self.synopsis
+    'list and download PE installers'
+  end
+
   def initialize(argv, env)
     super
     split_argv
