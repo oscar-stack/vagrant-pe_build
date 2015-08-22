@@ -39,7 +39,7 @@ class PEBuild::Command::Copy < Vagrant.plugin(2, :command)
 
       o.separator ''
 
-      o.on('-v', '--version=val', String, "The version of PE to fetch") do |val|
+      o.on('-r', '--release=val', String, "The release of PE to fetch") do |val|
         @options[:version] = val
       end
 
