@@ -57,5 +57,6 @@ module PEBuild::Release
 
   @releases['3.8.0'] = three_eight_x
   @releases['3.8.1'] = three_eight_x
+  @releases['3.8.2'] = three_eight_x
 end
 
