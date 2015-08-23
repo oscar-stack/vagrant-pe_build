@@ -12,7 +12,6 @@ class PEBuild::Command::Base < Vagrant.plugin(2, :command)
 
     @subcommands = {
       'list'     => PEBuild::Command::List,
-      'download' => PEBuild::Command::Download,
       'copy'     => PEBuild::Command::Copy,
     }
   end
