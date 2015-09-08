@@ -2,6 +2,12 @@ require 'pe_build/release'
 
 require 'erb'
 
+# A sub-provisioner which generates answer file content.
+#
+# This is an internal provisioner which is invoked by
+# `PEBuild::Provisioner::PEBootstrap`.
+#
+# @private
 class PEBuild::Provisioner::PEBootstrap::AnswersFile
 
   # @param machine [Vagrant::Machine]
@@ -26,6 +32,15 @@ class PEBuild::Provisioner::PEBootstrap::AnswersFile
     @output_file.open('w') { |fh| fh.write(render_answers) }
   end
 
+  def render_answers
+    answer_template = template_data
+    unless @config.answer_extras.empty?
+      answer_template += ("\n" + @config.answer_extras.map {|e| e.to_s}.join("\n") + "\n")
+    end
+
+    ERB.new(answer_template).result(binding)
+  end
+
   private
 
   def set_template_path
@@ -42,9 +57,9 @@ class PEBuild::Provisioner::PEBootstrap::AnswersFile
     @logger.info "Using #{mode} answers file template #{@template} for #{@machine.inspect}"
   end
 
-  def render_answers
-    template_data = File.read(@template)
-    ERB.new(template_data).result(binding)
+  # Separated for easy stubbing in spec tests.
+  def template_data
+    File.read(@template)
   end
 
   def machine_hostname
