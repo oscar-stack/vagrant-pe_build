@@ -21,6 +21,12 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
   #     directory.
   def_model_attribute :answer_file
 
+  # @!attribute answer_extras
+  #   @return [Array<String>] An array of additional answer strings that will
+  #     be appended to the answer file. (Optional)
+  #   @since 0.11.0
+  def_model_attribute :answer_extras
+
   # @!attribute [rw] relocate_manifests
   #   @return [Boolean] Whether or not to change the PE master to use a config
   #     of manifestdir=/manifests and modulepath=/modules. This is meant to be
@@ -55,6 +61,7 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         with_attr(:verbose)            { |val| pe.verbose            = val }
         with_attr(:master)             { |val| pe.master             = val }
         with_attr(:answer_file)        { |val| pe.answer_file        = val }
+        with_attr(:answer_extras)      { |val| pe.answer_extras      = val }
         with_attr(:relocate_manifests) { |val| pe.relocate_manifests = val }
         with_attr(:autosign)           { |val| pe.autosign           = val }
       end

@@ -58,6 +58,8 @@ en:
             Autosign can only be specified if the pe_bootstrap role is 'master', not %{role}.
           invalid_autosign_class: |-
             Autosign must be one of %{autosign_classes}, but was of type %{autosign}.
+          invalid_answer_extras: |-
+            Answer_extras must be an Array, got a %{class}.
     cap:
       run_install:
         already_installed: |-

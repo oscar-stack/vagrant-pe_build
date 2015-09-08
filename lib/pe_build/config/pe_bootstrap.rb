@@ -12,6 +12,12 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   @since 0.1.0
   attr_accessor :answer_file
 
+  # @!attribute answer_extras
+  #   @return [Array<String>] An array of additional answer strings that will
+  #     be appended to the answer file. (Optional)
+  #   @since 0.11.0
+  attr_accessor :answer_extras
+
   # @!attribute verbose
   #   @return [TrueClass, FalseClass] if stdout will be displayed when installing
   #   @since 0.1.0
@@ -53,6 +59,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     @verbose     = UNSET_VALUE
     @master      = UNSET_VALUE
     @answer_file = UNSET_VALUE
+    @answer_extras = UNSET_VALUE
 
     @relocate_manifests = UNSET_VALUE
 
@@ -71,6 +78,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@verbose,     true
     set_default :@master,      'master'
     set_default :@answer_file, nil
+    set_default :@answer_extras, []
     set_default :@autosign,    (@role == :master)
 
     set_default :@relocate_manifests, false
@@ -94,6 +102,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     validate_verbose(errors, machine)
     validate_master(errors, machine)
     validate_answer_file(errors, machine)
+    validate_answer_extras(errors, machine)
     validate_relocate_manifests(errors, machine)
     validate_autosign(errors, machine)
 
@@ -131,6 +140,15 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   def validate_answer_file(errors, machine)
     if @answer_file and !File.readable? @answer_file
       errors << "'answers_file' must be a readable file"
+    end
+  end
+
+  def validate_answer_extras(errors, machine)
+    unless @answer_extras.is_a? Array
+      errors << I18n.t(
+        'pebuild.config.pe_bootstrap.errors.invalid_answer_extras',
+        :class => @answer_extras.class
+      )
     end
   end
 

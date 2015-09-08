@@ -65,6 +65,11 @@ overridden at this point.
       Values can be paths relative to the Vagrantfile's project directory.
     * Default: The default answer file for the Puppet Enterprise version and
       role.
+  * `answer_extras`
+    * Description: An array of strings that will be appended to the answer file
+      template, one string per line. This can be used to supply additional
+      answers and override default answers.
+    * Default: An empty array.
   * `relocate_manifests`
     * Description: Whether or not to change the PE master to use a config of
       `manifestdir=/manifests` and `modulepath=/modules`. This is meant to be
