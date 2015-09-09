@@ -7,7 +7,7 @@ require 'erb'
 # This is an internal provisioner which is invoked by
 # `PEBuild::Provisioner::PEBootstrap`.
 #
-# @private
+# @api private
 class PEBuild::Provisioner::PEBootstrap::AnswersFile
 
   # @param machine [Vagrant::Machine]

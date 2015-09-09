@@ -1,6 +1,12 @@
 require 'pe_build/on_machine'
 require 'pe_build/util/version_string'
 
+# A sub-provisioner which applies post-install configuration.
+#
+# This is an internal provisioner which is invoked by
+# `PEBuild::Provisioner::PEBootstrap`.
+#
+# @api private
 class PEBuild::Provisioner::PEBootstrap::PostInstall
 
   def initialize(machine, config, work_dir)
