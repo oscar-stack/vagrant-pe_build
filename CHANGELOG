@@ -1,6 +1,24 @@
 vagrant-pe_build
 ================
 
+0.11.0
+------
+
+2015-09-08
+
+This is a feature release that also removes one deprecated command.
+
+  * (GH-66) The `pe_bootstrap` provisioner now has a `answers_extra`
+    configuration option. This option can be set to a list of strings which
+    will be appended to the answer file, one entry per line.
+
+  * (GH-44) Vagrant 1.3.0 prevented any plugin from declaring a command that
+    uses a `--version` flag. The `vagrant pe-build copy` command now uses a
+    flag called `--release` to specify which PE version to download.
+
+  * (GH-35) The deprecated `vagrant pe-build download` command has been
+    removed. Use `vagrant pe-build copy` instead.
+
 0.10.4
 ------
 
