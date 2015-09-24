@@ -1,6 +1,25 @@
 vagrant-pe_build
 ================
 
+0.12.0
+------
+
+2015-09-24
+
+This is a backwards compatible feature release.
+
+  * (GH-89) Support 2015.2.x master platforms and Windows
+    This release adds support for all 2015.x.2 master platforms:
+
+      - Enterprise Linux: 6, 7
+      - Ubuntu: 12.04, 14.04
+      - SLES: 11, 12
+
+    Tarball installers are no longer available for other agent platforms, so
+    support for those is currently pending. Windows installation is still
+    supported.
+
+
 0.11.0
 ------
 
