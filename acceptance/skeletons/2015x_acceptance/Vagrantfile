@@ -1,0 +1,94 @@
+def set_resources box, max_ram=512, max_cpu=1
+  box.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--cpus", max_cpu]
+    vb.customize ["modifyvm", :id, "--memory", max_ram]
+  end
+end
+
+Vagrant.configure('2') do |config|
+  config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
+  # This is the box name used by the setup helpers in the acceptance tests.
+  config.vm.box = 'box'
+  config.vm.provision :shell, :inline => 'service iptables stop'
+
+  config.vm.define 'pe-201520-master' do |node|
+    node.vm.hostname = 'pe-201520-master.pe-bootstrap.vlan'
+    # All-in-one master nodes need a generous amount of RAM for all the Java.
+    set_resources node, 4096, 1
+
+    node.vm.network 'private_network', :ip => '10.20.1.100'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.101 pe-201520-agent.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version = '2015.2.0'
+      p.role = :master
+    end
+  end
+
+  config.vm.define 'pe-201520-agent' do |node|
+    node.vm.hostname = 'pe-201520-agent.pe-bootstrap.vlan'
+
+    node.vm.network 'private_network', :ip => '10.20.1.101'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.100 pe-201520-master.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version = '2015.2.0'
+      p.role = :agent
+      p.master = 'pe-201520-master.pe-bootstrap.vlan'
+    end
+  end
+
+  config.vm.define 'pe-201521-master' do |node|
+    node.vm.hostname = 'pe-201521-master.pe-bootstrap.vlan'
+    # All-in-one master nodes need a generous amount of RAM for all the Java.
+    set_resources node, 4096, 1
+
+    node.vm.network 'private_network', :ip => '10.20.1.102'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.103 pe-201521-agent.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version = '2015.2.1'
+      p.role = :master
+    end
+  end
+
+  config.vm.define 'pe-201521-agent' do |node|
+    node.vm.hostname = 'pe-201521-agent.pe-bootstrap.vlan'
+
+    node.vm.network 'private_network', :ip => '10.20.1.103'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.102 pe-201521-master.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version = '2015.2.1'
+      p.role = :agent
+      p.master = 'pe-201521-master.pe-bootstrap.vlan'
+    end
+  end
+
+  config.vm.define 'pe-2015latest-master' do |node|
+    node.vm.hostname = 'pe-2015latest-master.pe-bootstrap.vlan'
+    # All-in-one master nodes need a generous amount of RAM for all the Java.
+    set_resources node, 4096, 1
+
+    node.vm.network 'private_network', :ip => '10.20.1.104'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.105 pe-2015latest-agent.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version_file = 'LATEST'
+      p.role = :master
+    end
+  end
+
+  config.vm.define 'pe-2015latest-agent' do |node|
+    node.vm.hostname = 'pe-2015latest-agent.pe-bootstrap.vlan'
+
+    node.vm.network 'private_network', :ip => '10.20.1.105'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.104 pe-2015latest-master.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version_file = 'LATEST'
+      p.role = :agent
+      p.master = 'pe-2015latest-master.pe-bootstrap.vlan'
+    end
+  end
+end
