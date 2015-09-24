@@ -1,16 +1,19 @@
-q_fail_on_unsuccessful_master_lookup=y
+# Agent answers for 2015.x
+# Cobbled together from split install examples.
 q_install=y
-q_puppet_cloud_install=n
-q_puppet_enterpriseconsole_install=n
-q_puppet_symlinks_install=y
-q_puppetagent_certname=<%= machine_hostname %>
-q_puppetagent_install=y
-q_puppetagent_server=<%= @config.master %>
-q_puppetca_install=n
-q_puppetdb_hostname=
-q_puppetdb_install=n
-q_puppetdb_port=
-q_puppetmaster_install=n
 q_vendor_packages_install=y
-q_continue_or_reenter_master_hostname=c
+q_puppet_symlinks_install=y
 q_verify_packages=y
+
+# Disable all infrastructure components
+q_all_in_one_install=n
+q_puppetmaster_install=n
+q_puppetdb_install=n
+q_puppet_enterpriseconsole_install=n
+
+# Configure agent installation
+q_puppetagent_install=y
+q_puppetagent_certname=<%= machine_hostname %>
+q_puppetagent_server=<%= @config.master %>
+q_skip_master_verification=n
+q_fail_on_unsuccessful_master_lookup=y
