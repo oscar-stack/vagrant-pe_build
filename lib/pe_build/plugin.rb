@@ -108,6 +108,11 @@ module PEBuild
       PEBuild::Cap::Facts::Ubuntu
     end
 
+    guest_capability('suse', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::SUSE
+    end
+
     [:solaris, :solaris11].each do |os|
       guest_capability(os, 'pebuild_facts') do
         require_relative 'cap'
