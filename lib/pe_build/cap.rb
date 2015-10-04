@@ -17,6 +17,10 @@ module PEBuild
       require 'pe_build/cap/detect_installer/solaris'
     end
 
+    module Facts
+      require 'pe_build/cap/facts/redhat'
+    end
+
     module RunInstall
       require 'pe_build/cap/run_install/posix'
       require 'pe_build/cap/run_install/windows'

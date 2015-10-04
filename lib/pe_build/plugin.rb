@@ -92,6 +92,13 @@ module PEBuild
       PEBuild::Cap::RunInstall::Windows
     end
 
+    # Retrieve Facts
+    guest_capability('redhat', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::RedHat
+    end
+
+
     # internal action hooks
 
     action_hook('PE Build: initialize build dir') do |hook|
