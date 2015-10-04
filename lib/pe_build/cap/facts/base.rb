@@ -2,8 +2,8 @@ require 'json'
 
 # Base class for retrieving facts from guest VMs
 #
-# This class implements a Guest Capability for Fact retrieval. Facter will be
-# queried, if installed. Otherwise, a minimal set of base facts will be
+# This class implements a Guest Capability for Fact retrieval. Puppet will be
+# queried, if installed. Otherwise, a minimal set of base facts willPuppetbe
 # returned by {#basic_facts}.
 #
 # @abstract Subclass and override {#architecture}, {#os_info} and
@@ -27,20 +27,24 @@ class PEBuild::Cap::Facts::Base
     @machine = machine
   end
 
-  def facter_path
-    @facter_path ||= find_facter
+  def puppet_path
+    @puppet_path ||= find_puppet
   end
 
   # Load Facts from the guest VM
   #
-  # @return [Hash] A hash of facts from Facter, if installed.
+  # @return [Hash] A hash of facts from Puppet, if installed.
   # @return [Hash] A hash containing the results of {#basic_facts} if
   #   Facter is not installed.
   def load_facts
-    unless facter_path.nil?
-      facts = JSON.load(sudo("#{facter_path} --json")[:stdout])
+    unless puppet_path.nil?
+      certname  = sudo("#{puppet_path} agent --configprint certname")[:stdout].chomp
+      raw_facts = JSON.load(sudo("#{puppet_path} facts find --render-as json --terminus facter #{certname}")[:stdout])
+      facts = raw_facts['values']
+      # Keep the certname of the agent.
+      facts['certname'] = certname
     else
-      # Facter isn't installed yet, so we gather a minimal set of info.
+      # Puppet isn't installed yet, so we gather a minimal set of info.
       facts = basic_facts
     end
 
@@ -90,12 +94,13 @@ class PEBuild::Cap::Facts::Base
   private
 
   # Override this method to implement a more sophisticated search for the
-  # Facter executable.
-  def find_facter
-    return 'facter' if @machine.communicate.test('facter --version')
+  # Puppet executable.
+  def find_puppet
+    return 'puppet' if @machine.communicate.test('puppet --version')
     return nil
   end
 
+  # TODO: Split this out into a shared module.
   def sudo(cmd)
     stdout = ''
     stderr = ''

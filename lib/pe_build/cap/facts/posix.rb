@@ -21,9 +21,9 @@ class PEBuild::Cap::Facts::POSIX < PEBuild::Cap::Facts::Base
 
   def find_facter
     paths = %w[
-      /opt/puppetlabs/bin/facter
-      /opt/puppet/bin/facter
-      /usr/local/bin/facter
+      /opt/puppetlabs/bin/puppet
+      /opt/puppet/bin/puppet
+      /usr/local/bin/puppet
     ]
 
     paths.each do |path|
