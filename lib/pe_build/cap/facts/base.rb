@@ -27,16 +27,18 @@ class PEBuild::Cap::Facts::Base
     @machine = machine
   end
 
+  def facter_path
+    @facter_path ||= find_facter
+  end
+
   # Load Facts from the guest VM
   #
   # @return [Hash] A hash of facts from Facter, if installed.
   # @return [Hash] A hash containing the results of {#basic_facts} if
   #   Facter is not installed.
   def load_facts
-    # TODO: Facter might be located in several places that aren't on the
-    # default PATH. Fix that.
-    if machine.communicate.test('facter --version')
-      facts = JSON.load(sudo('facter --json')[:stdout])
+    unless facter_path.nil?
+      facts = JSON.load(sudo("#{facter_path} --json")[:stdout])
     else
       # Facter isn't installed yet, so we gather a minimal set of info.
       facts = basic_facts
@@ -86,6 +88,13 @@ class PEBuild::Cap::Facts::Base
   end
 
   private
+
+  # Override this method to implement a more sophisticated search for the
+  # Facter executable.
+  def find_facter
+    return 'facter' if @machine.communicate.test('facter --version')
+    return nil
+  end
 
   def sudo(cmd)
     stdout = ''

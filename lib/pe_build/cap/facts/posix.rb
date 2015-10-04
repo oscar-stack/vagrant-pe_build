@@ -17,4 +17,20 @@ class PEBuild::Cap::Facts::POSIX < PEBuild::Cap::Facts::Base
     sudo('uname -m')[:stdout]
   end
 
+  private
+
+  def find_facter
+    paths = %w[
+      /opt/puppetlabs/bin/facter
+      /opt/puppet/bin/facter
+      /usr/local/bin/facter
+    ]
+
+    paths.each do |path|
+      return path if @machine.communicate.test("#{path} --version")
+    end
+
+    return nil
+  end
+
 end
