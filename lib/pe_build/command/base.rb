@@ -3,7 +3,7 @@ require 'vagrant'
 class PEBuild::Command::Base < Vagrant.plugin(2, :command)
 
   def self.synopsis
-    'list and download PE installers'
+    'Commands related to PE Installation'
   end
 
   def initialize(argv, env)
@@ -13,6 +13,7 @@ class PEBuild::Command::Base < Vagrant.plugin(2, :command)
     @subcommands = {
       'list'     => PEBuild::Command::List,
       'copy'     => PEBuild::Command::Copy,
+      'facts'    => PEBuild::Command::Facts,
     }
   end
 

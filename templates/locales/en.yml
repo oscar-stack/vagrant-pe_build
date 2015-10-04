@@ -1,5 +1,11 @@
 en:
   pebuild:
+    command:
+      facts:
+        vm_not_running: |-
+          Could not establish a connection to %{vm_name} in order to retrieve
+          facts. This usually means the machine is either shut down,
+          or has not been created.
     archive:
       no_installer_source: |-
         The Puppet Enterprise installer %{filename}
