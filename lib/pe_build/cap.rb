@@ -20,6 +20,7 @@ module PEBuild
     module Facts
       require 'pe_build/cap/facts/redhat'
       require 'pe_build/cap/facts/debian'
+      require 'pe_build/cap/facts/ubuntu'
       require 'pe_build/cap/facts/windows'
     end
 

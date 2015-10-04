@@ -103,6 +103,11 @@ module PEBuild
       PEBuild::Cap::Facts::Debian
     end
 
+    guest_capability('ubuntu', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::Ubuntu
+    end
+
     guest_capability('windows', 'pebuild_facts') do
       require_relative 'cap'
       PEBuild::Cap::Facts::Windows
