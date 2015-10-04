@@ -99,6 +99,12 @@ module PEBuild
     end
 
 
+    guest_capability('windows', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::Windows
+    end
+
+
     # internal action hooks
 
     action_hook('PE Build: initialize build dir') do |hook|

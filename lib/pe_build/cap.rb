@@ -19,6 +19,7 @@ module PEBuild
 
     module Facts
       require 'pe_build/cap/facts/redhat'
+      require 'pe_build/cap/facts/windows'
     end
 
     module RunInstall
