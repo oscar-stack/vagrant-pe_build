@@ -98,6 +98,10 @@ module PEBuild
       PEBuild::Cap::Facts::RedHat
     end
 
+    guest_capability('debian', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::Debian
+    end
 
     guest_capability('windows', 'pebuild_facts') do
       require_relative 'cap'
