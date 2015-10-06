@@ -27,6 +27,9 @@ en:
           unset_version: |-
             The Puppet Enterprise version must be set either on the global pe_build config
             object or specified on a per-provisioner basis, but both were unset.
+      pe_agent:
+        already_installed: |-
+          Puppet agent %{version} is already installed, skipping installation.
     transfer:
       open_uri:
         download_failed: |-
@@ -66,6 +69,16 @@ en:
             Autosign must be one of %{autosign_classes}, but was of type %{autosign}.
           invalid_answer_extras: |-
             Answer_extras must be an Array, got a %{class}.
+      pe_agent:
+        errors:
+          no_master: |-
+            No master hostname has been configured for this agent.
+          malformed_version: |-
+            The agent version "%{version}":%{version_class} is invalid; it must be a String of
+            the format "x.y.z[-optional-stuff]" or "current".
+          version_too_old: |-
+            The agent version %{version} is too old; pe_agent can only provision versions
+            newer than %{minimum_version}.
     cap:
       run_install:
         already_installed: |-

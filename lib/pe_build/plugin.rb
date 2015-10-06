@@ -22,6 +22,11 @@ module PEBuild
       PEBuild::Config::PEBootstrap
     end
 
+    config(:pe_agent, :provisioner) do
+      require_relative 'config'
+      PEBuild::Config::PEAgent
+    end
+
     config(:pe_build) do
       require_relative 'config'
       PEBuild::Config::Global
@@ -30,6 +35,11 @@ module PEBuild
     provisioner(:pe_bootstrap) do
       require_relative 'provisioner/pe_bootstrap'
       PEBuild::Provisioner::PEBootstrap
+    end
+
+    provisioner(:pe_agent) do
+      require_relative 'provisioner/pe_agent'
+      PEBuild::Provisioner::PEAgent
     end
 
     command(:'pe-build') do
