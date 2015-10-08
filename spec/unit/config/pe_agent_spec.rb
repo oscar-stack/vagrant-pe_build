@@ -5,13 +5,23 @@ require 'pe_build/config'
 describe PEBuild::Config::PEAgent do
   let(:machine)  { double('machine') }
 
-  describe 'hostname' do
-    it 'must be set' do
+  describe 'master' do
+    it 'must be set if master_vm is nil' do
+      subject.master_vm = nil
       subject.finalize!
 
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner'].to_s).to match(/No master hostname has been configured/)
+      expect(errors['pe_agent provisioner'].to_s).to match(/No master or master_vm setting has been configured/)
+    end
+
+    it 'may be unset if master_vm is not nil' do
+      subject.master_vm = 'master'
+      subject.finalize!
+
+      errors = subject.validate(machine)
+
+      expect(errors['pe_agent provisioner']).to be_empty
     end
   end
 

@@ -7,7 +7,13 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
 
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
+  #     If {#master_vm} is set, the hostname of that machine will be used
+  #     as a default.
   attr_accessor :master
+
+  # @!attribute master
+  #   @return [String] The name of a Vagrant VM to use as the master.
+  attr_accessor :master_vm
 
   # @!attribute version
   #   @return [String] The version of PE to install. May be either a version
@@ -17,18 +23,20 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
 
   def initialize
     @master        = UNSET_VALUE
+    @master_vm     = UNSET_VALUE
     @version       = UNSET_VALUE
   end
 
   def finalize!
     @master        = nil if @master == UNSET_VALUE
+    @master_vm     = nil if @master_vm == UNSET_VALUE
     @version       = 'current' if @version == UNSET_VALUE
   end
 
   def validate(machine)
     errors = _detected_errors
 
-    if @master.nil?
+    if @master.nil? && @master_vm.nil?
       errors << I18n.t('pebuild.config.pe_agent.errors.no_master')
     end
 
