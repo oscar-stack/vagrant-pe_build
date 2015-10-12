@@ -22,6 +22,11 @@ module PEBuild
       PEBuild::Config::PEBootstrap
     end
 
+    config(:pe_agent, :provisioner) do
+      require_relative 'config'
+      PEBuild::Config::PEAgent
+    end
+
     config(:pe_build) do
       require_relative 'config'
       PEBuild::Config::Global
@@ -30,6 +35,11 @@ module PEBuild
     provisioner(:pe_bootstrap) do
       require_relative 'provisioner/pe_bootstrap'
       PEBuild::Provisioner::PEBootstrap
+    end
+
+    provisioner(:pe_agent) do
+      require_relative 'provisioner/pe_agent'
+      PEBuild::Provisioner::PEAgent
     end
 
     command(:'pe-build') do
@@ -91,6 +101,40 @@ module PEBuild
       require_relative 'cap'
       PEBuild::Cap::RunInstall::Windows
     end
+
+    # Retrieve Facts
+    guest_capability('redhat', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::RedHat
+    end
+
+    guest_capability('debian', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::Debian
+    end
+
+    guest_capability('ubuntu', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::Ubuntu
+    end
+
+    guest_capability('suse', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::SUSE
+    end
+
+    [:solaris, :solaris11].each do |os|
+      guest_capability(os, 'pebuild_facts') do
+        require_relative 'cap'
+        PEBuild::Cap::Facts::Solaris
+      end
+    end
+
+    guest_capability('windows', 'pebuild_facts') do
+      require_relative 'cap'
+      PEBuild::Cap::Facts::Windows
+    end
+
 
     # internal action hooks
 

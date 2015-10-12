@@ -1,5 +1,16 @@
 en:
   pebuild:
+    command:
+      facts:
+        vm_not_running: |-
+          Could not establish a connection to %{vm_name} in order to retrieve
+          facts. This usually means the machine is either shut down,
+          or has not been created.
+    errors:
+      machine_not_reachable: |-
+        The specified Vagrant machine, %{vm_name}, is not able to recieve
+        communication. This typically means the machine has not been created,
+        is shut down, or there is an issue with the SSH or WinRM communicator.
     archive:
       no_installer_source: |-
         The Puppet Enterprise installer %{filename}
@@ -21,6 +32,15 @@ en:
           unset_version: |-
             The Puppet Enterprise version must be set either on the global pe_build config
             object or specified on a per-provisioner basis, but both were unset.
+      pe_agent:
+        already_installed: |-
+          Puppet agent %{version} is already installed, skipping installation.
+        pe_repo_present: |-
+          The Puppet Server on %{vm_name} is configured with Agent repositories for:
+            %{platform_tag}
+        adding_pe_repo: |-
+          Configuring Puppet Server on %{vm_name} with Agent repositories for:
+            %{platform_tag}
     transfer:
       open_uri:
         download_failed: |-
@@ -60,6 +80,16 @@ en:
             Autosign must be one of %{autosign_classes}, but was of type %{autosign}.
           invalid_answer_extras: |-
             Answer_extras must be an Array, got a %{class}.
+      pe_agent:
+        errors:
+          no_master: |-
+            No master or master_vm setting has been configured for this agent.
+          malformed_version: |-
+            The agent version "%{version}":%{version_class} is invalid; it must be a String of
+            the format "x.y.z[-optional-stuff]" or "current".
+          version_too_old: |-
+            The agent version %{version} is too old; pe_agent can only provision versions
+            newer than %{minimum_version}.
     cap:
       run_install:
         already_installed: |-

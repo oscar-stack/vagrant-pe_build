@@ -1,7 +1,7 @@
 shared_examples 'provider/provisioner/pe_bootstrap/latest' do |provider, options|
-  if !File.file?(options[:box])
+  if options[:boxes].empty?
     raise ArgumentError,
-      "A box file must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
+      "Box files must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
   end
 
   include_context 'acceptance'
@@ -19,7 +19,10 @@ shared_examples 'provider/provisioner/pe_bootstrap/latest' do |provider, options
 
   before(:each) do
     environment.skeleton('pe_build')
-    assert_execute('vagrant', 'box', 'add', 'box', options[:box])
+    options[:boxes].each do |box|
+      name = File.basename(box).split('-').first
+      assert_execute('vagrant', 'box', 'add', name, box)
+    end
   end
 
   after(:each) do
