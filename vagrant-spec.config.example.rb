@@ -10,7 +10,7 @@ Vagrant::Spec::Acceptance.configure do |c|
   c.skeleton_paths = [(acceptance_dir + 'skeletons').to_s]
 
   c.provider 'virtualbox',
-    box: (acceptance_dir + 'artifacts' + 'virtualbox.box').to_s,
+    boxes: Dir[acceptance_dir + 'artifacts' + '*-virtualbox.box'],
     # This folder should be filled with PE tarballs for CentOS.
     archive_path: (acceptance_dir + 'artifacts' + 'pe_archives').to_s,
     pe_latest: '2015.2.0',

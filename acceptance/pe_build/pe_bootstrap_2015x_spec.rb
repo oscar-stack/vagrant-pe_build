@@ -1,7 +1,7 @@
 shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
-  if !File.file?(options[:box])
+  if options[:boxes].empty?
     raise ArgumentError,
-      "A box file must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
+      "Box files must be downloaded for provider: #{provider}. Try: rake acceptance:setup"
   end
 
   include_context 'acceptance'
@@ -17,7 +17,10 @@ shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
     # The skelton sets up a Vagrantfile which expects the OS under test to be
     # available as `box`.
     environment.skeleton('2015x_acceptance')
-    assert_execute('vagrant', 'box', 'add', 'box', options[:box])
+    options[:boxes].each do |box|
+      name = File.basename(box).split('-').first
+      assert_execute('vagrant', 'box', 'add', name, box)
+    end
   end
 
   after(:each) do
@@ -25,21 +28,17 @@ shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
     assert_execute('vagrant', 'destroy', '--force', log: false)
   end
 
-  context 'when installing PE 2015.2.0' do
-    it 'provisions with pe_build' do
-      result = assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-201520-master', 'pe-201520-agent')
-    end
-  end
-
-  context 'when installing PE 2015.2.1' do
-    it 'provisions with pe_build' do
-      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-201521-master', 'pe-201521-agent')
+  context 'when installing PE 2015.2.x' do
+    it 'provisions masters with pe_bootstrap and agents with pe_agent' do
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20152-master')
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20152-agent')
     end
   end
 
   context 'when installing PE 2015.latest' do
-    it 'provisions with pe_build' do
-      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-2015latest-master', 'pe-2015latest-agent')
+    it 'provisions masters with pe_bootstrap and agents with pe_agent' do
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-2015latest-master')
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-2015latest-agent')
     end
   end
 end

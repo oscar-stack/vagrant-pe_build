@@ -8,7 +8,7 @@ end
 Vagrant.configure('2') do |config|
   config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
   # This is the box name used by the setup helpers in the acceptance tests.
-  config.vm.box = 'box'
+  config.vm.box = 'centos'
 
   config.vm.define 'pe-3x' do |node|
     node.vm.hostname = 'pe-3x.pe-bootstrap.vlan'
