@@ -87,19 +87,4 @@ class PEBuild::Cap::DetectInstaller::POSIX < PEBuild::Cap::DetectInstaller::Base
 
     matchdata[1]
   end
-
-  def execute_command(cmd)
-    stdout = ''
-    stderr = ''
-
-    retval = @machine.communicate.execute(cmd, :error_check => false) do |type, data|
-      if type == :stderr
-        stderr << data
-      else
-        stdout << data
-      end
-    end
-
-    {:stdout => stdout.chomp, :stderr => stderr.chomp, :retval => retval}
-  end
 end
