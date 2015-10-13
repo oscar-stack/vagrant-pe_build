@@ -59,6 +59,7 @@ EOF
   context 'when an agent is not installed' do
     before(:each) do
       allow(subject).to receive(:agent_version).and_return(nil)
+      allow(subject).to receive(:provision_windows?).and_return(false)
     end
 
     context 'when master_vm is set' do
@@ -73,11 +74,27 @@ EOF
       end
     end
 
-    it 'invokes the agent provisioner' do
-      expect(subject).to receive(:provision_posix_agent)
+    context 'when osfamily is windows' do
+      before(:each) do
+        allow(subject).to receive(:provision_windows?).and_return(true)
+        allow(config).to receive(:master_vm).and_return(master_vm)
+      end
 
-      subject.provision
+      it 'invokes the windows provisioner and skips pe_repo' do
+        expect(subject).to receive(:provision_windows_agent)
+        expect(subject).to receive(:provision_pe_repo).never
+
+        subject.provision
+      end
     end
-  end
 
+    context 'when osfamily is not windows' do
+      it 'invokes the posix agent provisioner' do
+        expect(subject).to receive(:provision_posix_agent)
+
+        subject.provision
+      end
+    end
+
+  end
 end

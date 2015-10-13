@@ -24,13 +24,17 @@ module PEBuild
           return
         end
 
-        # FIXME: Not necessary if the agent is running Windows.
-        unless config.master_vm.nil?
+        # As of 2015.x, pe_repo doesn't support windows installation, so skip
+        # provisioning the repositories.
+        unless config.master_vm.nil? || provision_windows?
           provision_pe_repo
         end
 
-        # TODO Wrap in a method that handles windows VMs (by calling pe_bootstrap).
-        provision_posix_agent
+        if provision_windows?
+          provision_windows_agent
+        else
+          provision_posix_agent
+        end
 
         # TODO Sign agent cert, if master_vm is available.
       end
@@ -51,6 +55,13 @@ module PEBuild
             config.master    ||= config.master_vm.config.vm.hostname.to_s
           end
         end
+      end
+
+      # A quick test to determine if we are provisioning a Windows agent
+      #
+      # This method requires {#provision_init!} to be called.
+      def provision_windows?
+        facts['os']['family'].downcase == 'windows'
       end
 
       # Ensure a master VM is able to serve agent packages
@@ -115,6 +126,23 @@ curl -k -tlsv1 -s https://#{config.master}:8140/packages/#{config.version}/insta
 
         shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(machine, shell_config)
         shell_provisioner.provision
+      end
+
+      # Install a PE Agent on Windows
+      #
+      # Executes a `pe_bootstrap` provisioner running in agent mode.
+      def provision_windows_agent
+        pe_config = ::PEBuild::Config::PEBootstrap.new
+        pe_config.role    = :agent
+        pe_config.version = config.version
+        pe_config.master  = config.master
+        pe_config.finalize!
+
+        machine.ui.info "Installing Windows agent with PE Bootstrap"
+
+        pe_provisioner = Vagrant.plugin('2').manager.provisioners[:pe_bootstrap].new(machine, pe_config)
+        pe_provisioner.configure(machine.config)
+        pe_provisioner.provision
       end
 
     end
