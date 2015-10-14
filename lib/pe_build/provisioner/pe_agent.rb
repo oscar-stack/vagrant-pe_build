@@ -16,27 +16,13 @@ module PEBuild
       def provision
         provision_init!
 
-        unless agent_version.nil?
-          machine.ui.info I18n.t(
-            'pebuild.provisioner.pe_agent.already_installed',
-            :version => agent_version
-          )
-          return
-        end
-
         # As of 2015.x, pe_repo doesn't support windows installation, so skip
         # provisioning the repositories.
         unless config.master_vm.nil? || provision_windows?
           provision_pe_repo
         end
-
-        if provision_windows?
-          provision_windows_agent
-        else
-          provision_posix_agent
-        end
-
-        # TODO Sign agent cert, if master_vm is available.
+        provision_agent
+        provision_agent_cert if config.autosign
       end
 
       private
@@ -62,6 +48,25 @@ module PEBuild
       # This method requires {#provision_init!} to be called.
       def provision_windows?
         facts['os']['family'].downcase == 'windows'
+      end
+
+      def provision_agent
+        unless agent_version.nil?
+          machine.ui.info I18n.t(
+            'pebuild.provisioner.pe_agent.already_installed',
+            :version => agent_version
+          )
+          return
+        end
+
+        if provision_windows?
+          provision_windows_agent
+        else
+          provision_posix_agent
+        end
+
+        # Refresh agent facts post-installation.
+        @facts = machine.guest.capability(:pebuild_facts)
       end
 
       # Ensure a master VM is able to serve agent packages
@@ -143,6 +148,44 @@ curl -k -tlsv1 -s https://#{config.master}:8140/packages/#{config.version}/insta
         pe_provisioner = Vagrant.plugin('2').manager.provisioners[:pe_bootstrap].new(machine, pe_config)
         pe_provisioner.configure(machine.config)
         pe_provisioner.provision
+      end
+
+      def provision_agent_cert
+        # This method will raise an error if commands can't be run on the
+        # master VM.
+        ensure_reachable(config.master_vm)
+
+        agent_certname = facts['certname']
+
+        # Return if the cert has already been signed. The return code is
+        # inverted as `grep -q` will exit with 1 if the certificate is not
+        # found.
+        # TODO: Extend paths to PE 3.x masters.
+        if not config.master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}", :sudo => true)
+          config.master_vm.ui.info I18n.t(
+            'pebuild.provisioner.pe_agent.no_csr_pending',
+            :certname => agent_certname,
+            :master   => config.master_vm.name.to_s
+          )
+          return
+        end
+
+        config.master_vm.ui.info I18n.t(
+          'pebuild.provisioner.pe_agent.signing_agent_cert',
+          :certname => agent_certname,
+          :master   => config.master_vm.name.to_s
+        )
+
+        shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
+        shell_config.privileged = true
+        # TODO: Extend paths to PE 3.x masters.
+        shell_config.inline = <<-EOS
+/opt/puppetlabs/bin/puppet cert sign #{agent_certname}
+        EOS
+        shell_config.finalize!
+
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(config.master_vm, shell_config)
+        shell_provisioner.provision
       end
 
     end

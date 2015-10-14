@@ -38,6 +38,7 @@ EOF
 
     config.finalize!
     # Skip provision-time inspection of machines.
+    agent_vm.stub_chain(:guest, :capability)
     allow(subject).to receive(:provision_init!)
   end
 

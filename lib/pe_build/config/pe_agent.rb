@@ -5,6 +5,14 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   # The minimum PE Version supported by this provisioner.
   MINIMUM_VERSION    = '2015.2.0'
 
+  # @!attribute [rw] autosign
+  #   If true, and {#master_vm} is set, the agent's certificate will be signed
+  #   on the master VM.
+  #
+  #   @return [true, false] Defaults to `true` if {#master_vm} is set,
+  #     otherwise `false`.
+  attr_accessor :autosign
+
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
   #     If {#master_vm} is set, the hostname of that machine will be used
@@ -22,6 +30,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   attr_accessor :version
 
   def initialize
+    @autosign      = UNSET_VALUE
     @master        = UNSET_VALUE
     @master_vm     = UNSET_VALUE
     @version       = UNSET_VALUE
@@ -30,6 +39,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   def finalize!
     @master        = nil if @master == UNSET_VALUE
     @master_vm     = nil if @master_vm == UNSET_VALUE
+    @autosign      = (not @master_vm.nil?) if @autosign == UNSET_VALUE
     @version       = 'current' if @version == UNSET_VALUE
   end
 

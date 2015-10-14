@@ -5,6 +5,21 @@ require 'pe_build/config'
 describe PEBuild::Config::PEAgent do
   let(:machine)  { double('machine') }
 
+  describe 'autosign' do
+    it 'defaults to false if master_vm is unset' do
+      subject.finalize!
+
+      expect(subject.autosign).to eq false
+    end
+
+    it 'defaults to true if master_vm is set' do
+      subject.master_vm = 'master'
+      subject.finalize!
+
+      expect(subject.autosign).to eq true
+    end
+  end
+
   describe 'master' do
     it 'must be set if master_vm is nil' do
       subject.master_vm = nil

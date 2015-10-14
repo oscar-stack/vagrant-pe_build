@@ -41,6 +41,10 @@ en:
         adding_pe_repo: |-
           Configuring Puppet Server on %{vm_name} with Agent repositories for:
             %{platform_tag}
+        no_csr_pending: |-
+          No pending signing request for %{certname} on %{master}. Skipping autosign.
+        signing_agent_cert: |-
+          Signing request for %{certname} on %{master}.
     transfer:
       open_uri:
         download_failed: |-
