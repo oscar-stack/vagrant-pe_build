@@ -45,6 +45,20 @@ en:
           No pending signing request for %{certname} on %{master}. Skipping autosign.
         signing_agent_cert: |-
           Signing request for %{certname} on %{master}.
+        skip_purge_no_master: |-
+          The VM hosting the Puppet Master, %{master}, is no longer available.
+          This commonly means the machine has been destroyed.
+          Skipping purge of agent data.
+        skip_purge_master_not_reachable: |-
+          The VM hosting the Puppet Master, %{master}, is not accepting SSH or
+          WinRM communication. This commonly means the machine has been
+          shut down.
+          Skipping purge of agent data.
+        agent_purged: |-
+          No certificate for %{certname} on %{master}.
+          Skipping purge of agent data.
+        purging_agent: |-
+          Purging agent data for %{certname} from %{master}.
     transfer:
       open_uri:
         download_failed: |-

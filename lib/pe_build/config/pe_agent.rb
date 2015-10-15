@@ -13,6 +13,14 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   #     otherwise `false`.
   attr_accessor :autosign
 
+  # @!attribute [rw] autopurge
+  #   If true, and {#master_vm} is set, the agent's certificate and data will
+  #   be purged from the master VM if the agent is destroyed by Vagrant.
+  #
+  #   @return [true, false] Defaults to `true` if {#master_vm} is set,
+  #     otherwise `false`.
+  attr_accessor :autopurge
+
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
   #     If {#master_vm} is set, the hostname of that machine will be used
@@ -31,6 +39,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
 
   def initialize
     @autosign      = UNSET_VALUE
+    @autopurge     = UNSET_VALUE
     @master        = UNSET_VALUE
     @master_vm     = UNSET_VALUE
     @version       = UNSET_VALUE
@@ -39,7 +48,8 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   def finalize!
     @master        = nil if @master == UNSET_VALUE
     @master_vm     = nil if @master_vm == UNSET_VALUE
-    @autosign      = (not @master_vm.nil?) if @autosign == UNSET_VALUE
+    @autosign      = (not @master_vm.nil?) if @autosign  == UNSET_VALUE
+    @autopurge     = (not @master_vm.nil?) if @autopurge == UNSET_VALUE
     @version       = 'current' if @version == UNSET_VALUE
   end
 

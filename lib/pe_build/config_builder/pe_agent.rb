@@ -9,6 +9,13 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Base
   #   @return [true, false] Defaults to `true` if {#master_vm} is set,
   #     otherwise `false`.
   def_model_attribute :autosign
+  # @!attribute [rw] autopurge
+  #   If true, and {#master_vm} is set, the agent's certificate and data will
+  #   be purged from the master VM if the agent is destroyed by Vagrant.
+  #
+  #   @return [true, false] Defaults to `true` if {#master_vm} is set,
+  #     otherwise `false`.
+  def_model_attribute :autopurge
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
   def_model_attribute :master
@@ -22,10 +29,11 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Base
   def to_proc
     Proc.new do |vm_config|
       vm_config.provision :pe_agent do |config|
-        with_attr(:autosign) {|val| config.autosign = val }
-        with_attr(:master)   {|val| config.master = val }
-        with_attr(:master_vm){|val| config.master_vm = val }
-        with_attr(:version)  {|val| config.version  = val }
+        with_attr(:autosign)     {|val| config.autosign     = val }
+        with_attr(:autopurge)    {|val| config.autopurge    = val }
+        with_attr(:master)       {|val| config.master       = val }
+        with_attr(:master_vm)    {|val| config.master_vm    = val }
+        with_attr(:version)      {|val| config.version      = val }
       end
     end
   end

@@ -25,6 +25,24 @@ module PEBuild
         provision_agent_cert if config.autosign
       end
 
+      # This gets run during agent destruction and will remove the agent's
+      # certificate from the master, if requested.
+      def cleanup
+        unless config.master_vm.is_a?(::Vagrant::Machine)
+          vm_def = machine.env.active_machines.find {|vm| vm[0].to_s == config.master_vm.to_s}
+          if vm_def.nil?
+            config.master_vm.ui.warn I18n.t(
+              'pebuild.provisioner.pe_agent.skip_purge_no_master',
+              :master => config.master_vm.to_s
+            )
+            return
+          end
+          config.master_vm = machine.env.machine(*vm_def)
+        end
+
+        cleanup_agent_cert if config.autopurge
+      end
+
       private
 
       # Set data items that are only available at provision time
@@ -187,6 +205,47 @@ bash pe_frictionless_installer.sh
         # TODO: Extend paths to PE 3.x masters.
         shell_config.inline = <<-EOS
 /opt/puppetlabs/bin/puppet cert sign #{agent_certname}
+        EOS
+        shell_config.finalize!
+
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(config.master_vm, shell_config)
+        shell_provisioner.provision
+      end
+
+      def cleanup_agent_cert
+        # TODO: This isn't very flexible. But, the VM is destroyed at this
+        # point, so it's the best guess we have available.
+        agent_certname = machine.config.vm.hostname
+
+        unless is_reachable?(config.master_vm)
+          config.master_vm.ui.warn I18n.t(
+            'pebuild.provisioner.pe_agent.skip_purge_master_not_reachable',
+            :vm_name => config.master_vm.name.to_s
+          )
+          return
+        end
+
+        # TODO: Extend paths to PE 3.x masters.
+        if not config.master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list #{agent_certname}", :sudo => true)
+          config.master_vm.ui.info I18n.t(
+            'pebuild.provisioner.pe_agent.agent_purged',
+            :certname => agent_certname,
+            :master   => config.master_vm.name.to_s
+          )
+          return
+        end
+
+        config.master_vm.ui.info I18n.t(
+          'pebuild.provisioner.pe_agent.purging_agent',
+          :certname => agent_certname,
+          :master   => config.master_vm.name.to_s
+        )
+
+        shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
+        shell_config.privileged = true
+        # TODO: Extend to PE 3.x masters.
+        shell_config.inline = <<-EOS
+/opt/puppetlabs/bin/puppet node purge #{agent_certname}
         EOS
         shell_config.finalize!
 

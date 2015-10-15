@@ -50,6 +50,13 @@ shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
         'pe-20152-master',
         '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20152-agent.pe-bootstrap.vlan')
       expect(result).to exit_with(0)
+
+      status('Test: pe_agent cert purged when vm destroyed')
+      result = assert_execute('vagrant', 'destroy', '-f', 'pe-20152-agent')
+      result = execute('vagrant', 'ssh',
+        'pe-20152-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20152-agent.pe-bootstrap.vlan')
+      expect(result.stderr).to match(/Could not find a certificate/)
     end
   end
 
@@ -73,6 +80,13 @@ shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
         'pe-2015latest-master',
         '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-2015latest-agent.pe-bootstrap.vlan')
       expect(result).to exit_with(0)
+
+      status('Test: pe_agent cert purged when vm destroyed')
+      result = assert_execute('vagrant', 'destroy', '-f', 'pe-2015latest-agent')
+      result = execute('vagrant', 'ssh',
+        'pe-2015latest-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-2015latest-agent.pe-bootstrap.vlan')
+      expect(result.stderr).to match(/Could not find a certificate/)
     end
   end
 
