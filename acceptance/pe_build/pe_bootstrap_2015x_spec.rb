@@ -28,17 +28,52 @@ shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
     assert_execute('vagrant', 'destroy', '--force', log: false)
   end
 
+  # TODO: Refactor into a shared example so tha this testcase can be run on
+  # multiple versions.
   context 'when installing PE 2015.2.x' do
     it 'provisions masters with pe_bootstrap and agents with pe_agent' do
+      status('Test: pe_bootstrap master install')
       assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20152-master')
-      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20152-agent')
+
+      status('Test: pe_bootstrap master running after install')
+      result = execute('vagrant', 'ssh',
+        'pe-20152-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet status --terminus=rest')
+      expect(result).to exit_with(0)
+      expect(result.stdout).to match('"is_alive": true')
+
+      status('Test: pe_agent install')
+      result = assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20152-agent')
+
+      status('Test: pe_agent signed cert during install')
+      result = execute('vagrant', 'ssh',
+        'pe-20152-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20152-agent.pe-bootstrap.vlan')
+      expect(result).to exit_with(0)
     end
   end
 
   context 'when installing PE 2015.latest' do
     it 'provisions masters with pe_bootstrap and agents with pe_agent' do
+      status('Test: pe_bootstrap master install')
       assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-2015latest-master')
-      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-2015latest-agent')
+
+      status('Test: pe_bootstrap master running after install')
+      result = execute('vagrant', 'ssh',
+        'pe-2015latest-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet status --terminus=rest')
+      expect(result).to exit_with(0)
+      expect(result.stdout).to match('"is_alive": true')
+
+      status('Test: pe_agent install')
+      result = assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-2015latest-agent')
+
+      status('Test: pe_agent signed cert during install')
+      result = execute('vagrant', 'ssh',
+        'pe-2015latest-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-2015latest-agent.pe-bootstrap.vlan')
+      expect(result).to exit_with(0)
     end
   end
+
 end
