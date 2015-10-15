@@ -121,9 +121,15 @@ module PEBuild
       def provision_posix_agent
         shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
         shell_config.privileged = true
+        # Installation is split into to components running under set -e so that
+        # failures are detected. The curl command uses `sS` so that download
+        # progress is silenced, but error messages are still printed.
+        #
         # TODO: Extend to allow passing agent install options.
         shell_config.inline = <<-EOS
-curl -k -tlsv1 -s https://#{config.master}:8140/packages/#{config.version}/install.bash | bash
+set -e
+curl -ksS -tlsv1 https://#{config.master}:8140/packages/#{config.version}/install.bash -o pe_frictionless_installer.sh
+bash pe_frictionless_installer.sh
         EOS
         shell_config.finalize!
 
