@@ -60,12 +60,24 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
       errors << I18n.t('pebuild.config.pe_agent.errors.no_master')
     end
 
+    validate_master_vm!(errors, machine)
     validate_version!(errors, machine)
 
     {'pe_agent provisioner' => errors}
   end
 
   private
+
+  def validate_master_vm!(errors, machine)
+    return if @master_vm.nil?
+
+    unless machine.env.machine_names.include?(@master_vm.intern)
+      errors << I18n.t(
+        'pebuild.config.pe_agent.errors.master_vm_not_defined',
+        :vm_name  => @master_vm
+      )
+    end
+  end
 
   def validate_version!(errors, machine)
     pe_version_regex = %r[\d+\.\d+\.\d+[\w-]*]

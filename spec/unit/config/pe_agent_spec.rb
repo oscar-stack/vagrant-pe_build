@@ -4,6 +4,12 @@ require 'pe_build/config'
 
 describe PEBuild::Config::PEAgent do
   let(:machine)  { double('machine') }
+  let(:env) { double('vagrant environment') }
+
+  before(:each) do
+    allow(machine).to receive(:env).and_return(env)
+    allow(env).to receive(:machine_names).and_return([:master])
+  end
 
   describe 'autosign' do
     it 'defaults to false if master_vm is unset' do
@@ -37,6 +43,19 @@ describe PEBuild::Config::PEAgent do
       errors = subject.validate(machine)
 
       expect(errors['pe_agent provisioner']).to be_empty
+    end
+  end
+
+  describe 'master_vm' do
+    it 'must be set to a defined machine' do
+      allow(env).to receive(:machine_names).and_return([:master])
+
+      subject.master_vm = 'some_machine'
+      subject.finalize!
+
+      errors = subject.validate(machine)
+
+      expect(errors['pe_agent provisioner'].to_s).to match(/The specified master_vm,.*, is not defined/)
     end
   end
 

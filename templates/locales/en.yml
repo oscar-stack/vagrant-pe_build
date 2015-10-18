@@ -102,6 +102,9 @@ en:
         errors:
           no_master: |-
             No master or master_vm setting has been configured for this agent.
+          master_vm_not_defined: |-
+            The specified master_vm, %{vm_name}, is not defined by the current
+            Vagrant environment.
           malformed_version: |-
             The agent version "%{version}":%{version_class} is invalid; it must be a String of
             the format "x.y.z[-optional-stuff]" or "current".
