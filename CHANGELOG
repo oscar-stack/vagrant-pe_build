@@ -1,6 +1,30 @@
 vagrant-pe_build
 ================
 
+0.13.0
+------
+
+2015-10-18
+
+This is a backwards compatible feature release.
+
+  * Support for PE 2015.2.2.
+
+  * (GH-69), (GH-54) Added a new `pe_agent` provisioner which provides
+    fictionless agent installation for PE 2015.2.0 and newer. This provisioner
+    also supports orchestrating actions on the PE master VM, such as setting
+    up `pe_repo` to serve agent packages, signing agent certificates and
+    purging agent data when VMs are destroyed.
+
+  * (GH-99) Windows agents running PE 3.7.0 and newer are now installed from
+    64-bit packages if the underlying hardware supports it.
+
+  * (GH-91) New guest capability for retrieving VM facts using `puppet facts`.
+    A basic set of `architecture`, `os` and `release` facts is provided if
+    Puppet is not installed. There is a new command, `puppet pe-build facts`
+    for retrieving this data in JSON format, but the primary usecase is to
+    inform `pe_agent` decision-making.
+
 0.12.0
 ------
 
