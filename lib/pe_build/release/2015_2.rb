@@ -34,4 +34,5 @@ module PEBuild::Release
 
   @releases['2015.2.0'] = twentyfifteen_two_x
   @releases['2015.2.1'] = twentyfifteen_two_x
+  @releases['2015.2.2'] = twentyfifteen_two_x
 end
