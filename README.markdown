@@ -14,7 +14,7 @@ on Vagrant boxes to rapidly build a functioning Puppet environment.
 Vagrantfile Settings
 -------------------
 
-#### Config Namespace `config.pe_build`
+### Global `config.pe_build` Settings
 
 These settings go in the config object namespace and act as defaults in
 the event multiple machines are being provisioned. These settings are
@@ -42,11 +42,11 @@ optional and can be overridden in a VM's individual provisioner config.
       * file
       * A blank URI will default to `file`.
 
-#### Provisioner Namespace
+### `pe_bootstrap` Provisioner Settings
 
 These settings are on a per provisioner basis. They configure the individual
-behaviors of the provisioner. All of the `config.pe_build` options can be
-overridden at this point.
+behaviors of each provisioner instance. All of the `config.pe_build` options
+can be overridden at this point.
 
   * `role`
     * Description: The role of the Puppet Enterprise install.
@@ -77,6 +77,50 @@ overridden at this point.
       remounted on the guest.
     * Options: `true`, `false`
     * Default: `false`
+
+### `pe_agent` Provisioner Settings
+
+The `pe_agent` provisioner installs the Puppet Agent for PE 2015.2.0 and above
+and, optionally, configures PE Master VMs to support the new agent.
+
+
+**NOTE:** The `pe_agent` provisioner currently does not share any configuration
+with the global `config.pe_build` settings.
+
+  * `master_vm`
+    * Description: The name of a VM in the current Vagrant environment which
+      hosts the Puppet master that the agent should be connected to. When this
+      is set, the `master`, `autosign` and `autopurge` settings are populated
+      with default values. If the `master_vm` setting is not used, then the
+      `master` setting _must_ be populated with the hostname of the
+      Puppet Master.
+    * Default: `nil`.
+  * `autosign`
+    * Description: An boolean switch which controls whether or not to sign the
+      agent's certificate after installation. Requires `master_vm` to be set.
+    * Options: `true`, `false`
+    * Default: `true`, if `master_vm` is set.
+  * `autopurge`
+    * Description: An boolean switch which controls whether or not to clean the
+      agent's certificate from the master and purge agent data from PuppetDB
+      when the agent VM is destroyed. Requires `master_vm` to be set.
+    * Options: `true`, `false`
+    * Default: `true`, if `master_vm` is set.
+  * `master`
+    * Description: The hostname or fqdn of the puppet master. Must be specified
+      if `master_vm` is not set.
+    * Default: `nil`. Defaults to `vm.hostname` of the Puppet Master if
+      `master_vm` is set.
+  * `version`
+    * Description: The version number of the PE Agent to install. **NOTE:**
+      this setting is currently used only for Windows agents. POSIX agents will
+      always receive the `'current'` version installed on the master. Support
+      for setting the version number of POSIX agents will be added in a future
+      release.
+    * Options: A version string, `x.y.z[-optional-stuff]`, or the string
+      `'current'`.
+    * Default: `'current'`.
+
 
 Commands
 --------

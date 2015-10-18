@@ -27,7 +27,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   #     as a default.
   attr_accessor :master
 
-  # @!attribute master
+  # @!attribute master_vm
   #   @return [String] The name of a Vagrant VM to use as the master.
   attr_accessor :master_vm
 

@@ -19,6 +19,8 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Base
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
   def_model_attribute :master
+  # @!attribute master_vm
+  #   @return [String] The name of a Vagrant VM to use as the master.
   def_model_attribute :master_vm
   # @!attribute version
   #   @return [String] The version of PE to install. May be either a version
