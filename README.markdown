@@ -265,7 +265,7 @@ end
 Requirements
 ------------
 
-[vagranthosts]: https://github.com/adrienthebo/vagrant-hosts
+[vagranthosts]: https://github.com/oscar-stack/vagrant-hosts
 
 Ensure VMs have a FQDN set before installing PE. The easiest way to do this is by setting the `hostname` attribute of the VM configuration.
 
@@ -279,8 +279,8 @@ they have private network interfaces prepared.
 Contact
 -------
 
-  * [Source code](https://github.com/adrienthebo/vagrant-pe_build)
-  * [Issue tracker](https://github.com/adrienthebo/vagrant-pe_build/issues)
+  * [Source code](https://github.com/oscar-stack/vagrant-pe_build)
+  * [Issue tracker](https://github.com/oscar-stack/vagrant-pe_build/issues)
 
 If you have questions or concerns about this module, contact finch on on
 Freenode, or email adrien@puppetlabs.com.
