@@ -12,17 +12,60 @@ describe PEBuild::Config::PEAgent do
   end
 
   describe 'autosign' do
-    it 'defaults to false if master_vm is unset' do
-      subject.finalize!
-
-      expect(subject.autosign).to eq false
-    end
-
     it 'defaults to true if master_vm is set' do
       subject.master_vm = 'master'
       subject.finalize!
 
       expect(subject.autosign).to eq true
+    end
+
+    context 'when master_vm is unset' do
+      it 'defaults to false' do
+        subject.master_vm = nil
+        subject.finalize!
+
+        expect(subject.autosign).to eq false
+      end
+
+      it 'fails validation if set to true' do
+        subject.master    = 'some-hostname'
+        subject.master_vm = nil
+        subject.autosign  = true
+        subject.finalize!
+
+        errors = subject.validate(machine)
+
+        expect(errors['pe_agent provisioner'].to_s).to match(/Use of the .* setting requires master_vm/)
+      end
+    end
+  end
+
+  describe 'autopurge' do
+    it 'defaults to true if master_vm is set' do
+      subject.master_vm = 'master'
+      subject.finalize!
+
+      expect(subject.autopurge).to eq true
+    end
+
+    context 'when master_vm is unset' do
+      it 'defaults to false' do
+        subject.master_vm = nil
+        subject.finalize!
+
+        expect(subject.autopurge).to eq false
+      end
+
+      it 'fails validation if set to true' do
+        subject.master    = 'some-hostname'
+        subject.master_vm = nil
+        subject.autopurge = true
+        subject.finalize!
+
+        errors = subject.validate(machine)
+
+        expect(errors['pe_agent provisioner'].to_s).to match(/Use of the .* setting requires master_vm/)
+      end
     end
   end
 

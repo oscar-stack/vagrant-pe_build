@@ -100,6 +100,8 @@ en:
             Answer_extras must be an Array, got a %{class}.
       pe_agent:
         errors:
+          master_vm_required: |-
+            Use of the %{setting} setting requires master_vm to be specified.
           no_master: |-
             No master or master_vm setting has been configured for this agent.
           master_vm_not_defined: |-

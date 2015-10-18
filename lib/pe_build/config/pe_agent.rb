@@ -69,12 +69,24 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   private
 
   def validate_master_vm!(errors, machine)
-    return if @master_vm.nil?
-
-    unless machine.env.machine_names.include?(@master_vm.intern)
+    if (not @master_vm.nil?) && (not machine.env.machine_names.include?(@master_vm.intern))
       errors << I18n.t(
         'pebuild.config.pe_agent.errors.master_vm_not_defined',
         :vm_name  => @master_vm
+      )
+    end
+
+    if @autosign && @master_vm.nil?
+      errors << I18n.t(
+        'pebuild.config.pe_agent.errors.master_vm_required',
+        :setting  => 'autosign'
+      )
+    end
+
+    if @autopurge && @master_vm.nil?
+      errors << I18n.t(
+        'pebuild.config.pe_agent.errors.master_vm_required',
+        :setting  => 'autopurge'
       )
     end
   end
