@@ -128,102 +128,139 @@ Commands
 Usage Example
 -------------
 
-### Minimal configuration
+### Minimal PE 3.x configuration
 
 This requires that the necessary installers have already been downloaded and
 added with `vagrant pe-build copy`.
 
-    Vagrant.configure('2') do |config|
-      config.pe_build.version = '3.0.0'
+```ruby
+Vagrant.configure('2') do |config|
+  config.pe_build.version = '3.8.2'
 
-      config.vm.define 'master' do |node|
-        node.vm.box = 'centos-6-i386'
+  config.vm.define 'master' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
 
-        node.vm.provision :pe_bootstrap do |provisioner|
-          provisioner.role = :master
-        end
-      end
-
-      config.vm.define 'agent1' do |node|
-        node.vm.box = 'centos-6-i386'
-        node.vm.provision :pe_bootstrap
-        end
-      end
+    node.vm.provision :pe_bootstrap do |p|
+      p.role = :master
     end
+  end
+
+  config.vm.define 'agent1' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.provision :pe_bootstrap
+  end
+end
+```
+
+
+### Minimal PE 2015.x configuration
+
+Same as above, but uses `pe_agent` to provision agent nodes instead
+of `pe_bootstrap`.
+
+```ruby
+Vagrant.configure('2') do |config|
+  config.pe_build.version = '2015.2.2'
+
+  config.vm.define 'master' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.role = :master
+    end
+  end
+
+  config.vm.define 'agent1' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.provision :pe_agent do |p|
+      p.master_vm = 'master'
+    end
+  end
+end
+```
+
 
 ### Specifying a download root
 
-    Vagrant.configure('2') do |config|
-      config.pe_build.version = '3.0.0'
-      config.pe_build.download_root = 'http://my.pe.download.mirror/installers'
+```ruby
+Vagrant.configure('2') do |config|
+  config.pe_build.version = '3.8.2'
+  config.pe_build.download_root = 'http://my.pe.download.mirror/installers'
 
-      # Alternately, a local directory can be specified
-      #config.pe_build.download_root = 'file://Users/luke/Downloads'
+  # Alternately, a local directory can be specified
+  #config.pe_build.download_root = 'file://Users/luke/Downloads'
 
-      config.vm.define 'master' do |node|
-        node.vm.box = 'centos-6-i386'
+  config.vm.define 'master' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
 
-        node.vm.provision :pe_bootstrap do |provisioner|
-          provisioner.role = :master
-        end
-      end
-
-      config.vm.define 'agent1' do |node|
-        node.vm.box = 'centos-6-i386'
-
-        node.vm.provision :pe_bootstrap
-      end
+    node.vm.provision :pe_bootstrap do |p|
+      p.role = :master
     end
+  end
+
+  config.vm.define 'agent1' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+
+    node.vm.provision :pe_bootstrap
+  end
+end
+```
+
 
 ### Using a manual answers file
 
-    Vagrant.configure('2') do |config|
-      config.pe_build.version = '3.0.0'
-      config.pe_build.download_root = 'http://my.pe.download.mirror/installers'
+```ruby
+Vagrant.configure('2') do |config|
+  config.pe_build.version = '3.8.2'
+  config.pe_build.download_root = 'http://my.pe.download.mirror/installers'
 
-      # Alternately, a local directory can be specified
-      #config.pe_build.download_root = 'file://Users/luke/Downloads'
+  # Alternately, a local directory can be specified
+  #config.pe_build.download_root = 'file://Users/luke/Downloads'
 
-      config.vm.define 'master' do |node|
-        node.vm.box = 'centos-6-i386'
+  config.vm.define 'master' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
 
-        node.vm.provision :pe_bootstrap do |provisioner|
-          provisioner.role = :master
-          provisioner.answer_file = 'answers/vagrant_master.answers.txt'
-        end
-      end
-
-      config.vm.define 'agent1' do |node|
-        node.vm.box = 'centos-6-i386'
-
-        node.vm.provision :pe_bootstrap
-      end
+    node.vm.provision :pe_bootstrap do |p|
+      p.role = :master
+      p.answer_file = 'answers/vagrant_master.answers.txt'
     end
+  end
+
+  config.vm.define 'agent1' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+
+    node.vm.provision :pe_bootstrap
+  end
+end
+```
+
 
 ### Manually setting a filename
 
-    Vagrant.configure('2') do |config|
-      config.pe_build.version  = '3.0.0'
-      config.pe_build.filename = 'puppet-enterprise-3.0.0-all.tar.gz'
+```ruby
+Vagrant.configure('2') do |config|
+  config.pe_build.version  = '3.8.2'
+  config.pe_build.filename = 'puppet-enterprise-3.8.2-el-7-x86_64.tar.gz'
 
-      # Alternately, a local directory can be specified
-      #config.pe_build.download_root = 'file://Users/luke/Downloads'
+  # Alternately, a local directory can be specified
+  #config.pe_build.download_root = 'file://Users/luke/Downloads'
 
-      config.vm.define 'master' do |node|
-        node.vm.box = 'centos-6-i386'
+  config.vm.define 'master' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
 
-        node.vm.provision :pe_bootstrap do |provisioner|
-          provisioner.role = :master
-          provisioner.answer_file = 'answers/vagrant_master.answers.txt'
-        end
-      end
-
-      config.vm.define 'agent1' do |node|
-        node.vm.box = 'centos-6-i386'
-
-        node.vm.provision :pe_bootstrap
-      end
+    node.vm.provision :pe_bootstrap do |p|
+      p.role = :master
     end
+  end
+
+  config.vm.define 'agent1' do |node|
+    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+
+    node.vm.provision :pe_bootstrap
+  end
+end
+```
+
 
 Requirements
 ------------
