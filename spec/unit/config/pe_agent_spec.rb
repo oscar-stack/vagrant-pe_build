@@ -42,7 +42,8 @@ describe PEBuild::Config::PEAgent do
 
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner']).to be_empty
+      # Comparision against an empty array produces a better diff.
+      expect(errors['pe_agent provisioner']).to eq []
     end
   end
 
@@ -74,7 +75,7 @@ describe PEBuild::Config::PEAgent do
       subject.finalize!
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner']).to be_empty
+      expect(errors['pe_agent provisioner']).to eq []
     end
 
     it 'may be of the form x.y.z[-other-arbitrary-stuff]' do
@@ -83,7 +84,7 @@ describe PEBuild::Config::PEAgent do
       subject.finalize!
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner']).to be_empty
+      expect(errors['pe_agent provisioner']).to eq []
     end
 
     it 'may not be x.y' do
