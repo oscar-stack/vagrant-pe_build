@@ -144,9 +144,11 @@ module PEBuild
         # progress is silenced, but error messages are still printed.
         #
         # TODO: Extend to allow passing agent install options.
+        # TODO: Extend to use `config.version` once {#provision_pe_repo}
+        # supports it.
         shell_config.inline = <<-EOS
 set -e
-curl -ksS -tlsv1 https://#{config.master}:8140/packages/#{config.version}/install.bash -o pe_frictionless_installer.sh
+curl -ksS -tlsv1 https://#{config.master}:8140/packages/current/install.bash -o pe_frictionless_installer.sh
 bash pe_frictionless_installer.sh
         EOS
         shell_config.finalize!
@@ -163,7 +165,9 @@ bash pe_frictionless_installer.sh
       def provision_windows_agent
         pe_config = ::PEBuild::Config::PEBootstrap.new
         pe_config.role    = :agent
-        pe_config.version = config.version
+        # Windows won't reconize 'current' as a version number, so fall through
+        # to the global default by leaving it unset.
+        pe_config.version = config.version unless config.version == 'current'
         pe_config.master  = config.master
         pe_config.finalize!
 
