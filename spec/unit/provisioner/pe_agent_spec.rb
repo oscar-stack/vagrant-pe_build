@@ -65,7 +65,7 @@ EOF
 
     context 'when master_vm is set' do
       before(:each) do
-        allow(config).to receive(:master_vm).and_return(master_vm)
+        allow(subject).to receive(:master_vm).and_return(master_vm)
       end
 
       it 'raises an error if the master_vm is unreachable' do
@@ -78,7 +78,7 @@ EOF
     context 'when osfamily is windows' do
       before(:each) do
         allow(subject).to receive(:provision_windows?).and_return(true)
-        allow(config).to receive(:master_vm).and_return(master_vm)
+        allow(subject).to receive(:master_vm).and_return(master_vm)
       end
 
       it 'invokes the windows provisioner and skips pe_repo' do

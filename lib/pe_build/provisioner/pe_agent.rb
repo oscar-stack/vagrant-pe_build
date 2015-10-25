@@ -12,13 +12,14 @@ module PEBuild
 
       attr_reader :facts
       attr_reader :agent_version
+      attr_reader :master_vm
 
       def provision
         provision_init!
 
         # As of 2015.x, pe_repo doesn't support windows installation, so skip
         # provisioning the repositories.
-        unless config.master_vm.nil? || provision_windows?
+        unless master_vm.nil? || provision_windows?
           provision_pe_repo
         end
         provision_agent
@@ -28,17 +29,17 @@ module PEBuild
       # This gets run during agent destruction and will remove the agent's
       # certificate from the master, if requested.
       def cleanup
-        unless config.master_vm.is_a?(::Vagrant::Machine)
-          vm_def = machine.env.active_machines.find {|vm| vm[0].to_s == config.master_vm.to_s}
-          if vm_def.nil?
-            config.master_vm.ui.warn I18n.t(
-              'pebuild.provisioner.pe_agent.skip_purge_no_master',
-              :master => config.master_vm.to_s
-            )
-            return
-          end
-          config.master_vm = machine.env.machine(*vm_def)
+        # Search the list of created VMs, which is a list of [name, provider]
+        # tuples. This will fail to match anything if config.master_vm is nil.
+        vm_def = machine.env.active_machines.find {|vm| vm[0].to_s == config.master_vm.to_s}
+        if vm_def.nil?
+          config.master_vm.ui.warn I18n.t(
+            'pebuild.provisioner.pe_agent.skip_purge_no_master',
+            :master => config.master_vm.to_s
+          )
+          return
         end
+        @master_vm = machine.env.machine(*vm_def)
 
         cleanup_agent_cert if config.autopurge
       end
@@ -55,8 +56,8 @@ module PEBuild
           vm_def = machine.env.active_machines.find {|vm| vm[0].to_s == config.master_vm.to_s}
 
           unless vm_def.nil?
-            config.master_vm = machine.env.machine(*vm_def)
-            config.master    ||= config.master_vm.config.vm.hostname.to_s
+            @master_vm       = machine.env.machine(*vm_def)
+            config.master    ||= @master_vm.config.vm.hostname.to_s
           end
         end
       end
@@ -94,7 +95,7 @@ module PEBuild
       def provision_pe_repo
         # This method will raise an error if commands can't be run on the
         # master VM.
-        ensure_reachable(config.master_vm)
+        ensure_reachable(master_vm)
 
         platform         = platform_tag(facts)
         # Transform the platform_tag into a Puppet class name.
@@ -104,18 +105,18 @@ module PEBuild
 
         # Print a message and return if the agent repositories exist on the
         # master.
-        if config.master_vm.communicate.test("[ -e #{platform_repo} ]", :sudo => true)
-          config.master_vm.ui.info I18n.t(
+        if master_vm.communicate.test("[ -e #{platform_repo} ]", :sudo => true)
+          master_vm.ui.info I18n.t(
             'pebuild.provisioner.pe_agent.pe_repo_present',
-            :vm_name      => config.master_vm.name,
+            :vm_name      => master_vm.name,
             :platform_tag => platform
           )
           return
         end
 
-        config.master_vm.ui.info I18n.t(
+        master_vm.ui.info I18n.t(
           'pebuild.provisioner.pe_agent.adding_pe_repo',
-          :vm_name      => config.master_vm.name,
+          :vm_name      => master_vm.name,
           :platform_tag => platform
         )
 
@@ -129,7 +130,7 @@ module PEBuild
         EOS
         shell_config.finalize!
 
-        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(config.master_vm, shell_config)
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
         shell_provisioner.provision
       end
 
@@ -181,7 +182,7 @@ bash pe_frictionless_installer.sh
       def provision_agent_cert
         # This method will raise an error if commands can't be run on the
         # master VM.
-        ensure_reachable(config.master_vm)
+        ensure_reachable(master_vm)
 
         agent_certname = facts['certname']
 
@@ -189,19 +190,19 @@ bash pe_frictionless_installer.sh
         # inverted as `grep -q` will exit with 1 if the certificate is not
         # found.
         # TODO: Extend paths to PE 3.x masters.
-        if not config.master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}", :sudo => true)
-          config.master_vm.ui.info I18n.t(
+        if not master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}", :sudo => true)
+          master_vm.ui.info I18n.t(
             'pebuild.provisioner.pe_agent.no_csr_pending',
             :certname => agent_certname,
-            :master   => config.master_vm.name.to_s
+            :master   => master_vm.name.to_s
           )
           return
         end
 
-        config.master_vm.ui.info I18n.t(
+        master_vm.ui.info I18n.t(
           'pebuild.provisioner.pe_agent.signing_agent_cert',
           :certname => agent_certname,
-          :master   => config.master_vm.name.to_s
+          :master   => master_vm.name.to_s
         )
 
         shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
@@ -212,7 +213,7 @@ bash pe_frictionless_installer.sh
         EOS
         shell_config.finalize!
 
-        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(config.master_vm, shell_config)
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
         shell_provisioner.provision
       end
 
@@ -221,28 +222,28 @@ bash pe_frictionless_installer.sh
         # point, so it's the best guess we have available.
         agent_certname = machine.config.vm.hostname
 
-        unless is_reachable?(config.master_vm)
-          config.master_vm.ui.warn I18n.t(
+        unless is_reachable?(master_vm)
+          master_vm.ui.warn I18n.t(
             'pebuild.provisioner.pe_agent.skip_purge_master_not_reachable',
-            :vm_name => config.master_vm.name.to_s
+            :vm_name => master_vm.name.to_s
           )
           return
         end
 
         # TODO: Extend paths to PE 3.x masters.
-        if not config.master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list #{agent_certname}", :sudo => true)
-          config.master_vm.ui.info I18n.t(
+        unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list #{agent_certname}", :sudo => true)
+          master_vm.ui.info I18n.t(
             'pebuild.provisioner.pe_agent.agent_purged',
             :certname => agent_certname,
-            :master   => config.master_vm.name.to_s
+            :master   => master_vm.name.to_s
           )
           return
         end
 
-        config.master_vm.ui.info I18n.t(
+        master_vm.ui.info I18n.t(
           'pebuild.provisioner.pe_agent.purging_agent',
           :certname => agent_certname,
-          :master   => config.master_vm.name.to_s
+          :master   => master_vm.name.to_s
         )
 
         shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
@@ -253,7 +254,7 @@ bash pe_frictionless_installer.sh
         EOS
         shell_config.finalize!
 
-        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(config.master_vm, shell_config)
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
         shell_provisioner.provision
       end
 
