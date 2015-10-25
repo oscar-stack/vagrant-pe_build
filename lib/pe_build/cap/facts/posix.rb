@@ -19,7 +19,7 @@ class PEBuild::Cap::Facts::POSIX < PEBuild::Cap::Facts::Base
 
   private
 
-  def find_facter
+  def find_puppet
     paths = %w[
       /opt/puppetlabs/bin/puppet
       /opt/puppet/bin/puppet
