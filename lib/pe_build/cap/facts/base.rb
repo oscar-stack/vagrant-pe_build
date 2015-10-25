@@ -96,7 +96,7 @@ class PEBuild::Cap::Facts::Base
   # Override this method to implement a more sophisticated search for the
   # Puppet executable.
   def find_puppet
-    return 'puppet' if @machine.communicate.test('puppet --version')
+    return 'puppet' if @machine.communicate.test('puppet --version', :sudo => true)
     return nil
   end
 

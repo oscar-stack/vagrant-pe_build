@@ -27,7 +27,7 @@ class PEBuild::Cap::Facts::POSIX < PEBuild::Cap::Facts::Base
     ]
 
     paths.each do |path|
-      return path if @machine.communicate.test("#{path} --version")
+      return path if @machine.communicate.test("#{path} --version", :sudo => true)
     end
 
     return nil

@@ -104,7 +104,7 @@ module PEBuild
 
         # Print a message and return if the agent repositories exist on the
         # master.
-        if config.master_vm.communicate.test("[ -e #{platform_repo} ]")
+        if config.master_vm.communicate.test("[ -e #{platform_repo} ]", :sudo => true)
           config.master_vm.ui.info I18n.t(
             'pebuild.provisioner.pe_agent.pe_repo_present',
             :vm_name      => config.master_vm.name,
