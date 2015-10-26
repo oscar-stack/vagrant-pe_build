@@ -1,6 +1,23 @@
 vagrant-pe_build
 ================
 
+0.13.1
+------
+
+2015-10-25
+
+This is a backwards compatible bugfix release.
+
+  * (GH-100) Fixed an issue where the `pe_build` provisioner would fail
+    validation after provisioning had been executed. Some Vagrant providers
+    and plugins set up action chains that run validation multiple times.
+
+  * (GH-101) When loading facts, POSIX guests now properly search for
+    Puppet installations.
+
+  * (GH-102) Searches for Puppet installations are performed using the root
+    account and environment variables.
+
 0.13.0
 ------
 
