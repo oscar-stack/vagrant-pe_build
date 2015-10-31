@@ -33,7 +33,7 @@ module PEBuild
         # tuples. This will fail to match anything if config.master_vm is nil.
         vm_def = machine.env.active_machines.find {|vm| vm[0].to_s == config.master_vm.to_s}
         if vm_def.nil?
-          config.master_vm.ui.warn I18n.t(
+          machine.ui.warn I18n.t(
             'pebuild.provisioner.pe_agent.skip_purge_no_master',
             :master => config.master_vm.to_s
           )
