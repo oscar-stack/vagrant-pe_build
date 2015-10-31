@@ -99,7 +99,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
     if @version.kind_of? String
       return if version == 'current'
       if version.match(pe_version_regex)
-        unless PEBuild::Util::VersionString.compare(@version, MINIMUM_VERSION) > 0
+        unless PEBuild::Util::VersionString.compare(@version, MINIMUM_VERSION) >= 0
           errors << I18n.t(
             'pebuild.config.pe_agent.errors.version_too_old',
             :version         => @version,

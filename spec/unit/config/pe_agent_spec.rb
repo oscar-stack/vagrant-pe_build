@@ -141,7 +141,16 @@ describe PEBuild::Config::PEAgent do
       expect(errors['pe_agent provisioner'].to_s).to match(/The agent version.*is invalid./)
     end
 
-    it "must be greater than #{PEBuild::Config::PEAgent::MINIMUM_VERSION}" do
+    it "may be greater than or equal to #{PEBuild::Config::PEAgent::MINIMUM_VERSION}" do
+      subject.version = PEBuild::Config::PEAgent::MINIMUM_VERSION
+
+      subject.finalize!
+      errors = subject.validate(machine)
+
+      expect(errors['pe_agent provisioner']).to eq []
+    end
+
+    it "may not be less than #{PEBuild::Config::PEAgent::MINIMUM_VERSION}" do
       subject.version = '3.8.2'
 
       subject.finalize!
