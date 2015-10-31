@@ -1,6 +1,19 @@
 vagrant-pe_build
 ================
 
+0.13.2
+------
+
+2015-10-31
+
+This is a backwards compatible bugfix release.
+
+  * (GH-104) Fixed an issue where the `pe_agent` provisioner would reject
+    PE version 2015.2.0 as being "too old".
+
+  * (GH-105) Fixed an issue where the `pe_agent` provisioner would raise
+    an error during agent deletion if the master wasn't created.
+
 0.13.1
 ------
 
