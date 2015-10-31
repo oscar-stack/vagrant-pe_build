@@ -1,3 +1,5 @@
+require 'pe_build/util/version_string'
+
 # Configuration for PE Agent provisioners
 #
 # @since 0.13.0
