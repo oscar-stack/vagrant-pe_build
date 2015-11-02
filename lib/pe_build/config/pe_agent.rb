@@ -37,12 +37,18 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   #   `current`. Defaults to `current`.
   attr_accessor :version
 
+  # @!attribute certname
+  #   @return [String] What to use as the certname. May be either fqdn
+  #   hostname, or vm_name. The default is vm_name
+  attr_accessor :certname
+
   def initialize
     @autosign      = UNSET_VALUE
     @autopurge     = UNSET_VALUE
     @master        = UNSET_VALUE
     @master_vm     = UNSET_VALUE
     @version       = UNSET_VALUE
+    @certname      = UNSET_VALUE
   end
 
   def finalize!
@@ -51,6 +57,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
     @autosign      = (not @master_vm.nil?) if @autosign  == UNSET_VALUE
     @autopurge     = (not @master_vm.nil?) if @autopurge == UNSET_VALUE
     @version       = 'current' if @version == UNSET_VALUE
+    @certname      = 'vm_name' if @certname = UNSET_VALUE
   end
 
   def validate(machine)

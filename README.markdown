@@ -120,6 +120,11 @@ with the global `config.pe_build` settings.
     * Options: A version string, `x.y.z[-optional-stuff]`, or the string
       `'current'`.
     * Default: `'current'`.
+  * `certname`
+    * Description: How to determine which certname to use for the agent.
+      **NOTE:** This option only works on POSIX agents for now.
+    * Options: `vm_name`, `hostname`, or `fqdn`
+    * Default: `vm_name`
 
 
 Commands
