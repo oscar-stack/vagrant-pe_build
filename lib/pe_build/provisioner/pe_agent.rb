@@ -140,16 +140,28 @@ module PEBuild
         shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
         shell_config.privileged = true
 
-        certname_option = case config.certname
+        certname_string = case config.certname
                           when 'hostname'
-                            "agent:certname=#{machine.config.vm.hostname}"
+                            machine.config.vm.hostname
                           when 'fqdn'
                             #The installer script already defaults to FQDN
                             #Just let it do its thing
-                            ''
+                            nil
                           when 'vm_name'
-                            "agent:certname=#{machine.name}"
+                            machine.name
+                          else
+                            raise "You should not be seeing this since certname config value should already have 
+                            been validated to be one of #{VALID_CERTNAME_SOURCES} and #{config.certname} 
+                            is unknown"
                           end
+
+        if certname_string.nil?
+          machine.ui.info "Defaulting to using FQDN for the certname"
+          certname_option = String.new
+        else
+          machine.ui.info "Using #{certname_string} for the certname"
+          certname_option = "agent:certname=#{certname_string}"
+        end
 
         # Installation is split into to components running under set -e so that
         # failures are detected. The curl command uses `sS` so that download
