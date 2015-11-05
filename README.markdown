@@ -110,7 +110,7 @@ with the global `config.pe_build` settings.
     * Description: The hostname or fqdn of the puppet master. Must be specified
       if `master_vm` is not set.
     * Default: `nil`. Defaults to `vm.hostname` of the Puppet Master if
-      `master_vm` is set.
+      `master_vm` is set and `master_vm` if `vm.hostname` is not set.
   * `version`
     * Description: The version number of the PE Agent to install. **NOTE:**
       this setting is currently used only for Windows agents. POSIX agents will

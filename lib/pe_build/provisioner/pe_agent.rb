@@ -57,7 +57,7 @@ module PEBuild
 
           unless vm_def.nil?
             @master_vm       = machine.env.machine(*vm_def)
-            config.master    ||= @master_vm.config.vm.hostname.to_s
+            config.master    ||= ( @master_vm.config.vm.hostname || @master_vm.name ).to_s
           end
         end
       end
