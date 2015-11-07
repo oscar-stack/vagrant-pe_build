@@ -18,6 +18,9 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Base
   def_model_attribute :autopurge
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
+  #     If {#master_vm} is set, the hostname of that machine will be used
+  #     as a default. If the hostname is unset, the name of the VM will be
+  #     used as a secondary default.
   def_model_attribute :master
   # @!attribute master_vm
   #   @return [String] The name of a Vagrant VM to use as the master.

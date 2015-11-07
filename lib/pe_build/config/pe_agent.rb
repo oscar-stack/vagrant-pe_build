@@ -26,7 +26,8 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   # @!attribute master
   #   @return [String] The DNS hostname of the Puppet master for this node.
   #     If {#master_vm} is set, the hostname of that machine will be used
-  #     as a default.
+  #     as a default. If the hostname is unset, the name of the VM will be
+  #     used as a secondary default.
   attr_accessor :master
 
   # @!attribute master_vm
