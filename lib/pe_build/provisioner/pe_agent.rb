@@ -220,7 +220,7 @@ bash pe_frictionless_installer.sh
       def cleanup_agent_cert
         # TODO: This isn't very flexible. But, the VM is destroyed at this
         # point, so it's the best guess we have available.
-        agent_certname = machine.config.vm.hostname
+        agent_certname = (machine.config.vm.hostname || machine.name).to_s
 
         unless is_reachable?(master_vm)
           master_vm.ui.warn I18n.t(
