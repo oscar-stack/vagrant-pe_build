@@ -1,6 +1,18 @@
 vagrant-pe_build
 ================
 
+0.13.3
+------
+
+2015-11-07
+
+This is a backwards compatible bugfix release.
+
+  * (GH-107) Fall back to using VM names as certnames if VM hostnames are
+    unset.
+
+  * (GH-108) Added support for PE 3.8.3 and 2015.2.3.
+
 0.13.2
 ------
 
