@@ -225,7 +225,7 @@ bash pe_frictionless_installer.sh
         unless is_reachable?(master_vm)
           master_vm.ui.warn I18n.t(
             'pebuild.provisioner.pe_agent.skip_purge_master_not_reachable',
-            :vm_name => master_vm.name.to_s
+            :master => master_vm.name.to_s
           )
           return
         end
