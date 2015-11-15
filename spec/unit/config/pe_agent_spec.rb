@@ -9,6 +9,9 @@ describe PEBuild::Config::PEAgent do
   before(:each) do
     allow(machine).to receive(:env).and_return(env)
     allow(env).to receive(:machine_names).and_return([:master])
+
+    # Minimum valid configuration.
+    subject.master = 'master.company.com'
   end
 
   describe 'autosign' do
@@ -35,7 +38,7 @@ describe PEBuild::Config::PEAgent do
 
         errors = subject.validate(machine)
 
-        expect(errors['pe_agent provisioner'].to_s).to match(/Use of the .* setting requires master_vm/)
+        expect(errors['pe_agent provisioner'].join).to match(/Use of the .* setting requires master_vm/)
       end
     end
   end
@@ -64,19 +67,20 @@ describe PEBuild::Config::PEAgent do
 
         errors = subject.validate(machine)
 
-        expect(errors['pe_agent provisioner'].to_s).to match(/Use of the .* setting requires master_vm/)
+        expect(errors['pe_agent provisioner'].join).to match(/Use of the .* setting requires master_vm/)
       end
     end
   end
 
   describe 'master' do
     it 'must be set if master_vm is nil' do
+      subject.master    = nil
       subject.master_vm = nil
       subject.finalize!
 
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner'].to_s).to match(/No master or master_vm setting has been configured/)
+      expect(errors['pe_agent provisioner'].join).to match(/No master or master_vm setting has been configured/)
     end
 
     it 'may be unset if master_vm is not nil' do
@@ -99,13 +103,11 @@ describe PEBuild::Config::PEAgent do
 
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner'].to_s).to match(/The specified master_vm,.*, is not defined/)
+      expect(errors['pe_agent provisioner'].join).to match(/The specified master_vm,.*, is not defined/)
     end
   end
 
   describe 'version' do
-    before(:each) { subject.master = 'master.company.com' }
-
     it 'defaults to "current"' do
       subject.finalize!
 
@@ -138,7 +140,7 @@ describe PEBuild::Config::PEAgent do
 
       # Casting the array to a string and using a regex matcher gives a nice
       # diff in the case of failure.
-      expect(errors['pe_agent provisioner'].to_s).to match(/The agent version.*is invalid./)
+      expect(errors['pe_agent provisioner'].join).to match(/The agent version.*is invalid./)
     end
 
     it "may be greater than or equal to #{PEBuild::Config::PEAgent::MINIMUM_VERSION}" do
@@ -156,7 +158,7 @@ describe PEBuild::Config::PEAgent do
       subject.finalize!
       errors = subject.validate(machine)
 
-      expect(errors['pe_agent provisioner'].to_s).to match(/The agent version.*is too old./)
+      expect(errors['pe_agent provisioner'].join).to match(/The agent version.*is too old./)
     end
   end
 
