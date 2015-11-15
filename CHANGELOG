@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.13.4
+------
+
+2015-11-15
+
+This is a backwards compatible bugfix release.
+
+  * Fix an error that was raised during agent destruction if the master vm was
+    powered off.
+
 0.13.3
 ------
 
