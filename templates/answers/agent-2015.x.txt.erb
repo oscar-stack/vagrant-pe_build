@@ -15,5 +15,8 @@ q_puppet_enterpriseconsole_install=n
 q_puppetagent_install=y
 q_puppetagent_certname=<%= machine_hostname %>
 q_puppetagent_server=<%= @config.master %>
+q_puppetdb_hostname=<%= @config.master %>
+q_database_host=<%= @config.master %>
+q_database_port=5432
 q_skip_master_verification=n
 q_fail_on_unsuccessful_master_lookup=y
