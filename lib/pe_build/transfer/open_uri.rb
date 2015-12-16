@@ -19,6 +19,9 @@ module PEBuild::Transfer::OpenURI
   def self.copy(uri, dst)
     idempotent(dst) do
       tmpfile = download_file(uri)
+      # Ensure the file is closed after the download. On Windows, leaving the
+      # file open will prevent it from being moved.
+      tmpfile.close()
       FileUtils.mv(tmpfile, dst)
     end
   rescue StandardError => e
