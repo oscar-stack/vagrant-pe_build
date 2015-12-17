@@ -1,6 +1,20 @@
 vagrant-pe_build
 ================
 
+0.13.6
+------
+
+2015-12-17
+
+This is a backwards compatible bugfix release.
+
+  * (GH-60) Fix PE tarball downloads on windows.
+
+  * (GH-109) Fix pe_bootstrap agent installations for 2015.3.x. Note that this
+    functionality isn't technically supposed to work in 2015.x and may break
+    with upcoming releases. The pe_agent provisioner is the recommended method
+    for installing 2015.x agents.
+
 0.13.5
 ------
 
