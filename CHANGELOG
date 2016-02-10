@@ -1,6 +1,19 @@
 vagrant-pe_build
 ================
 
+0.13.7
+------
+
+2015-02-10
+
+This is a backwards compatible bugfix release.
+
+  * (GH-111) Add support for all forseeable 3.8.z releases as the answer file
+    format is unlikely to change.
+
+  * Add support for PE 2015.3.1 and PE 2015.3.2.
+
+
 0.13.6
 ------
 
