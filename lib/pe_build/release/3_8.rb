@@ -54,10 +54,6 @@ module PEBuild::Release
     set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-3.x.txt.erb')
     set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
   end
-
-  @releases['3.8.0'] = three_eight_x
-  @releases['3.8.1'] = three_eight_x
-  @releases['3.8.2'] = three_eight_x
-  @releases['3.8.3'] = three_eight_x
+  (0..99).each { |z| @releases["3.8.#{z}"] = three_eight_x }
 end
 
