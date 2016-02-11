@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-ruby '2.0.0' # Required by Vagrant 1.4 and newer.
 
 ENV['TEST_VAGRANT_VERSION'] ||= 'v1.7.4'
 
@@ -21,7 +20,7 @@ group :test do
     gem 'vagrant', :github => 'mitchellh/vagrant', :tag => ENV['TEST_VAGRANT_VERSION']
   end
 
-  # Pinned on 12/10/2014. Compatible with Vagrant 1.5.x, 1.6.x and 1.7.x.
+  # Pinned on 12/10/2014. Compatible with Vagrant 1.6.x, 1.7.x and 1.8.x.
   gem 'vagrant-spec', :github => 'mitchellh/vagrant-spec', :ref => '1df5a3a'
 end
 
