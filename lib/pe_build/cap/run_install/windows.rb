@@ -23,7 +23,7 @@ class PEBuild::Cap::RunInstall::Windows
     installer = File.join(root, archive.to_s).gsub('/', '\\')
 
     cmd = []
-    cmd << 'msiexec' << '/qn' << '/i' << installer
+    cmd << 'start' << '/wait' << 'msiexec' << '/qn' << '/i' << installer
 
     cmd << "PUPPET_MASTER_SERVER=#{config.master}"
     cmd << "PUPPET_AGENT_CERTNAME=#{machine.name}"
