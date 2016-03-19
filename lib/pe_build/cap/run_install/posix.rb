@@ -4,15 +4,6 @@ class PEBuild::Cap::RunInstall::POSIX
   extend PEBuild::OnMachine
 
   def self.run_install(machine, config, archive)
-
-    # NOTE: This test for both the 3.x and 4.x installation locations. Should
-    # probably refactor this into something cleaner.
-    if machine.communicate.test('test -f /opt/puppet/pe_version || test -f /opt/puppetlabs/server/pe_version')
-      machine.ui.warn I18n.t('pebuild.cap.run_install.already_installed'),
-                      :name  => machine.name
-      return
-    end
-
     root = File.join('/vagrant', PEBuild::WORK_DIR)
 
     cmd_path = []

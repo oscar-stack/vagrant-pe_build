@@ -28,6 +28,8 @@ en:
       pe_bootstrap:
         post_install: |-
           Applying post-install configuration to Puppet Enterprise.
+        already_installed: |-
+          Puppet Enterprise is already installed, skipping installation.
         errors:
           unset_version: |-
             The Puppet Enterprise version must be set either on the global pe_build config
@@ -115,8 +117,6 @@ en:
             newer than %{minimum_version}.
     cap:
       run_install:
-        already_installed: |-
-          Puppet Enterprise is already installed, skipping installation.
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
       detect_installer:

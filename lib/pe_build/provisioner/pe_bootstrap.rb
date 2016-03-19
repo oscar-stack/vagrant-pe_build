@@ -55,16 +55,34 @@ module PEBuild
       end
 
       def provision
-        prepare_answers_file
         load_archive
-        fetch_installer
 
-        @machine.guest.capability('run_install', @config, @archive)
+        if pe_installed?
+          machine.ui.warn I18n.t('pebuild.provisioner.pe_bootstrap.already_installed'),
+                          :name  => machine.name
+        else
+          prepare_answers_file
+          fetch_installer
+          machine.guest.capability('run_install', @config, @archive)
+        end
 
         run_postinstall_tasks
       end
 
       private
+
+      def pe_installed?
+        case machine.guest.capability_host_chain.first.first
+        when :windows
+          gt_win2k3_path = '${Env:ALLUSERSPROFILE}\\PuppetLabs'
+          le_win2k3_path = '${Env:ALLUSERSPROFILE}\\Application Data\\PuppetLabs'
+          testpath = "(Test-Path \"#{gt_win2k3_path}\") -or (Test-Path \"#{le_win2k3_path}\")"
+
+          machine.communicate.test("If (#{testpath}) { Exit 0 } Else { Exit 1 }")
+        else
+          machine.communicate.test('test -f /opt/puppet/pe_version || test -f /opt/puppetlabs/server/pe_version')
+        end
+      end
 
       def late_config_merge(root_config)
         provision = @config

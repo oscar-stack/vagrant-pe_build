@@ -4,17 +4,6 @@ class PEBuild::Cap::RunInstall::Windows
   extend PEBuild::OnMachine
 
   def self.run_install(machine, config, archive)
-
-    gt_win2k3_path = '${Env:ALLUSERSPROFILE}\\PuppetLabs'
-    le_win2k3_path = '${Env:ALLUSERSPROFILE}\\Application Data\\PuppetLabs'
-    testpath = "(Test-Path \"#{gt_win2k3_path}\") -or (Test-Path \"#{le_win2k3_path}\")"
-
-    if machine.communicate.test("If (#{testpath}) { Exit 0 } Else { Exit 1 }")
-      machine.ui.warn I18n.t('pebuild.cap.run_install.already_installed'),
-        :name => machine.name
-      return
-    end
-
     root = machine.communicate.shell.cmd('ECHO %SYSTEMDRIVE%')[:data][0][:stdout].chomp
     root = File.join("#{root}\\vagrant", PEBuild::WORK_DIR)
 
