@@ -62,7 +62,7 @@ module PEBuild
         else
           prepare_answers_file
           fetch_installer
-          machine.guest.capability('run_install', @config, @archive)
+          run_install
         end
 
         run_postinstall_tasks
@@ -143,6 +143,37 @@ module PEBuild
         else
           @machine.guest.capability(:stage_installer, @archive.source_uri(@config.download_root), '.')
         end
+      end
+
+      def run_install
+        case machine.guest.capability_host_chain.first.first
+        when :windows
+          if @config.shared_installer
+            drive = machine.communicate.shell.cmd('ECHO %SYSTEMDRIVE%')[:data][0][:stdout].chomp
+            installer_dir = File.join(drive, 'vagrant', PEBuild::WORK_DIR)
+
+            installer_path = File.join(installer_dir, @archive.filename)
+          else
+            installer_path = @archive.filename
+          end
+
+          # Windows installations don't use answer files.
+          answers = {
+            'PUPPET_MASTER_SERVER'  => @config.master,
+            'PUPPET_AGENT_CERTNAME' => machine.name,
+          }
+        else
+          if @config.shared_installer
+            root = File.join('/vagrant', PEBuild::WORK_DIR)
+            installer_path = File.join(root, @archive.installer_dir, 'puppet-enterprise-installer')
+            answers = File.join(root, 'answers', "#{machine.name}.txt")
+          else
+            installer_path = File.join(@archive.installer_dir, 'puppet-enterprise-installer')
+            answers = File.join("#{machine.name}.txt")
+          end
+        end
+
+        machine.guest.capability('run_install', installer_path, answers)
       end
 
       def run_postinstall_tasks
