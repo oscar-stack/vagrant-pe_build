@@ -41,7 +41,12 @@ class PEBuild::Provisioner::PEBootstrap::PostInstall
         puppet_apply  = "/opt/puppetlabs/bin/puppet apply"
       end
 
-      manifest_path = "/vagrant/.pe_build/post-install/#{@machine.name}.pp"
+      if @config.shared_installer
+        manifest_path = "/vagrant/.pe_build/post-install/#{@machine.name}.pp"
+      else
+        @machine.communicate.upload(@post_install_manifest, "#{@machine.name}.pp")
+        manifest_path = "#{@machine.name}.pp"
+      end
 
       on_machine(@machine, "#{puppet_apply} #{manifest_path}")
     end
