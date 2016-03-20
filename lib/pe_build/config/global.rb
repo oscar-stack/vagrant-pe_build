@@ -45,6 +45,15 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
   #   @since 0.1.0
   attr_accessor :filename
 
+  # @!attribute shared_installer
+  #   @return [Boolean] Whether to run PE installation using installers and
+  #     answers shared using the `/vagrant` mount. If set to `false`, resources
+  #     will be downloaded remotely to the home directory of whichever user
+  #     account Vagrant is using. Defaults to `true`.
+  #
+  #   @since 0.14.0
+  attr_accessor :shared_installer
+
   def initialize
     @download_root = UNSET_VALUE
     @version       = UNSET_VALUE
@@ -52,6 +61,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
     @series        = UNSET_VALUE
     @suffix        = UNSET_VALUE
     @filename      = UNSET_VALUE
+    @shared_installer = UNSET_VALUE
   end
 
   include PEBuild::ConfigDefault
@@ -63,6 +73,7 @@ class PEBuild::Config::Global < Vagrant.plugin('2', :config)
     set_default :@suffix, :detect
     set_default :@download_root, nil
     set_default :@filename, nil
+    set_default :@shared_installer, true
   end
 
   def validate(machine)

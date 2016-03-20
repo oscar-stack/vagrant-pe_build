@@ -41,6 +41,11 @@ optional and can be overridden in a VM's individual provisioner config.
       * ftp
       * file
       * A blank URI will default to `file`.
+  * `config.pe_build.shared_installer`
+    * Description: Whether to run PE installation using installers and answers
+      shared using the `/vagrant` directory. If set to `false`, resources will
+      be downloaded remotely to the home directory of whichever user account
+      Vagrant is using. Defaults to `true`.
 
 ### `pe_bootstrap` Provisioner Settings
 

@@ -34,6 +34,15 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
   #     installers if the installer is not yet cached. This setting is optional.
   def_model_attribute :download_root
 
+  # @!attribute shared_installer
+  #   @return [Boolean] Whether to run PE installation using installers and
+  #     answers shared using the `/vagrant` mount. If set to `false`, resources
+  #     will be downloaded remotely to the home directory of whichever user
+  #     account Vagrant is using. Defaults to `true`.
+  #
+  #   @since 0.14.0
+  def_model_attribute :shared_installer
+
   def to_proc
     Proc.new do |global_config|
       with_attr(:download_root) { |val| global_config.pe_build.download_root = val }
@@ -42,6 +51,7 @@ class PEBuild::ConfigBuilder::Global < ::ConfigBuilder::Model::Base
       with_attr(:series)        { |val| global_config.pe_build.series        = val }
       with_attr(:suffix)        { |val| global_config.pe_build.suffix        = val }
       with_attr(:filename)      { |val| global_config.pe_build.filename      = val }
+      with_attr(:shared_installer) { |val| global_config.pe_build.shared_installer = val }
     end
   end
 end

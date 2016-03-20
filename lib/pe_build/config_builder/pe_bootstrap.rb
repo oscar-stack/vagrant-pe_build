@@ -56,6 +56,7 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         with_attr(:series)        { |val| pe.series        = val }
         with_attr(:suffix)        { |val| pe.suffix        = val }
         with_attr(:filename)      { |val| pe.filename      = val }
+        with_attr(:shared_installer) { |val| pe.shared_installer = val }
 
         with_attr(:role)               { |val| pe.role               = val }
         with_attr(:verbose)            { |val| pe.verbose            = val }
