@@ -30,5 +30,10 @@ module PEBuild
       require 'pe_build/cap/run_install/posix'
       require 'pe_build/cap/run_install/windows'
     end
+
+    module StageInstaller
+      require 'pe_build/cap/stage_installer/posix'
+      require 'pe_build/cap/stage_installer/windows'
+    end
   end
 end

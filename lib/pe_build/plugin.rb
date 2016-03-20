@@ -85,6 +85,24 @@ module PEBuild
 
     ## Run install
 
+    guest_capability('linux', 'stage_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::StageInstaller::POSIX
+    end
+
+    [:solaris, :solaris11].each do |os|
+      guest_capability(os, 'stage_installer') do
+        require_relative 'cap'
+        PEBuild::Cap::StageInstaller::POSIX
+      end
+    end
+
+    guest_capability('windows', 'stage_installer') do
+      require_relative 'cap'
+      PEBuild::Cap::StageInstaller::Windows
+    end
+
+
     guest_capability('linux', 'run_install') do
       require_relative 'cap'
       PEBuild::Cap::RunInstall::POSIX

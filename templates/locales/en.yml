@@ -116,6 +116,10 @@ en:
             The agent version %{version} is too old; pe_agent can only provision versions
             newer than %{minimum_version}.
     cap:
+      stage_installer:
+        downloading_installer: |-
+          Downloading PE installer from:
+            %{url}
       run_install:
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
