@@ -64,7 +64,7 @@ module PEBuild
         raise PEBuild::ArchiveNoInstallerSource, :filename => versioned_path(@filename)
       end
 
-      uri = URI.parse(versioned_path("#{str}/#{@filename}"))
+      uri = source_uri(str)
       dst = File.join(@archive_dir, versioned_path(@filename))
 
       PEBuild::Transfer.copy(uri, dst)
@@ -92,6 +92,11 @@ module PEBuild
 
     def to_s
       versioned_path(@filename)
+    end
+
+    # @param base_uri [String, URI] A base uri for downloads.
+    def source_uri(base_uri)
+      URI.parse(versioned_path("#{base_uri.to_s}/#{@filename}"))
     end
 
     def installer_dir

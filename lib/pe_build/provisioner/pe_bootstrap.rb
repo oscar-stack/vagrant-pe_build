@@ -53,7 +53,6 @@ module PEBuild
           FileUtils.mkdir_p work_dir
         end
       end
-
       def provision
         load_archive
 
@@ -103,6 +102,10 @@ module PEBuild
       def prepare_answers_file
         af = AnswersFile.new(@machine, @config, @work_dir)
         af.generate
+
+        unless @config.shared_installer
+          @machine.communicate.upload(File.join(@answer_dir, "#{@machine.name}.txt"), "#{machine.name}.txt")
+        end
       end
 
       def load_archive
@@ -133,9 +136,13 @@ module PEBuild
 
       # @todo panic if @config.download_root is undefined
       def fetch_installer
-        uri = @config.download_root
-        @archive.fetch(@config.download_root)
-        @archive.unpack_to(@work_dir)
+        if @config.shared_installer
+          uri = @config.download_root
+          @archive.fetch(@config.download_root)
+          @archive.unpack_to(@work_dir)
+        else
+          @machine.guest.capability(:stage_installer, @archive.source_uri(@config.download_root), '.')
+        end
       end
 
       def run_postinstall_tasks
