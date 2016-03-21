@@ -15,8 +15,19 @@ class PEBuild::Cap::RunInstall::Windows
     # Lots of PowerShell commands can handle UNIX-style paths. msiexec can't.
     installer_path = installer_path.gsub('/', '\\')
 
-    on_machine(machine, <<-EOS)
-msiexec /qn /i "#{installer_path}" #{install_options}
+    cmd = <<-EOS
+$params = @(
+  "/qn",
+  "/i `"#{installer_path}`"",
+  "/l*v puppet-enterprise-installer.log",
+  "#{install_options}"
+)
+
+(Start-Process -FilePath "msiexec.exe" -ArgumentList $params -Wait -Passthru).ExitCode
 EOS
+
+    machine.ui.info "Running: #{cmd}"
+
+    on_machine(machine, cmd)
   end
 end
