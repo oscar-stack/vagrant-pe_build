@@ -1,6 +1,8 @@
 require 'pe_build/util/pe_packaging'
 require 'pe_build/util/machine_comms'
 
+require 'uri'
+
 module PEBuild
   module Provisioner
     # Provision PE agents using simplified install
@@ -17,9 +19,9 @@ module PEBuild
       def provision
         provision_init!
 
-        # As of 2015.x, pe_repo doesn't support windows installation, so skip
-        # provisioning the repositories.
-        unless master_vm.nil? || provision_windows?
+        # NOTE: When enabling installation for PE 3.x, Windows isn't supported
+        # by that build of pe_repo.
+        unless master_vm.nil?
           provision_pe_repo
         end
         provision_agent
@@ -164,19 +166,20 @@ bash pe_frictionless_installer.sh
       #
       # Executes a `pe_bootstrap` provisioner running in agent mode.
       def provision_windows_agent
-        pe_config = ::PEBuild::Config::PEBootstrap.new
-        pe_config.role    = :agent
-        # Windows won't reconize 'current' as a version number, so fall through
-        # to the global default by leaving it unset.
-        pe_config.version = config.version unless config.version == 'current'
-        pe_config.master  = config.master
-        pe_config.finalize!
+        platform_tag = platform_tag(facts)
+        installer = "puppet-agent-#{facts['architecture']}.msi"
+        # TODO: Extend to allow passing arbitrary install options.
+        answers = {
+          'PUPPET_MASTER_SERVER'  => config.master,
+          'PUPPET_AGENT_CERTNAME' => machine.name,
+        }
 
-        machine.ui.info "Installing Windows agent with PE Bootstrap"
+        # TODO: Extend to use `config.version` once {#provision_pe_repo}
+        # supports it.
+        installer_url = URI.parse("https://#{config.master}:8140/packages/current/#{platform_tag}/#{installer}")
 
-        pe_provisioner = Vagrant.plugin('2').manager.provisioners[:pe_bootstrap].new(machine, pe_config)
-        pe_provisioner.configure(machine.config)
-        pe_provisioner.provision
+        machine.guest.capability(:stage_installer, installer_url, '.')
+        machine.guest.capability(:run_install, installer, answers)
       end
 
       def provision_agent_cert

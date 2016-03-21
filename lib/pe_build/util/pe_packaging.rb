@@ -26,6 +26,7 @@ module PEBuild
           arch    = facts['architecture']
         when 'windows'
           os      = 'windows'
+          # Windows packages don't discriminate based on version.
           version = nil
           arch    = (facts['architecture'] == 'x64' ? 'x86_64' : 'i386')
         when 'debian'
@@ -48,7 +49,7 @@ module PEBuild
         end
         # TODO: Add "unknown os" error.
 
-        [os, version, arch].join('-').downcase
+        [os, version, arch].compact.join('-').downcase
       end
       module_function :platform_tag
 
