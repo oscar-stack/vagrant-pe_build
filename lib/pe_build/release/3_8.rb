@@ -52,6 +52,10 @@ module PEBuild::Release
     #  add_release :cumulus, 'see forge module'
 
     set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-3.x.txt.erb')
+    set_answer_file :camom, File.join(PEBuild.template_dir, 'answers', 'camom-3.8.txt.erb')
+    set_answer_file :puppetdb, File.join(PEBuild.template_dir, 'answers', 'puppetdb-3.8.txt.erb')
+    set_answer_file :console, File.join(PEBuild.template_dir, 'answers', 'console-3.8.txt.erb')
+    set_answer_file :cmaster, File.join(PEBuild.template_dir, 'answers', 'cmaster-3.8.txt.erb')
     set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-3.x.txt.erb')
   end
   (0..99).each { |z| @releases["3.8.#{z}"] = three_eight_x }

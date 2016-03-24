@@ -7,6 +7,21 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   @since 0.1.0
   attr_accessor :master
 
+  # @!attribute camom
+  #   @return [String] The DNS hostname of the Puppet ca for this node.
+  #   @since 0.1.0
+  attr_accessor :camom
+  
+  # @!attribute puppetdb
+  #   @return [String] The DNS hostname of the puppetdb server for this node.
+  #   @since 0.1.0
+  attr_accessor :puppetdb
+
+  # @!attribute console
+  #   @return [String] The DNS hostname of the console server for this node.
+  #   @since 0.1.0
+  attr_accessor :console
+
   # @!attribute answer_file
   #   @return [String] The path to a user specified answer_file file (Optional)
   #   @since 0.1.0
@@ -29,7 +44,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   attr_accessor :role
 
   # @api private
-  VALID_ROLES = [:agent, :master]
+  VALID_ROLES = [:agent, :master, :camom, :puppetdb, :console, :cmaster]
 
   # @!attribute relocate_manifests
   #   @return [TrueClass, FalseClass] if the puppet master should use manifests
@@ -58,6 +73,9 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     @role        = UNSET_VALUE
     @verbose     = UNSET_VALUE
     @master      = UNSET_VALUE
+    @camom       = UNSET_VALUE
+    @puppetdb    = UNSET_VALUE
+    @console      = UNSET_VALUE
     @answer_file = UNSET_VALUE
     @answer_extras = UNSET_VALUE
 
@@ -77,6 +95,9 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     set_default :@role,        :agent
     set_default :@verbose,     true
     set_default :@master,      'master'
+    set_default :@camom,       'camom'
+    set_default :@puppetdb,    'puppetdb'
+    set_default :@console,     'console'
     set_default :@answer_file, nil
     set_default :@answer_extras, []
     set_default :@autosign,    (@role == :master)

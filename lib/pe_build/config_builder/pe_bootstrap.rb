@@ -15,6 +15,18 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
   #   @return [String] The address of the puppet master.
   def_model_attribute :master
 
+  # @!attribute [rw] camom
+  #   @return [String] The address of the puppet ca.
+  def_model_attribute :camom
+
+  # @!attribute [rw] puppetdb
+  #   @return [String] The address of the puppetdb server.
+  def_model_attribute :puppetdb
+
+  # @!attribute [rw] console
+  #   @return [String] The address of the console server.
+  def_model_attribute :console
+
   # @!attribute [rw] answer_file
   #   @return [String] The location of alternate answer file for PE
   #     installation. Values can be paths relative to the Vagrantfile's project
@@ -56,7 +68,6 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         with_attr(:series)        { |val| pe.series        = val }
         with_attr(:suffix)        { |val| pe.suffix        = val }
         with_attr(:filename)      { |val| pe.filename      = val }
-
         with_attr(:role)               { |val| pe.role               = val }
         with_attr(:verbose)            { |val| pe.verbose            = val }
         with_attr(:master)             { |val| pe.master             = val }
@@ -64,6 +75,9 @@ class PEBuild::ConfigBuilder::PEBootstrap < ::PEBuild::ConfigBuilder::Global
         with_attr(:answer_extras)      { |val| pe.answer_extras      = val }
         with_attr(:relocate_manifests) { |val| pe.relocate_manifests = val }
         with_attr(:autosign)           { |val| pe.autosign           = val }
+        with_attr(:camom)         {|val| pe.camom          = val}
+        with_attr(:puppetdb)      {|val| pe.puppetdb       = val}
+        with_attr(:console)       {|val| pe.console        = val}
       end
     end
   end
