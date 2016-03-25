@@ -13,7 +13,7 @@ class PEBuild::Cap::DetectInstaller::SLES < PEBuild::Cap::DetectInstaller::POSIX
   end
 
   def supported_releases
-    %w[11]
+    %w[10 11 12]
   end
 end
 
