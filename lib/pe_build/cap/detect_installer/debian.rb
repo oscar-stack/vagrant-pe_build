@@ -13,7 +13,7 @@ class PEBuild::Cap::DetectInstaller::Debian < PEBuild::Cap::DetectInstaller::POS
   end
 
   def supported_releases
-    %w[6 7]
+    %w[6 7 8]
   end
 
   def arch
