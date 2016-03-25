@@ -81,9 +81,8 @@ EOF
         allow(subject).to receive(:master_vm).and_return(master_vm)
       end
 
-      it 'invokes the windows provisioner and skips pe_repo' do
+      it 'invokes the windows provisioner' do
         expect(subject).to receive(:provision_windows_agent)
-        expect(subject).to receive(:provision_pe_repo).never
 
         subject.provision
       end
