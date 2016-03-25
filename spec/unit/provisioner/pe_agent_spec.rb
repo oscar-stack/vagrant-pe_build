@@ -78,7 +78,6 @@ EOF
     context 'when osfamily is windows' do
       before(:each) do
         allow(subject).to receive(:provision_windows?).and_return(true)
-        allow(subject).to receive(:master_vm).and_return(master_vm)
       end
 
       it 'invokes the windows provisioner' do
