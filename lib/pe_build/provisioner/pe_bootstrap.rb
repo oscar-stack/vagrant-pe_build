@@ -63,9 +63,8 @@ module PEBuild
           prepare_answers_file
           fetch_installer
           run_install
+          run_postinstall_tasks
         end
-
-        run_postinstall_tasks
       end
 
       private
