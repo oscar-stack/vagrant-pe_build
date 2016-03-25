@@ -40,6 +40,6 @@ module PEBuild
     require 'pe_build/release/2015_2'
     require 'pe_build/release/2015_3'
 
-    LATEST_VERSION = '2015.3.0'
+    LATEST_VERSION = '2015.3.3'
   end
 end
