@@ -16,10 +16,6 @@ module PEBuild::Release
     add_release :ubuntu, '12.04'
     add_release :ubuntu, '14.04'
 
-    # Nothing has changed for installation of Windows agents.
-
-    add_release :windows, '2003'
-    add_release :windows, '2003R2'
     add_release :windows, '2008'
     add_release :windows, '2008R2'
     add_release :windows, '7'
