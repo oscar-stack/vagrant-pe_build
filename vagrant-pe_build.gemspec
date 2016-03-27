@@ -18,10 +18,10 @@ Gem::Specification.new do |gem|
 
   gem.license = 'Apache 2.0'
 
-  gem.add_runtime_dependency 'progressbar'
-  gem.add_runtime_dependency 'minitar'
+  gem.add_runtime_dependency 'progressbar', '~> 0.21.0'
+  gem.add_runtime_dependency 'minitar', '~> 0.5.4'
 
-  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rake', '~> 10.0'
   # Pin to 2.14.x for compatibility with vagrant-spec.
   gem.add_development_dependency 'rspec', '~> 2.14.0'
 end
