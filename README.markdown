@@ -25,7 +25,7 @@ optional and can be overridden in a VM's individual provisioner config.
   * `config.pe_build.version_file`
     * Description: A fully-qualified URI or a path relative to `download_root`. The contents of this file will be read and used to set `version` --- overriding any value that may already be set.
   * `config.pe_build.suffix` - Suffix of the Puppet Enterprise installer to use.
-    * Description: The distribution specifix suffix of the Puppet Enterprise
+    * Description: The distribution specific suffix of the Puppet Enterprise
       installer to use.
     * Default: `:detect`
   * `config.pe_build.filename`
@@ -44,8 +44,8 @@ optional and can be overridden in a VM's individual provisioner config.
   * `config.pe_build.shared_installer`
     * Description: Whether to run PE installation using installers and answers
       shared using the `/vagrant` directory. If set to `false`, resources will
-      be downloaded remotely to the home directory of whichever user account
-      Vagrant is using. Defaults to `true`.
+      be downloaded remotely from `download_root`
+      to the home directory of whichever user account Vagrant is using. Defaults to `true`.
 
 ### `pe_bootstrap` Provisioner Settings
 
@@ -118,11 +118,7 @@ with the global `config.pe_build` settings.
       `master_vm` is set and `master_vm` if `vm.hostname` is not set.
   * `version`
     * Description: The version number of the PE Agent to install. **NOTE:**
-      this setting is currently used only for Windows agents. POSIX agents will
-      always receive the `'current'` version installed on the master. Support
-      for setting the version number of POSIX agents will be added in a future
-      release.
-    * Options: A version string, `x.y.z[-optional-stuff]`, or the string
+      Currently, agents always receive the `'current'` version installed on the master. Support for setting the version number of agents will be added in a future release. * Options: A version string, `x.y.z[-optional-stuff]`, or the string
       `'current'`.
     * Default: `'current'`.
 
@@ -140,10 +136,10 @@ added with `vagrant pe-build copy`.
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.pe_build.version = '3.8.2'
+  config.pe_build.version = '3.8.4'
 
   config.vm.define 'master' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap do |p|
       p.role = :master
@@ -151,7 +147,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'agent1' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
     node.vm.provision :pe_bootstrap
   end
 end
@@ -165,10 +161,10 @@ of `pe_bootstrap`.
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.pe_build.version = '2015.2.2'
+  config.pe_build.version = '2015.3.3'
 
   config.vm.define 'master' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap do |p|
       p.role = :master
@@ -176,7 +172,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'agent1' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
     node.vm.provision :pe_agent do |p|
       p.master_vm = 'master'
     end
@@ -189,14 +185,14 @@ end
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.pe_build.version = '3.8.2'
+  config.pe_build.version = '3.8.4'
   config.pe_build.download_root = 'http://my.pe.download.mirror/installers'
 
   # Alternately, a local directory can be specified
   #config.pe_build.download_root = 'file://Users/luke/Downloads'
 
   config.vm.define 'master' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap do |p|
       p.role = :master
@@ -204,7 +200,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'agent1' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap
   end
@@ -216,14 +212,14 @@ end
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.pe_build.version = '3.8.2'
+  config.pe_build.version = '3.8.4'
   config.pe_build.download_root = 'http://my.pe.download.mirror/installers'
 
   # Alternately, a local directory can be specified
   #config.pe_build.download_root = 'file://Users/luke/Downloads'
 
   config.vm.define 'master' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap do |p|
       p.role = :master
@@ -232,7 +228,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'agent1' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap
   end
@@ -240,18 +236,15 @@ end
 ```
 
 
-### Manually setting a filename
+### Manually setting an installer filename
 
 ```ruby
 Vagrant.configure('2') do |config|
-  config.pe_build.version  = '3.8.2'
-  config.pe_build.filename = 'puppet-enterprise-3.8.2-el-7-x86_64.tar.gz'
-
-  # Alternately, a local directory can be specified
-  #config.pe_build.download_root = 'file://Users/luke/Downloads'
+  config.pe_build.version  = '3.8.4'
+  config.pe_build.filename = 'puppet-enterprise-3.8.4-el-7-x86_64.tar.gz'
 
   config.vm.define 'master' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap do |p|
       p.role = :master
@@ -259,7 +252,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'agent1' do |node|
-    node.vm.box = 'puppetlabs/centos-7.0-64-nocm'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
 
     node.vm.provision :pe_bootstrap
   end
