@@ -1,6 +1,31 @@
 vagrant-pe_build
 ================
 
+0.14.0
+------
+
+2016-03-26
+
+The is a backwards compatible feature release.
+
+  * (GH-40) The pe_bootstrap provisioner has been refactored to skip most
+    actions if PE is already installed.
+
+  * (GH-78) Provisioners running Windows installs now wait for msiexec to
+    complete and write logs to puppet-enterprise-installer.log.
+
+  * (GH-110) The pe_agent provisioner now installs Windows agents using packages
+    provided by pe_repo instead of falling back to the pe_bootstrap installer.
+
+  * (GH-112) The pe_boostrap provisioner can be configured to download
+    installers directly to the vm instead of relying on the /vagrant shared
+    filesystem by setting shared_installer to false. This is useful for
+    compute environments such as AWS and OpenStack where VMs are not running
+    directly on the Vagrant host.
+
+  * Add support for PE 3.8.4, 2015.3.3 and 2016.1.0.
+
+
 0.13.7
 ------
 
