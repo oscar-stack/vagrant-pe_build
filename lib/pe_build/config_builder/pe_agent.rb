@@ -30,6 +30,10 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Base
   #   string of the form `x.y.x[-optional-arbitrary-stuff]` or the string
   #   `current`. Defaults to `current`.
   def_model_attribute :version
+  # @!attribute certname
+  #   @return [String] What to use as the certname. May be either fqdn,
+  #   hostname, or vm_name. The default is vm_name
+  def_model_attribute :certname
 
   def to_proc
     Proc.new do |vm_config|
@@ -39,6 +43,7 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Base
         with_attr(:master)       {|val| config.master       = val }
         with_attr(:master_vm)    {|val| config.master_vm    = val }
         with_attr(:version)      {|val| config.version      = val }
+        with_attr(:certname)     {|val| config.certname     = val }
       end
     end
   end

@@ -61,6 +61,7 @@ en:
           Skipping purge of agent data.
         purging_agent: |-
           Purging agent data for %{certname} from %{master}.
+
     transfer:
       open_uri:
         download_failed: |-
@@ -115,6 +116,9 @@ en:
           version_too_old: |-
             The agent version %{version} is too old; pe_agent can only provision versions
             newer than %{minimum_version}.
+          unknown_certname: |-
+            The provided certname source  %{certname} is not valid. Valid options 
+            are %{valid_certname_sources}
     cap:
       stage_installer:
         downloading_installer: |-

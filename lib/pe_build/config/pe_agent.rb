@@ -40,24 +40,37 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   #   `current`. Defaults to `current`.
   attr_accessor :version
 
+  # @!attribute certname
+  #   @return [String] What to use as the certname. May be either fqdn
+  #   hostname, or vm_name. The default is vm_name
+  attr_accessor :certname
+
+  VALID_CERTNAME_SOURCES = ['vm_name','hostname','fqdn']
+
   def initialize
     @autosign      = UNSET_VALUE
     @autopurge     = UNSET_VALUE
     @master        = UNSET_VALUE
     @master_vm     = UNSET_VALUE
     @version       = UNSET_VALUE
+    @certname      = UNSET_VALUE
   end
 
+  include PEBuild::ConfigDefault
+
   def finalize!
-    @master        = nil if @master == UNSET_VALUE
-    @master_vm     = nil if @master_vm == UNSET_VALUE
-    @autosign      = (not @master_vm.nil?) if @autosign  == UNSET_VALUE
-    @autopurge     = (not @master_vm.nil?) if @autopurge == UNSET_VALUE
-    @version       = 'current' if @version == UNSET_VALUE
+    set_default :@certname, 'vm_name'
+    set_default :@master, nil
+    set_default :@master_vm, nil
+    set_default :@autosign, (not @master_vm.nil?)
+    set_default :@autopurge, (not @master_vm.nil?)
+    set_default :@version, 'current'
   end
 
   def validate(machine)
     errors = _detected_errors
+
+    validate_certname(errors, machine)
 
     if @master.nil? && @master_vm.nil?
       errors << I18n.t('pebuild.config.pe_agent.errors.no_master')
@@ -70,6 +83,16 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   end
 
   private
+
+  def validate_certname(errors, machine)
+    unless VALID_CERTNAME_SOURCES.include? @certname
+      errors << I18n.t(
+        'pebuild.config.pe_agent.errors.unknown_certname',
+        :certname               => @certname.inspect,
+        :valid_certname_sources => VALID_CERTNAME_SOURCES
+      )
+    end
+  end
 
   def validate_master_vm!(errors, machine)
     if (not @master_vm.nil?) && (not machine.env.machine_names.include?(@master_vm.intern))
