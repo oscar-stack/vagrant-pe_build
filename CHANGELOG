@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.14.2
+------
+
+2016-04-19
+
+This is a backwards compatible bugfix release.
+
+  * (GH-114) Fix incorrect LATEST_VERSION in PEBuild::Release.
+
+
 0.14.1
 ------
 
