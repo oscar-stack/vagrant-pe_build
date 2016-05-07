@@ -2,7 +2,7 @@ require 'pe_build/release'
 
 module PEBuild::Release
 
-  twentyfifteen_six_x = newrelease do
+  twentysixteen_one_x = newrelease do
 
     add_release :el, '6'
     add_release :el, '7'
@@ -25,7 +25,7 @@ module PEBuild::Release
     set_answer_file :agent,  File.join(PEBuild.template_dir, 'answers', 'agent-2015.x.txt.erb')
   end
 
-  @releases['2016.1.0'] = twentyfifteen_six_x
-  @releases['2016.1.1'] = twentyfifteen_six_x
-  @releases['2016.1.2'] = twentyfifteen_six_x
+  @releases['2016.1.0'] = twentysixteen_one_x
+  @releases['2016.1.1'] = twentysixteen_one_x
+  @releases['2016.1.2'] = twentysixteen_one_x
 end
