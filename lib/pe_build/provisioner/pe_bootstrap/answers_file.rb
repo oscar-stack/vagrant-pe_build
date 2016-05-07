@@ -50,7 +50,7 @@ class PEBuild::Provisioner::PEBootstrap::AnswersFile
       @template = @config.answer_file
       mode = 'explicit'
     else
-      release_info = PEBuild::Release[@config.version]
+      release_info = PEBuild::Release[@config.version.split('-').first]
 
       @template = release_info.answer_file(@config.role)
       mode = 'default'
