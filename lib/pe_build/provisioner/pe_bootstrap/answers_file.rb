@@ -10,6 +10,8 @@ require 'erb'
 # @api private
 class PEBuild::Provisioner::PEBootstrap::AnswersFile
 
+  attr_reader :template
+
   # @param machine [Vagrant::Machine]
   # @param config [Object < Vagrant.plugin('2', :config)]
   # @param work_dir [String]

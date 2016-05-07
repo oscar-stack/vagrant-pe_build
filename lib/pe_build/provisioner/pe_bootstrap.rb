@@ -3,6 +3,7 @@ require 'vagrant'
 require 'pe_build/archive'
 require 'pe_build/util/config'
 require 'pe_build/util/versioned_path'
+require 'pe_build/util/version_string'
 
 require 'log4r'
 require 'fileutils'
@@ -53,6 +54,7 @@ module PEBuild
           FileUtils.mkdir_p work_dir
         end
       end
+
       def provision
         load_archive
 
@@ -99,8 +101,8 @@ module PEBuild
       end
 
       def prepare_answers_file
-        af = AnswersFile.new(@machine, @config, @work_dir)
-        af.generate
+        @answer_template = AnswersFile.new(@machine, @config, @work_dir)
+        @answer_template.generate
 
         unless @config.shared_installer
           @machine.communicate.upload(File.join(@answer_dir, "#{@machine.name}.txt"), "#{machine.name}.txt")
@@ -161,6 +163,8 @@ module PEBuild
             'PUPPET_MASTER_SERVER'  => @config.master,
             'PUPPET_AGENT_CERTNAME' => machine.name,
           }
+
+          use_pem = false
         else
           if @config.shared_installer
             root = File.join('/vagrant', PEBuild::WORK_DIR)
@@ -170,9 +174,17 @@ module PEBuild
             installer_path = File.join(@archive.installer_dir, 'puppet-enterprise-installer')
             answers = File.join("#{machine.name}.txt")
           end
+
+          # Run a PEM install if the PE version is 2016.2.0 or newer and the
+          # answer file template ends in .conf.
+          #
+          # NOTE: The check for the template file ending may be dropped when
+          # 2016.2.0 final builds are shipped.
+          use_pem = (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0) &&
+            File.basename(@answer_template.template, '.erb').end_with?('.conf')
         end
 
-        machine.guest.capability('run_install', installer_path, answers)
+        machine.guest.capability('run_install', installer_path, answers, use_pem: use_pem)
       end
 
       def run_postinstall_tasks

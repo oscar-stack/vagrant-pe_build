@@ -5,12 +5,14 @@ class PEBuild::Cap::RunInstall::Windows
 
   # Run the PE installer on Windows systems
   #
+  # @param machine [Vagrant::Machine] The Vagrant machine on which to run the
+  #   installation.
   # @param installer_dir [String] A path to the PE installer.
   # @param answers [Hash[String => String}] A hash of options that will be
   #   passed to msiexec as `key=value` pairs.
   #
   # @return [void]
-  def self.run_install(machine, installer_path, answers)
+  def self.run_install(machine, installer_path, answers, **options)
     install_options = answers.map{|e| e.join('=')}.join(' ')
     # Lots of PowerShell commands can handle UNIX-style paths. msiexec can't.
     installer_path = installer_path.gsub('/', '\\')
