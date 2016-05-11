@@ -55,8 +55,10 @@ can be overridden at this point.
 
   * `role`
     * Description: The role of the Puppet Enterprise install.
-    * Options: `:agent`, `:master`
-    * Default: `:agent`
+    * Options: `:agent`, `:master`. `:agent` has been deprecated starting with
+      PE 2015.2.0 and is no longer valid for PE 2016.2.0 having been replaced
+      by a dedicated `pe_agent` provisioner described below.
+    * Default: `:agent` for PE < 2016.2.0 and `:master` for PE >= 2016.2.0.
   * `verbose`
     * Description: Whether or not to show the verbose output of the Puppet
       Enterprise install.

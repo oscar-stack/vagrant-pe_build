@@ -1,6 +1,22 @@
 vagrant-pe_build
 ================
 
+0.15.0
+------
+
+2016-05-11
+
+This is a backwards incompatible feature release.
+
+  * (GH-95) *Breaking change* Using the pe_bootstrap provisioner to install
+    is deprecated for 2015.2.0 and newer and raises an error starting with
+    2016.2.0. Agent installs should be transitioned to the pe_agent
+    provisioner.
+
+  * (GH-116) Starting with PE 2016.2.0, the new PEM installer is used to
+    install Puppet Masters. Answer files for this installer should be
+    written in HOCON format instead of bash format.
+
 0.14.2
 ------
 
