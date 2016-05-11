@@ -30,10 +30,23 @@ en:
           Applying post-install configuration to Puppet Enterprise.
         already_installed: |-
           Puppet Enterprise is already installed, skipping installation.
+        warnings:
+          agent_role_deprecated: |-
+            Agent-only installations from PE tarballs are deprecated starting
+            with PE 2015.2.0 and will stop working in 2016.2.0. The pe_bootstrap
+            provisioner on the following machine is configured for agent
+            installation and should be replaced with a pe_agent provisioner:
+              %{machine_name}
         errors:
           unset_version: |-
             The Puppet Enterprise version must be set either on the global pe_build config
             object or specified on a per-provisioner basis, but both were unset.
+          agent_role_removed: |-
+            Agent-only installations from PE tarballs are no longer supported
+            starting with PE 2016.2.0. The pe_bootstrap provisioner on the
+            following machine is configured for agent installation and should
+            be replaced with a pe_agent provisioner:
+              %{machine_name}
       pe_agent:
         already_installed: |-
           Puppet agent %{version} is already installed, skipping installation.

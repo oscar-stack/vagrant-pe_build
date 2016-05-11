@@ -21,6 +21,10 @@ module PEBuild
         error_key(:unset_version, 'pebuild.provisioner.pe_bootstrap.errors')
       end
 
+      class AgentRoleRemovedError < Vagrant::Errors::VagrantError
+        error_key(:agent_role_removed, 'pebuild.provisioner.pe_bootstrap.errors')
+      end
+
       # @!attribute [r] work_dir
       #   @return [String] The path to the machine pe_build working directory
 
@@ -115,6 +119,16 @@ module PEBuild
           @config.role ||= :master
         else
           @config.role ||= :agent
+        end
+
+        if (@config.role == :agent) &&
+          (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0)
+          raise AgentRoleRemovedError, machine_name: @machine.name
+        elsif (@config.role == :agent) &&
+          (PEBuild::Util::VersionString.compare(@config.version, '2015.2.0') >= 0)
+          @machine.ui.warn I18n.t(
+            'pebuild.provisioner.pe_bootstrap.warnings.agent_role_deprecated',
+            machine_name: @machine.name)
         end
       end
 
