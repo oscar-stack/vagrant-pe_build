@@ -74,7 +74,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   #   global configuration; it's assumed that the late configuration merging in
   #   the provisioner will handle that.
   def finalize!
-    set_default :@role,        :agent
+    set_default :@role,        nil
     set_default :@verbose,     true
     set_default :@master,      'master'
     set_default :@answer_file, nil
@@ -89,7 +89,7 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
     #
     # We also need to run this after a default was set, otherwise we'll try to
     # normalize UNSET_VALUE
-    @role = @role.intern
+    @role = @role.intern unless @role.nil?
   end
 
   # @param machine [Vagrant::Machine]
@@ -113,6 +113,10 @@ class PEBuild::Config::PEBootstrap < PEBuild::Config::Global
   private
 
   def validate_role(errors, machine)
+    # A nil default is handled later on by the provisioner implementation after
+    # version information from the global config is merged in.
+    return if @role.nil?
+
     unless VALID_ROLES.any? {|sym| @role == sym.intern}
       errors << I18n.t(
         'pebuild.config.pe_bootstrap.errors.unknown_role',

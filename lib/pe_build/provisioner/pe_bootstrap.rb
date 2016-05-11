@@ -95,21 +95,8 @@ module PEBuild
         global.finalize!
         provision.finalize!
 
-        merged = PEBuild::Util::Config.local_merge(provision, global)
+        @config = PEBuild::Util::Config.local_merge(provision, global)
 
-        @config = merged
-      end
-
-      def prepare_answers_file
-        @answer_template = AnswersFile.new(@machine, @config, @work_dir)
-        @answer_template.generate
-
-        unless @config.shared_installer
-          @machine.communicate.upload(File.join(@answer_dir, "#{@machine.name}.txt"), "#{machine.name}.txt")
-        end
-      end
-
-      def load_archive
         # If a version file is set, use its contents to specify the PE version.
         unless @config.version_file.nil?
           if URI.parse(@config.version_file).scheme.nil?
@@ -124,6 +111,23 @@ module PEBuild
 
         raise UnsetVersionError if @config.version.nil?
 
+        if (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0)
+          @config.role ||= :master
+        else
+          @config.role ||= :agent
+        end
+      end
+
+      def prepare_answers_file
+        @answer_template = AnswersFile.new(@machine, @config, @work_dir)
+        @answer_template.generate
+
+        unless @config.shared_installer
+          @machine.communicate.upload(File.join(@answer_dir, "#{@machine.name}.txt"), "#{machine.name}.txt")
+        end
+      end
+
+      def load_archive
         if @config.suffix == :detect and @config.filename.nil?
           filename = @machine.guest.capability('detect_installer', @config.version)
         else
