@@ -16,33 +16,8 @@ class PEBuild::Cap::RunInstall::POSIX
   # @return [void]
   def self.run_install(machine, installer_path, answers, **options)
     if options.fetch(:use_pem, false)
-      # NOTE: Ensure symlinks exist since minitar doesn't create them. This
-      # call will be reverted once the PEM changes are finalized.
-      on_machine(machine, <<-EOS)
-pushd #{File.dirname(installer_path)} > /dev/null
-if [ -d pe-manager ]
-then
-  pushd pe-manager > /dev/null
-  ln -sf ../VERSION ../modules .
-  pushd packages > /dev/null
-  ln -sf ../../packages/* .
-fi
-EOS
       on_machine(machine, "#{installer_path} -c #{answers}")
     else
-      # NOTE: Ensure symlinks exist since minitar doesn't create them. This
-      # call will be reverted once the PEM changes are finalized.
-      on_machine(machine, <<-EOS)
-pushd #{File.dirname(installer_path)} > /dev/null
-if [ -d legacy ]
-then
-  pushd legacy > /dev/null
-  for f in $(find . -type f -empty)
-  do
-    ln -sf ../$f $f
-  done
-fi
-EOS
       on_machine(machine, "#{installer_path} -a #{answers}")
     end
 
