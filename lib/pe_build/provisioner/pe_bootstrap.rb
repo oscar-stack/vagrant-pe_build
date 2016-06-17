@@ -193,13 +193,8 @@ module PEBuild
             answers = File.join("#{machine.name}.txt")
           end
 
-          # Run a PEM install if the PE version is 2016.2.0 or newer and the
-          # answer file template ends in .conf.
-          #
-          # NOTE: The check for the template file ending may be dropped when
-          # 2016.2.0 final builds are shipped.
-          use_pem = (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0) &&
-            File.basename(@answer_template.template, '.erb').end_with?('.conf')
+          # Run a PEM install if the PE version is 2016.2.0 or newer.
+          use_pem = (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0)
         end
 
         machine.guest.capability('run_install', installer_path, answers, use_pem: use_pem)
