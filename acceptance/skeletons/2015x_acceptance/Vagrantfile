@@ -1,3 +1,5 @@
+# NOTE: This acceptance suite actually uses 2016.1 as 2015.2 and 2015.3 shared
+# the same installation workflow.
 def set_resources box, max_ram=512, max_cpu=1
   box.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--cpus", max_cpu]
@@ -8,63 +10,34 @@ end
 Vagrant.configure('2') do |config|
   config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
 
-  config.vm.define 'pe-20152-master' do |node|
-    node.vm.hostname = 'pe-20152-master.pe-bootstrap.vlan'
+  config.vm.define 'pe-20161-master' do |node|
+    node.vm.hostname = 'pe-20161-master.pe-bootstrap.vlan'
     node.vm.box      = 'centos'
     # All-in-one master nodes need a generous amount of RAM for all the Java.
     set_resources node, 4096, 1
     node.vm.provision :shell, :inline => 'service iptables stop'
 
     node.vm.network 'private_network', :ip => '10.20.1.100'
-    node.vm.provision :shell, :inline => 'echo "10.20.1.101 pe-20152-agent.pe-bootstrap.vlan" >> /etc/hosts'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.101 pe-20161-agent.pe-bootstrap.vlan" >> /etc/hosts'
 
     node.vm.provision :pe_bootstrap do |p|
-      p.version = '2015.2.3'
+      p.version = '2016.1.2'
       p.role = :master
       # Set autosign to false so that we can test pe_agent functionality.
       p.autosign = false
     end
   end
 
-  config.vm.define 'pe-20152-agent' do |node|
-    node.vm.hostname = 'pe-20152-agent.pe-bootstrap.vlan'
+  config.vm.define 'pe-20161-agent' do |node|
+    node.vm.hostname = 'pe-20161-agent.pe-bootstrap.vlan'
     node.vm.box      = 'ubuntu'
 
     node.vm.network 'private_network', :ip => '10.20.1.101'
-    node.vm.provision :shell, :inline => 'echo "10.20.1.100 pe-20152-master.pe-bootstrap.vlan" >> /etc/hosts'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.100 pe-20161-master.pe-bootstrap.vlan" >> /etc/hosts'
 
     node.vm.provision :pe_agent do |p|
-      p.master_vm = 'pe-20152-master'
+      p.master_vm = 'pe-20161-master'
     end
   end
 
-  config.vm.define 'pe-2015latest-master' do |node|
-    node.vm.hostname = 'pe-2015latest-master.pe-bootstrap.vlan'
-    node.vm.box      = 'centos'
-    # All-in-one master nodes need a generous amount of RAM for all the Java.
-    set_resources node, 4096, 1
-    node.vm.provision :shell, :inline => 'service iptables stop'
-
-    node.vm.network 'private_network', :ip => '10.20.1.102'
-    node.vm.provision :shell, :inline => 'echo "10.20.1.103 pe-2015latest-agent.pe-bootstrap.vlan" >> /etc/hosts'
-
-    node.vm.provision :pe_bootstrap do |p|
-      p.version_file = 'LATEST'
-      p.role = :master
-      # Set autosign to false so that we can test pe_agent functionality.
-      p.autosign = false
-    end
-  end
-
-  config.vm.define 'pe-2015latest-agent' do |node|
-    node.vm.hostname = 'pe-2015latest-agent.pe-bootstrap.vlan'
-    node.vm.box      = 'ubuntu'
-
-    node.vm.network 'private_network', :ip => '10.20.1.103'
-    node.vm.provision :shell, :inline => 'echo "10.20.1.102 pe-2015latest-master.pe-bootstrap.vlan" >> /etc/hosts'
-
-    node.vm.provision :pe_agent do |p|
-      p.master_vm = 'pe-2015latest-master'
-    end
-  end
 end
