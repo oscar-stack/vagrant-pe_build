@@ -11,6 +11,8 @@ class PEBuild::Cap::RunInstall::Windows
   # @param answers [Hash[String => String}] A hash of options that will be
   #   passed to msiexec as `key=value` pairs.
   #
+  # @param options [Hash] Additional options that influence installer behavior.
+  #
   # @return [void]
   def self.run_install(machine, installer_path, answers, **options)
     install_options = answers.map{|e| e.join('=')}.join(' ')

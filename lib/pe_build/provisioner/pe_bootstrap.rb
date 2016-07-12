@@ -186,10 +186,10 @@ module PEBuild
         else
           if @config.shared_installer
             root = File.join('/vagrant', PEBuild::WORK_DIR)
-            installer_path = File.join(root, @archive.installer_dir, 'puppet-enterprise-installer')
+            installer_path = File.join(root, @archive.installer_dir)
             answers = File.join(root, 'answers', "#{machine.name}.txt")
           else
-            installer_path = File.join(@archive.installer_dir, 'puppet-enterprise-installer')
+            installer_path = File.join(root, @archive.installer_dir)
             answers = File.join("#{machine.name}.txt")
           end
 
