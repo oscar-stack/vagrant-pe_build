@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.15.2
+------
+
+2016-07-12
+
+This is a backwards compatible bugfix release.
+
+  * (GH-120) Fix expired GPG package signing key bundled with PE releases
+    shipped prior to April 29th, 2016.
+
 0.15.1
 ------
 
