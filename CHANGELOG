@@ -1,10 +1,12 @@
 vagrant-pe_build
 ================
 
-0.15.2
-------
+0.15.2 -- yanked
+----------------
 
 2016-07-12
+
+**NOTE:** Yanked on 7/18/2016 due to breaking issues caused by the GPG fix.
 
 This is a backwards compatible bugfix release.
 
