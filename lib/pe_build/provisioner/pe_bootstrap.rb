@@ -189,7 +189,7 @@ module PEBuild
             installer_path = File.join(root, @archive.installer_dir)
             answers = File.join(root, 'answers', "#{machine.name}.txt")
           else
-            installer_path = File.join(root, @archive.installer_dir)
+            installer_path = @archive.installer_dir
             answers = File.join("#{machine.name}.txt")
           end
 
