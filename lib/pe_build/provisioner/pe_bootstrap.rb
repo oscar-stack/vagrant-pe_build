@@ -190,7 +190,7 @@ module PEBuild
             answers = File.join(root, 'answers', "#{machine.name}.txt")
           else
             installer_path = @archive.installer_dir
-            answers = File.join("#{machine.name}.txt")
+            answers = "#{machine.name}.txt"
           end
 
           # Run a PEM install if the PE version is 2016.2.0 or newer.
