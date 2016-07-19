@@ -26,6 +26,8 @@ en:
         "%{message}"
     provisioner:
       pe_bootstrap:
+        updating_gpg_key: |-
+          Updating expired GPG key bundled with PE %{version} installer.
         post_install: |-
           Applying post-install configuration to Puppet Enterprise.
         already_installed: |-
@@ -134,6 +136,8 @@ en:
           Downloading PE installer from:
             %{url}
       run_install:
+        updating_pe_repo_gpg_key:
+          Updating GPG keys used by pe_repo.
         scheduling_run: |-
           Scheduling Puppet run to kickstart node classification.
       detect_installer:

@@ -182,7 +182,9 @@ module PEBuild
             'PUPPET_AGENT_CERTNAME' => machine.name,
           }
 
+          # These options are only used on POSIX nodes.
           use_pem = false
+          update_gpg = false
         else
           if @config.shared_installer
             root = File.join('/vagrant', PEBuild::WORK_DIR)
@@ -195,9 +197,27 @@ module PEBuild
 
           # Run a PEM install if the PE version is 2016.2.0 or newer.
           use_pem = (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0)
+
+          # PE versions shipped prior to April 29th, 2016 were packaged with a
+          # GPG key that expired on July 8th, 2016.
+          update_gpg = (PEBuild::Util::VersionString.compare(@config.version, '3.8.5') < 0) ||
+           ((PEBuild::Util::VersionString.compare(@config.version, '2015.2.0') >= 0) &&
+            (PEBuild::Util::VersionString.compare(@config.version, '2016.1.2') < 0))
+
+          if update_gpg
+            machine.ui.info(
+              I18n.t('pebuild.provisioner.pe_bootstrap.updating_gpg_key',
+                :version => @config.version))
+            machine.communicate.upload(
+              File.join(
+                PEBuild.source_root,
+                'data', 'vagrant-pe_build', 'files', 'GPG-KEY-puppetlabs'),
+              "#{installer_path}/gpg/GPG-KEY-puppetlabs")
+          end
         end
 
-        machine.guest.capability('run_install', installer_path, answers, use_pem: use_pem)
+        machine.guest.capability('run_install', installer_path, answers,
+          use_pem: use_pem, update_gpg: update_gpg)
       end
 
       def run_postinstall_tasks
