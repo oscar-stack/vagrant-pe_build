@@ -1,6 +1,16 @@
 vagrant-pe_build
 ================
 
+0.15.3
+------
+
+2016-07-19
+
+This is a backwards compatible bugfix release.
+
+  * (GH-122,GH-123,GH-124) Re-work GPG fix to address issues with the
+    installation process.
+
 0.15.2 -- yanked
 ----------------
 
