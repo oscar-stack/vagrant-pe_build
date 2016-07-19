@@ -7,6 +7,7 @@ end
 
 Vagrant.configure('2') do |config|
   config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
+  config.ssh.insert_key = false
   # This is the box name used by the setup helpers in the acceptance tests.
   config.vm.box = 'centos'
 

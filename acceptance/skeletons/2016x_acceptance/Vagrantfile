@@ -9,6 +9,7 @@ end
 
 Vagrant.configure('2') do |config|
   config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
+  config.ssh.insert_key = false
 
   config.vm.define 'pe-20162-master' do |node|
     node.vm.hostname = 'pe-20162-master.pe-bootstrap.vlan'
