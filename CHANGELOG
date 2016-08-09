@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.15.4
+------
+
+2016-08-09
+
+This is a backwards compatible bugfix release.
+
+  * Add support for PE 2016.2.1
+
 0.15.3
 ------
 
