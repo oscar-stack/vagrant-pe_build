@@ -151,7 +151,7 @@ module PEBuild
         # supports it.
         shell_config.inline = <<-EOS
 set -e
-curl -ksS -tlsv1 https://#{config.master}:8140/packages/current/install.bash -o pe_frictionless_installer.sh
+curl -ksS --tlsv1 https://#{config.master}:8140/packages/current/install.bash -o pe_frictionless_installer.sh
 bash pe_frictionless_installer.sh
         EOS
         shell_config.finalize!
