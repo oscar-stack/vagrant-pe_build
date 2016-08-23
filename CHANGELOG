@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.15.5
+------
+
+2016-08-23
+
+This is a backwards compatible bugfix release.
+
+  * (GH-125)  Fix curl TLS flag used by pe_agent provisioner.
+
 0.15.4
 ------
 
