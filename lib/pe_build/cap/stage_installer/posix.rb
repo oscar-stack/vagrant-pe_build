@@ -31,8 +31,11 @@ class PEBuild::Cap::StageInstaller::POSIX
       machine.ui.info I18n.t('pebuild.cap.stage_installer.downloading_installer',
         :url => uri)
 
-      on_machine(machine, "curl -fsSLk #{uri} -o #{dest_dir}/#{filename}")
-      on_machine(machine, "tar #{tar_flags} #{dest_dir}/#{filename} -C #{dest_dir}")
+      # Download and stage the installer without using sudo, so that root
+      # doesn't own the resulting directory. This allows files to be uploaded
+      # later.
+      on_machine(machine, "curl -fsSLk #{uri} -o #{dest_dir}/#{filename}", sudo: false)
+      on_machine(machine, "tar #{tar_flags} #{dest_dir}/#{filename} -C #{dest_dir}", sudo: false)
     end
   end
 end
