@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.15.6
+------
+
+2016-09-10
+
+This is a backwards compatible bugfix release.
+
+  * (GH-126) Don't use root privileges when staging installer tarballs.
+
 0.15.5
 ------
 
