@@ -1,6 +1,17 @@
 vagrant-pe_build
 ================
 
+0.16.0
+------
+
+2016-10-20
+
+This is a backwards compatible feature release.
+
+  * Add support for PE 2016.4.0.
+
+  * (GH-127) Switch download progressbars to the ruby-progressbar library.
+
 0.15.6
 ------
 
