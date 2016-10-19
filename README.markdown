@@ -22,6 +22,8 @@ optional and can be overridden in a VM's individual provisioner config.
 
   * `config.pe_build.version`
     * Description: The version of Puppet Enterprise to install.
+  * `config.pe_build.series`
+    * Description: An arbitrary string that can be interpolated into URLs.
   * `config.pe_build.version_file`
     * Description: A fully-qualified URI or a path relative to `download_root`. The contents of this file will be read and used to set `version` --- overriding any value that may already be set.
   * `config.pe_build.suffix` - Suffix of the Puppet Enterprise installer to use.
@@ -46,6 +48,8 @@ optional and can be overridden in a VM's individual provisioner config.
       shared using the `/vagrant` directory. If set to `false`, resources will
       be downloaded remotely from `download_root`
       to the home directory of whichever user account Vagrant is using. Defaults to `true`.
+
+**NOTE:** Any occurrence of the string `:version` or `:series` in the the strings set as `version_file` or `download_root` will be replaced by the corresponding `version` and `series` configuration values.
 
 ### `pe_bootstrap` Provisioner Settings
 
