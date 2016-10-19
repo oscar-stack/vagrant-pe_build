@@ -2,7 +2,7 @@ require 'pe_build/version'
 require 'pe_build/idempotent'
 
 require 'open-uri'
-require 'progressbar'
+require 'ruby-progressbar'
 
 # @api private
 module PEBuild::Transfer::OpenURI
@@ -45,17 +45,24 @@ module PEBuild::Transfer::OpenURI
   # @return [IO]
   def self.download_file(uri)
     progress = nil
+    downloaded = 0
 
     content_length_proc = lambda do |length|
       if length and length > 0
         STDERR.puts "Fetching: #{uri}"
-        progress = ProgressBar.new("Fetching file", length, STDERR)
-        progress.file_transfer_mode
+        progress = ProgressBar.create(
+          :title => "Fetching file",
+          :total => length,
+          :output => STDERR,
+          :format => '%t: %p%% |%b>%i| %e')
       end
     end
 
     progress_proc = lambda do |size|
-      progress.set(size) if progress
+      unless progress.nil?
+        progress.progress += (size - downloaded)
+        downloaded = size
+      end
     end
 
     options = HEADERS.merge({
@@ -64,5 +71,7 @@ module PEBuild::Transfer::OpenURI
     })
 
     uri.open(options)
+  ensure
+    progress.stop unless progress.nil?
   end
 end

@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.license = 'Apache 2.0'
 
-  gem.add_runtime_dependency 'progressbar', '~> 0.21.0'
+  gem.add_runtime_dependency 'ruby-progressbar', '~> 1.8.0'
   gem.add_runtime_dependency 'minitar', '~> 0.5.4'
 
   gem.add_development_dependency 'rake', '~> 10.0'
