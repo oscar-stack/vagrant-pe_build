@@ -76,6 +76,13 @@ en:
           Skipping purge of agent data.
         purging_agent: |-
           Purging agent data for %{certname} from %{master}.
+        purge_failed: |-
+          An error of type %{error_class} occurred while purging data for
+          agent %{certname} from %{master}:
+
+          %{message}
+
+          Agent data will have to be removed from %{master} manually.
     transfer:
       open_uri:
         download_failed: |-

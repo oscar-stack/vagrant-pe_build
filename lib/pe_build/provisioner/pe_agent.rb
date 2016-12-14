@@ -1,6 +1,8 @@
 require 'pe_build/util/pe_packaging'
 require 'pe_build/util/machine_comms'
 
+require 'vagrant/errors'
+
 require 'uri'
 
 module PEBuild
@@ -258,7 +260,18 @@ bash pe_frictionless_installer.sh
         shell_config.finalize!
 
         shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
-        shell_provisioner.provision
+
+        begin
+          shell_provisioner.provision
+        rescue Vagrant::Errors::VagrantError => e
+          master_vm.ui.error I18n.t(
+            'pebuild.provisioner.pe_agent.purge_failed',
+            :certname => agent_certname,
+            :master   => master_vm.name.to_s,
+            :error_class => e.class,
+            :message => e.message
+          )
+        end
       end
 
     end
