@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ENV['TEST_VAGRANT_VERSION'] ||= 'v1.8.6'
+ENV['TEST_VAGRANT_VERSION'] ||= 'v1.9.1'
 
 # Wrapping gemspec in the :plugins group causes Vagrant 1.5 and newer to
 # automagically load this plugin during acceptance tests.
@@ -21,9 +21,6 @@ group :test do
     # FIXME: Hack to allow Vagrant v1.6.5 to install for tests. Remove when
     # support for 1.6.5 is dropped.
     gem 'rack', '< 2'
-    # FIXME: Hack to allow Vagrant v1.8.5 to install for tests. Remove when
-    # support for 1.8.5 is dropped.
-    gem 'ruby_dep', '~> 1.3.1'
   end
 
   # Pinned on 12/10/2014. Compatible with Vagrant 1.6.x, 1.7.x and 1.8.x.
