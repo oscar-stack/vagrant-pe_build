@@ -88,6 +88,11 @@ can be overridden at this point.
       remounted on the guest.
     * Options: `true`, `false`
     * Default: `false`
+  * `autosign`
+    * Description: Whether or not to configure a PE master with an `autosign.conf`
+      which accepts all incoming cert requests.
+    * Options: `true`, `false`
+    * Default: `true`
 
 ### `pe_agent` Provisioner Settings
 
