@@ -198,11 +198,9 @@ module PEBuild
           # Run a PEM install if the PE version is 2016.2.0 or newer.
           use_pem = (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0)
 
-          # PE versions shipped prior to April 29th, 2016 were packaged with a
-          # GPG key that expired on July 8th, 2016.
-          update_gpg = (PEBuild::Util::VersionString.compare(@config.version, '3.8.5') < 0) ||
-           ((PEBuild::Util::VersionString.compare(@config.version, '2015.2.0') >= 0) &&
-            (PEBuild::Util::VersionString.compare(@config.version, '2016.1.2') < 0))
+          # PE versions prior to 2016.4.0 were signed with a GPG key that
+          # expired on January 2nd, 2017.
+          update_gpg = (PEBuild::Util::VersionString.compare(@config.version, '2016.4.0') < 0)
 
           if update_gpg
             machine.ui.info(
