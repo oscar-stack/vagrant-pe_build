@@ -1,5 +1,11 @@
 en:
   pebuild:
+    action:
+      version_check:
+        deprecated_vagrant_version: |-
+          The vagrant-pe_build plugin has deprecated support for Vagrant
+          versions older than %{minimum_version}. Support for version %{vagrant_version}
+          will be removed in the next major release of the plugin.
     command:
       facts:
         vm_not_running: |-

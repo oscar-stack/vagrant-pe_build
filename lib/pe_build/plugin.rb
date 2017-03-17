@@ -155,6 +155,10 @@ module PEBuild
 
 
     # internal action hooks
+    action_hook('PE Build: vagrant version check', :environment_load) do |hook|
+      require 'pe_build/action'
+      hook.prepend PEBuild::Action::VersionCheck
+    end
 
     action_hook('PE Build: initialize build dir') do |hook|
       require 'pe_build/action'
