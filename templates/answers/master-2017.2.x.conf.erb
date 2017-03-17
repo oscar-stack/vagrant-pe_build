@@ -1,0 +1,25 @@
+# Stock all-in-one answers for 2017.2.0 and newer
+"console_admin_password": "puppetlabs"
+
+"node_roles": {
+  # Primary Roles:
+  #   (If you modify any of these roles, make sure to start by replacing
+  #   "%{::trusted.certname}" with the real name of the primary master.)
+  "pe_role::monolithic::primary_master": ["%{::trusted.certname}"]
+  "pe_role::monolithic::primary_master_replica": []
+
+  # Secondary Roles:
+  "pe_role::monolithic::compile_master": []
+  "pe_role::monolithic::mco_hub": []
+  "pe_role::monolithic::mco_broker": []
+}
+
+"agent_platforms": [
+   "%{::platform_tag}",
+]
+
+"meep_schema_version": "2.0"
+
+# Additional customization
+"puppet_enterprise::profile::master::check_for_updates": false
+"puppet_enterprise::send_analytics_data": false
