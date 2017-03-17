@@ -28,4 +28,5 @@ module PEBuild::Release
   end
 
   @releases['2017.1.0'] = twentyseventeen_one_x
+  @releases['2017.1.1'] = twentyseventeen_one_x
 end
