@@ -5,7 +5,7 @@
   # Primary Roles:
   #   (If you modify any of these roles, make sure to start by replacing
   #   "%{::trusted.certname}" with the real name of the primary master.)
-  "pe_role::monolithic::primary_master": ["%{::trusted.certname}"]
+  "pe_role::monolithic::primary_master": ["<%= machine_hostname %>"]
   "pe_role::monolithic::primary_master_replica": []
 
   # Secondary Roles:
