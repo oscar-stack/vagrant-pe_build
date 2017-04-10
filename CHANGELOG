@@ -1,6 +1,15 @@
 vagrant-pe_build
 ================
 
+0.17.3
+------
+
+TBD
+
+This is a backwards compatible bugfix release.
+
+  * Allow dns-alt-names in cert requests for provisioning compile masters.
+
 0.17.2
 ------
 
