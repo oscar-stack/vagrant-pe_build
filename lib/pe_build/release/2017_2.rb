@@ -24,7 +24,7 @@ module PEBuild::Release
     add_release :windows, '8.1'
     add_release :windows, '10'
 
-    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-2017.2.x.conf.erb')
+    set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-2016.2.x.conf.erb')
   end
 
   @releases['2017.2.0'] = twentyseventeen_two_x
