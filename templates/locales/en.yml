@@ -33,7 +33,8 @@ en:
     provisioner:
       pe_bootstrap:
         updating_gpg_key: |-
-          Updating expired GPG key bundled with PE %{version} installer.
+          Updating expired GPG key bundled with PE %{version} installer:
+            %{key_path}
         post_install: |-
           Applying post-install configuration to Puppet Enterprise.
         already_installed: |-

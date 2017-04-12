@@ -200,17 +200,32 @@ module PEBuild
 
           # PE versions prior to 2016.4.0 were signed with a GPG key that
           # expired on January 2nd, 2017.
-          update_gpg = (PEBuild::Util::VersionString.compare(@config.version, '2016.4.0') < 0)
+          #
+          # Packages weren't signed with GPG keys prior to PE 2.7.0.
+          update_gpg = (PEBuild::Util::VersionString.compare(@config.version, '2016.4.0') < 0) &&
+            (PEBuild::Util::VersionString.compare(@config.version, '2.7.0') > 0)
 
           if update_gpg
+            key_path = if (PEBuild::Util::VersionString.compare(@config.version, '2016.2.0') >= 0)
+              "#{installer_path}/packages/GPG-KEY-puppetlabs"
+            elsif (PEBuild::Util::VersionString.compare(@config.version, '3.0.0') >= 0)
+              # PE 3.0.0 -- 2016.1.2
+              "#{installer_path}/gpg/GPG-KEY-puppetlabs"
+            else
+              # PE 2.7 and 2.8
+              "#{installer_path}/gpg/RPM-GPG-KEY-puppetlabs"
+            end
+
             machine.ui.info(
               I18n.t('pebuild.provisioner.pe_bootstrap.updating_gpg_key',
-                :version => @config.version))
+                :version => @config.version
+                :key_path => key_path))
+
             machine.communicate.upload(
               File.join(
                 PEBuild.source_root,
                 'data', 'vagrant-pe_build', 'files', 'GPG-KEY-puppetlabs'),
-              "#{installer_path}/gpg/GPG-KEY-puppetlabs")
+              key_path)
           end
         end
 
