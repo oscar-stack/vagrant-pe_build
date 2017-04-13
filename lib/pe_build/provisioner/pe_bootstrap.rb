@@ -218,7 +218,7 @@ module PEBuild
 
             machine.ui.info(
               I18n.t('pebuild.provisioner.pe_bootstrap.updating_gpg_key',
-                :version => @config.version
+                :version => @config.version,
                 :key_path => key_path))
 
             machine.communicate.upload(
