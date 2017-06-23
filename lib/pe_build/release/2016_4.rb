@@ -32,4 +32,6 @@ module PEBuild::Release
   @releases['2016.4.3'] = twentysixteen_four_x
   @releases['2016.4.4'] = twentysixteen_four_x
   @releases['2016.4.5'] = twentysixteen_four_x
+  @releases['2016.4.6'] = twentysixteen_four_x
+  @releases['2016.4.7'] = twentysixteen_four_x
 end
