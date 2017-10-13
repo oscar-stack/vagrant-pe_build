@@ -27,5 +27,5 @@ module PEBuild::Release
     set_answer_file :master, File.join(PEBuild.template_dir, 'answers', 'master-2016.2.x.conf.erb')
   end
 
-  @releases['2017.3.0'] = twentyseventeen_two_x
+  @releases['2017.3.0'] = twentyseventeen_three_x
 end
