@@ -1,6 +1,17 @@
 vagrant-pe_build
 ================
 
+0.17.9
+------
+
+2017-10-13
+
+This is a backwards compatible bugfix release.
+
+  * Fix an incorrect use of twentyseventeen_two_x in the 2017.3 release
+    definition.
+
+
 0.17.8
 ------
 
