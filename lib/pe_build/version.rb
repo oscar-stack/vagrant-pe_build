@@ -1,3 +1,3 @@
 module PEBuild
-  VERSION = '0.17.9'
+  VERSION = '0.17.10'
 end
