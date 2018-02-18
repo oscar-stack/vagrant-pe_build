@@ -2,6 +2,9 @@
 language: ruby
 sudo: false
 before_install:
+  # TODO: Remove along with all BUNDLER_VERSION hackery once support for
+  # Vagrant < 1.9 is dropped.
+  - gem uninstall bundler
   - gem install bundler --version $BUNDLER_VERSION
 install: bundle _${BUNDLER_VERSION}_ install --without development
 script: bundle _${BUNDLER_VERSION}_ exec rspec --color --format documentation
