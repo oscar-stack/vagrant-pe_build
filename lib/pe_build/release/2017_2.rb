@@ -10,9 +10,9 @@ module PEBuild::Release
     add_release :sles, '11'
     add_release :sles, '12'
 
-    add_release :ubuntu, '12.04'
     add_release :ubuntu, '14.04'
     add_release :ubuntu, '16.04'
+    add_release :ubuntu, '16.10'
 
     add_release :windows, '2008'
     add_release :windows, '2008R2'
