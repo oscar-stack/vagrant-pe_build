@@ -17,6 +17,7 @@ shared_context 'webserver' do
 
     @server = WEBrick::HTTPServer.new(
       AccessLog: [],
+      BindAddress: '127.0.0.1',
       Port: webserver_port,
       DocumentRoot: webserver_path,
       MimeTypes: mime_types)
