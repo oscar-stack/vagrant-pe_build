@@ -1,7 +1,7 @@
 namespace :acceptance do
   ARTIFACT_DIR = File.join('acceptance', 'artifacts')
   TEST_BOXES = {
-    'centos-virtualbox.box' => 'https://s3.amazonaws.com/puppetlabs-vagrantcloud/centos-6.6-x86_64-virtualbox-nocm-1.0.3.box',
+    'centos-virtualbox.box' => 'https://s3.amazonaws.com/puppetlabs-vagrantcloud/centos-7.2-x86_64-virtualbox-nocm-1.0.1.box',
     'ubuntu-virtualbox.box' => 'https://s3.amazonaws.com/puppetlabs-vagrantcloud/ubuntu-14.04-x86_64-virtualbox-nocm-1.0.3.box'
   }
 
