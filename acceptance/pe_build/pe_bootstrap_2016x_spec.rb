@@ -27,7 +27,7 @@ shared_examples 'provider/provisioner/pe_bootstrap/2016x' do |provider, options|
 
   after(:each) do
     # Ensure any VMs that survived tests are cleaned up.
-    assert_execute('vagrant', 'destroy', '--force', log: false)
+    execute('vagrant', 'destroy', '--force')
   end
 
   # TODO: Refactor into a shared example so tha this testcase can be run on

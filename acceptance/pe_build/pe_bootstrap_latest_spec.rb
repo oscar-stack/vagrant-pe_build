@@ -27,7 +27,7 @@ shared_examples 'provider/provisioner/pe_bootstrap/latest' do |provider, options
 
   after(:each) do
     # Ensure any VMs that survived tests are cleaned up.
-    assert_execute('vagrant', 'destroy', '--force', log: false)
+    execute('vagrant', 'destroy', '--force')
   end
 
   context 'when installing LATEST from a build server' do

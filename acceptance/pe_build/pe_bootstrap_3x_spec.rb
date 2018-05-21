@@ -25,7 +25,7 @@ shared_examples 'provider/provisioner/pe_bootstrap/3x' do |provider, options|
 
   after(:each) do
     # Ensure any VMs that survived tests are cleaned up.
-    assert_execute('vagrant', 'destroy', '--force', log: false)
+    execute('vagrant', 'destroy', '--force')
   end
 
   context 'when installing PE 3.x' do
