@@ -1,5 +1,12 @@
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+
+# Prevent tests from attempting to load plugins from a Vagrant install
+# that may exist on the host system. We load required plugins below.
+ENV['VAGRANT_DISABLE_PLUGIN_INIT'] = '1'
+
 require 'pathname'
 require 'vagrant-spec/acceptance'
+require 'vagrant-pe_build'
 
 require_relative 'spec/shared/helpers/webserver_context'
 
