@@ -16,7 +16,7 @@ shared_examples 'provider/provisioner/pe_bootstrap/3x' do |provider, options|
   before(:each) do
     # The skelton sets up a Vagrantfile which expects the OS under test to be
     # available as `box`.
-    environment.skeleton('pe_build')
+    environment.skeleton('3x_acceptance')
     options[:boxes].each do |box|
       name = File.basename(box).split('-').first
       assert_execute('vagrant', 'box', 'add', name, box)
