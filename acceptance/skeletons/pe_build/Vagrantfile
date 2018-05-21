@@ -17,7 +17,7 @@ Vagrant.configure('2') do |config|
     set_resources node, 4096, 1
 
     node.vm.provision :pe_bootstrap do |p|
-      p.version = '3.8.5'
+      p.version = '3.8.7'
       p.role = :master
     end
   end
