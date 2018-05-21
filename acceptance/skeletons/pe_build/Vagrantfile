@@ -21,15 +21,4 @@ Vagrant.configure('2') do |config|
       p.role = :master
     end
   end
-
-  config.vm.define 'pe-latest' do |node|
-    node.vm.hostname = 'pe-latest.pe-bootstrap.vlan'
-    # All-in-one master nodes need a generous amount of RAM for all the Java.
-    set_resources node, 4096, 1
-
-    node.vm.provision :pe_bootstrap do |p|
-      p.version_file  = 'LATEST_3x'
-      p.role = :master
-    end
-  end
 end
