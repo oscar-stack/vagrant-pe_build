@@ -20,7 +20,7 @@ Vagrant::Spec::Acceptance.configure do |c|
     boxes: Dir[acceptance_dir + 'artifacts' + '*-virtualbox.box'],
     # This folder should be filled with PE tarballs for CentOS.
     archive_path: (acceptance_dir + 'artifacts' + 'pe_archives').to_s,
-    pe_latest: '2016.2.0',
+    pe_latest: '2018.1.0',
     env_vars: {
       'VBOX_USER_HOME' => '{{homedir}}',
     }
