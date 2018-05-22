@@ -25,7 +25,7 @@ describe 'vagrant CLI: pe-build', component: 'cli/pe-build' do
   include_context 'webserver'
 
   before(:each) do
-    environment.skeleton('pe_build')
+    environment.skeleton('pe_latest_acceptance')
   end
 
   it 'can download archives from remote servers' do
