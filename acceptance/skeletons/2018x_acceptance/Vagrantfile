@@ -1,0 +1,69 @@
+def set_resources box, max_ram=512, max_cpu=1
+  box.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--cpus", max_cpu]
+    vb.customize ["modifyvm", :id, "--memory", max_ram]
+  end
+end
+
+Vagrant.configure('2') do |config|
+  config.pe_build.download_root = ENV['PE_BUILD_DOWNLOAD_ROOT']
+  config.ssh.insert_key = false
+
+  config.vm.define 'pe-20181-master' do |node|
+    node.vm.hostname = 'pe-20181-master.pe-bootstrap.vlan'
+    node.vm.box      = 'centos'
+    # All-in-one master nodes need a generous amount of RAM for all the Java.
+    set_resources node, 4096, 1
+    node.vm.provision :shell, :inline => "service iptables stop || true\niptables -F || true"
+
+    node.vm.network 'private_network', :ip => '10.20.1.104'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.105 pe-20181-agent.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.version = '2018.1.0'
+      p.role = :master
+      # Set autosign to false so that we can test pe_agent functionality.
+      p.autosign = false
+      # Tune memory usage down.
+      p.answer_extras = [<<-EOS
+"puppet_enterprise::master::puppetserver::jruby_max_active_instances": 1
+"puppet_enterprise::profile::master::java_args": {
+  "Xmx": "384m",
+  "Xms": "128m",
+  "XX:+UseG1GC": ""
+}
+
+"puppet_enterprise::puppetdb::command_processing_threads": 1
+"puppet_enterprise::profile::puppetdb::java_args": {
+  "Xmx": "128m",
+  "Xms": "64m",
+  "XX:+UseG1GC": ""
+}
+"puppet_enterprise::profile::console::java_args": {
+  "Xmx": "64m"
+  "Xms": "64m"
+  "XX:+UseG1GC": ""
+}
+"puppet_enterprise::profile::database::shared_buffers": "4MB"
+"puppet_enterprise::profile::orchestrator::java_args": {
+  "Xmx": "64m",
+  "Xms": "64m",
+  "XX:+UseG1GC": ""
+}
+EOS
+      ]
+    end
+  end
+
+  config.vm.define 'pe-20181-agent' do |node|
+    node.vm.hostname = 'pe-20181-agent.pe-bootstrap.vlan'
+    node.vm.box      = 'ubuntu'
+
+    node.vm.network 'private_network', :ip => '10.20.1.105'
+    node.vm.provision :shell, :inline => 'echo "10.20.1.104 pe-20181-master.pe-bootstrap.vlan" >> /etc/hosts'
+
+    node.vm.provision :pe_agent do |p|
+      p.master_vm = 'pe-20181-master'
+    end
+  end
+end
