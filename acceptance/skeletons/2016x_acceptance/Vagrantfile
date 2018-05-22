@@ -40,34 +40,4 @@ Vagrant.configure('2') do |config|
       p.master_vm = 'pe-20164-master'
     end
   end
-
-  config.vm.define 'pe-2016latest-master' do |node|
-    node.vm.hostname = 'pe-2016latest-master.pe-bootstrap.vlan'
-    node.vm.box      = 'centos'
-    # All-in-one master nodes need a generous amount of RAM for all the Java.
-    set_resources node, 4096, 1
-    node.vm.provision :shell, :inline => "service iptables stop || true\niptables -F || true"
-
-    node.vm.network 'private_network', :ip => '10.20.1.104'
-    node.vm.provision :shell, :inline => 'echo "10.20.1.105 pe-2016latest-agent.pe-bootstrap.vlan" >> /etc/hosts'
-
-    node.vm.provision :pe_bootstrap do |p|
-      p.version_file = 'LATEST'
-      p.role = :master
-      # Set autosign to false so that we can test pe_agent functionality.
-      p.autosign = false
-    end
-  end
-
-  config.vm.define 'pe-2016latest-agent' do |node|
-    node.vm.hostname = 'pe-2016latest-agent.pe-bootstrap.vlan'
-    node.vm.box      = 'ubuntu'
-
-    node.vm.network 'private_network', :ip => '10.20.1.105'
-    node.vm.provision :shell, :inline => 'echo "10.20.1.104 pe-2016latest-master.pe-bootstrap.vlan" >> /etc/hosts'
-
-    node.vm.provision :pe_agent do |p|
-      p.master_vm = 'pe-2016latest-master'
-    end
-  end
 end
