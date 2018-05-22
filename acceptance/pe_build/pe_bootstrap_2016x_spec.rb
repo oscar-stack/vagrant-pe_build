@@ -32,33 +32,33 @@ shared_examples 'provider/provisioner/pe_bootstrap/2016x' do |provider, options|
 
   # TODO: Refactor into a shared example so tha this testcase can be run on
   # multiple versions.
-  context 'when installing PE 2016.2.x' do
+  context 'when installing PE 2016.4.x' do
 
     it 'provisions masters with pe_bootstrap and agents with pe_agent' do
       status('Test: pe_bootstrap master install')
-      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20162-master')
+      assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20164-master')
 
       status('Test: pe_bootstrap master running after install')
       result = execute('vagrant', 'ssh',
-        'pe-20162-master',
+        'pe-20164-master',
         '-c', 'sudo /opt/puppetlabs/bin/puppet status --terminus=rest')
       expect(result).to exit_with(0)
       expect(result.stdout).to match('"is_alive": true')
 
       status('Test: pe_agent install')
-      result = assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20162-agent')
+      result = assert_execute('vagrant', 'up', "--provider=#{provider}", 'pe-20164-agent')
 
       status('Test: pe_agent signed cert during install')
       result = execute('vagrant', 'ssh',
-        'pe-20162-master',
-        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20162-agent.pe-bootstrap.vlan')
+        'pe-20164-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20164-agent.pe-bootstrap.vlan')
       expect(result).to exit_with(0)
 
       status('Test: pe_agent cert purged when vm destroyed')
-      result = assert_execute('vagrant', 'destroy', '-f', 'pe-20162-agent')
+      result = assert_execute('vagrant', 'destroy', '-f', 'pe-20164-agent')
       result = execute('vagrant', 'ssh',
-        'pe-20162-master',
-        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20162-agent.pe-bootstrap.vlan')
+        'pe-20164-master',
+        '-c', 'sudo /opt/puppetlabs/bin/puppet cert list pe-20164-agent.pe-bootstrap.vlan')
       expect(result.stderr).to match(/Could not find a certificate/)
     end
   end
