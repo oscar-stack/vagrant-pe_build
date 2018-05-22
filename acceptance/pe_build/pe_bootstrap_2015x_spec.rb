@@ -1,5 +1,6 @@
-# NOTE: This acceptance suite actually uses 2016.1 as 2015.2 and 2015.3 shared
-# the same installation workflow.
+# NOTE: This acceptance suite actually uses 2016.1 as 2015.2 -- 2016.1 shared
+# the same installation workflow. 2016.1.2 was the penultimate release for
+# that workflow.
 shared_examples 'provider/provisioner/pe_bootstrap/2015x' do |provider, options|
   if options[:boxes].empty?
     raise ArgumentError,
