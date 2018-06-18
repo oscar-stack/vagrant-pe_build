@@ -28,4 +28,6 @@ module PEBuild::Release
   end
 
   @releases['2018.1.0'] = twentyeighteen_one_x
+  # RIP. 2018.1.1
+  @releases['2018.1.2'] = twentyeighteen_one_x
 end
