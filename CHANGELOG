@@ -1,6 +1,24 @@
 vagrant-pe_build
 ================
 
+0.17.13
+-------
+
+2018-06-18
+
+This is a backwards compatible bugfix release.
+
+  * Add support for 2016.4.13
+
+  * Add support for 2017.3.8
+
+  * Add support for 2018.1.2
+
+  * Add Vagrant 2.0 to test matrix.
+
+  * Add Vagrant 2.1 to test matrix.
+
+
 0.17.12
 -------
 
