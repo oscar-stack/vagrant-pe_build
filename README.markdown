@@ -11,6 +11,64 @@ Synopsis
 `vagrant-pe_build` manages the downloading and installation of Puppet Enterprise
 on Vagrant boxes to rapidly build a functioning Puppet environment.
 
+Quickstart
+---------------
+
+Note: This project is part of a larger suite of tools. For an easier
+way to build a PE infrastructure with Vagrant, check out the parent
+project: https://github.com/oscar-stack/oscar
+This documentation should be used when you're using this plugin alone.
+
+To use this Vagrant plugin, you must first have a working Vagrant setup.
+The examples below assume you're using Virtualbox for virtualization. If
+you're using another virtualization system, you will have to make
+adjustments to your `Vagrantfile`.
+
+Install the plugin by typing: `vagrant plugin install vagrant-pe_build`
+
+Next, you'll need to manaually download the version of Puppet
+Enterprise you would like to use. At the time of writing, the latest
+version is 2018.1.3. https://puppet.com/download-puppet-enterprise
+(Make sure to download the version for CentOS 7.)
+
+Once that is finished downloading, copy it into a `pe_build` staging
+area (defaults to `~/.vagrant/pe_builds`) by running this command:
+`vagrant pe-build copy puppet-enterprise-2018.1.3-el-7-x86_64.tar.gz`
+
+Then create a Vagrantfile that looks like this:
+
+```ruby
+Vagrant.configure('2') do |config|
+  config.pe_build.version = '2018.1.3'
+
+  config.vm.define 'master' do |node|
+    node.vm.hostname = 'master.localdomain'
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
+
+    node.vm.provision :pe_bootstrap do |p|
+      p.role = :master
+    end
+  end
+
+  config.vm.define 'agent' do |node|
+    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
+    node.vm.provision "shell", inline: "echo < YOUR MASTER IP > master.localdomain master | sudo tee -a /etc/hosts"
+    node.vm.provision :pe_agent do |p|
+      p.master_vm = 'master.localdomain'
+    end
+  end
+end
+```
+
+And then run `vagrant up master` and after PE is installed, you'll
+need to manually discover the master's IP and add it to the Vagrantfile.
+
+To do this, type `vagrant ssh master` and then type `ip addr` and copy the
+IP, and paste it into the command for the shell provisioner on the agent.
+
+Finally, to create the agent type `vagrant up agent`. This entire process
+is much easier if you use the parent project: https://github.com/oscar-stack/oscar
+
 Vagrantfile Settings
 -------------------
 
@@ -137,33 +195,8 @@ with the global `config.pe_build` settings.
 Commands
 --------
 
-Usage Example
--------------
-
-### Minimal PE 3.x configuration
-
-This requires that the necessary installers have already been downloaded and
-added with `vagrant pe-build copy`.
-
-```ruby
-Vagrant.configure('2') do |config|
-  config.pe_build.version = '3.8.4'
-
-  config.vm.define 'master' do |node|
-    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
-
-    node.vm.provision :pe_bootstrap do |p|
-      p.role = :master
-    end
-  end
-
-  config.vm.define 'agent1' do |node|
-    node.vm.box = 'puppetlabs/centos-7.2-64-nocm'
-    node.vm.provision :pe_bootstrap
-  end
-end
-```
-
+Other Usage Examples
+--------------------
 
 ### Minimal PE 2015.x configuration
 
