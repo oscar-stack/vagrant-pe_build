@@ -30,6 +30,12 @@ class PEBuild::ConfigBuilder::PEAgent < ::ConfigBuilder::Model::Provisioner::Bas
   #   string of the form `x.y.x[-optional-arbitrary-stuff]` or the string
   #   `current`. Defaults to `current`.
   def_model_attribute :version
+  # @!attribute agent_type
+  #   @return [String] The type of agent installation this will be.
+  #   This allows for configuring the agent as an infrastructure component.
+  #   May be either `compile`, `replica, or `agent`.
+  #   Defaults to `agent`.
+  def_model_attribute :agent_type
 
   ::ConfigBuilder::Model::Provisioner.register('pe_agent', self)
 end

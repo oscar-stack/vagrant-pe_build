@@ -162,4 +162,38 @@ describe PEBuild::Config::PEAgent do
     end
   end
 
+  describe 'agent_type' do
+    it 'defaults to "agent"' do
+      subject.finalize!
+
+      expect(subject.agent_type).to eq 'agent'
+    end
+
+    it 'accepts "replica" as valid' do
+      subject.agent_type = 'replica'
+      subject.finalize!
+
+      expect(subject.agent_type).to eq 'replica'
+    end
+
+    it 'fails validation if set wrong' do
+      subject.agent_type = 'some-type'
+      subject.finalize!
+
+      errors = subject.validate(machine)
+
+      expect(errors['pe_agent provisioner'].join).to match(/An invalid agent_type of some-type/)
+    end
+
+    it 'fails validation if using an old PE version' do
+      subject.agent_type = 'replica'
+      subject.version = '2016.2.0'
+      subject.finalize!
+
+      errors = subject.validate(machine)
+
+      expect(errors['pe_agent provisioner'].join).to match(/The agent version 2016.2.0 is too old/)
+    end
+  end
+
 end

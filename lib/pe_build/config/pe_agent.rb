@@ -40,12 +40,20 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
   #   `current`. Defaults to `current`.
   attr_accessor :version
 
+  # @!attribute agent_type
+  #   @return [String] The type of agent installation this will be. 
+  #   This allows for configuring the agent as an infrastructure component.
+  #   May be either `compile`, `replica, or `agent`.
+  #   Defaults to `agent`.
+  attr_accessor :agent_type
+
   def initialize
     @autosign      = UNSET_VALUE
     @autopurge     = UNSET_VALUE
     @master        = UNSET_VALUE
     @master_vm     = UNSET_VALUE
     @version       = UNSET_VALUE
+    @agent_type    = UNSET_VALUE
   end
 
   def finalize!
@@ -54,6 +62,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
     @autosign      = (not @master_vm.nil?) if @autosign  == UNSET_VALUE
     @autopurge     = (not @master_vm.nil?) if @autopurge == UNSET_VALUE
     @version       = 'current' if @version == UNSET_VALUE
+    @agent_type    = 'agent' if @agent_type == UNSET_VALUE
   end
 
   def validate(machine)
@@ -65,6 +74,7 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
 
     validate_master_vm!(errors, machine)
     validate_version!(errors, machine)
+    validate_agent_type!(errors, machine)
 
     {'pe_agent provisioner' => errors}
   end
@@ -119,5 +129,26 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
       :version       => @version,
       :version_class => @version.class
     )
+  end
+
+  def validate_agent_type!(errors, machine)
+
+      unless ['agent','replica','compile'].include?(@agent_type)
+        errors << I18n.t(
+          'pebuild.config.pe_agent.errors.agent_type_invalid',
+          :type         => @agent_type,
+        )
+      end
+
+      if @agent_type == 'replica' and PEBuild::Util::VersionString.compare(@version, '2016.5.0') < 0
+        errors << I18n.t(
+          'pebuild.config.pe_agent.errors.agent_type_version_too_old',
+          :version         => @version,
+          :minimum_version => '2016.5.0',
+          :agent_type      => @agent_type
+        )
+      end
+
+      return
   end
 end

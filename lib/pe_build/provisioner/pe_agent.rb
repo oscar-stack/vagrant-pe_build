@@ -28,6 +28,7 @@ module PEBuild
         end
         provision_agent
         provision_agent_cert if config.autosign
+        provision_agent_type unless config.agent_type == 'agent'
       end
 
       # This gets run during agent destruction and will remove the agent's
@@ -46,6 +47,7 @@ module PEBuild
         @master_vm = machine.env.machine(*vm_def)
 
         cleanup_agent_cert if config.autopurge
+        cleanup_agent_type unless config.agent_type == 'agent'
       end
 
       private
@@ -260,6 +262,133 @@ bash pe_frictionless_installer.sh
         shell_config.finalize!
 
         shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
+
+        begin
+          shell_provisioner.provision
+        rescue Vagrant::Errors::VagrantError => e
+          master_vm.ui.error I18n.t(
+            'pebuild.provisioner.pe_agent.purge_failed',
+            :certname => agent_certname,
+            :master   => master_vm.name.to_s,
+            :error_class => e.class,
+            :message => e.message
+          )
+        end
+      end
+
+      # Run commands on the master_vm based on the agent_type
+      # Allows for provisioning replcas and compile masters
+      def provision_agent_type
+        ensure_reachable(master_vm)
+
+        agent_certname = facts['certname']
+
+        # Return if the certname is in the infrastructure status
+        if master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --host #{agent_certname} | grep -q -F #{agent_certname}", :sudo => true)
+          master_vm.ui.info I18n.t(
+            'pebuild.provisioner.pe_agent.agent_type_provisioned',
+            :certname => agent_certname,
+            :master   => master_vm.name.to_s,
+            :type     => config.agent_type
+          )
+          return
+        end
+
+        # Run the agent on the new machine to ensure we can classify it
+        # Since the agent may return 2, we will ignore the errors
+        shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
+        shell_config.privileged = true
+        shell_config.inline = <<-EOS
+/opt/puppetlabs/bin/puppet agent -t || true
+        EOS
+        shell_config.finalize!
+
+        machine.ui.info "Running: #{shell_config.inline}"
+
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(machine, shell_config)
+        shell_provisioner.provision
+
+        case config.agent_type
+          when 'replica'
+            provision_replica
+          else
+            machine.ui.error I18n.t(
+              'pebuild.provisioner.pe_agent.agent_type_invalid',
+              :type => config.agent_type
+            )
+            return
+          end
+      end
+
+      def provision_replica
+        # Provision an HA replica
+        agent_certname = facts['certname']
+
+        master_vm.ui.info I18n.t(
+          'pebuild.provisioner.pe_agent.provisioning_ha_replica',
+          :certname => agent_certname,
+          :master   => master_vm.name.to_s
+        )
+
+        # Run the puppet agent to ensure any configuration like code manager has been done
+        # Install an RBAC token
+        # Provision the replica
+        shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
+        shell_config.privileged = true
+        shell_config.inline = <<-EOS
+set -e
+/opt/puppetlabs/bin/puppet agent -t || true
+echo "puppetlabs" | /opt/puppetlabs/bin/puppet access login --username admin -l 1y
+/opt/puppetlabs/bin/puppet infrastructure provision replica #{agent_certname}
+        EOS
+        shell_config.finalize!
+
+        master_vm.ui.info "Running: #{shell_config.inline}"
+
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
+        shell_provisioner.provision
+      end
+
+      # Remove agent_type configuration from master_vm
+      def cleanup_agent_type
+        agent_certname = (machine.config.vm.hostname || machine.name).to_s
+
+        unless is_reachable?(master_vm)
+          master_vm.ui.warn I18n.t(
+            'pebuild.provisioner.pe_agent.skip_purge_master_not_reachable',
+            :master => master_vm.name.to_s
+          )
+          return
+        end
+
+        unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --host #{agent_certname} | grep -q -F #{agent_certname}", :sudo => true)
+          return
+        end
+
+        if config.agent_type == 'replica'
+          master_vm.ui.info I18n.t(
+            'pebuild.provisioner.pe_agent.forgetting_ha_replica',
+            :certname => agent_certname,
+            :master   => master_vm.name.to_s
+          )
+
+          # Forget the replica on the master
+          # Stop the postgresql service to avoid replication issues
+          # Use /tmp to avoid permissions errors with forget command
+          shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
+          shell_config.privileged = true
+          shell_config.inline = <<-EOS
+cd /tmp
+/opt/puppetlabs/bin/puppet resource service pe-postgresql ensure=stopped
+/opt/puppetlabs/bin/puppet infrastructure forget #{agent_certname}
+          EOS
+          shell_config.finalize!
+
+          shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
+          shell_provisioner.provision
+
+          return
+        end
 
         begin
           shell_provisioner.provision

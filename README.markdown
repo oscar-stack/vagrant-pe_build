@@ -190,6 +190,9 @@ with the global `config.pe_build` settings.
       Currently, agents always receive the `'current'` version installed on the master. Support for setting the version number of agents will be added in a future release. * Options: A version string, `x.y.z[-optional-stuff]`, or the string
       `'current'`.
     * Default: `'current'`.
+  * `agent_type`
+      * Description: The type of agent to provision. This can be set to a agent, compile master, or an HA replica. Some automations are built in to configure the specified agent type on the primary master. Possible values are `'agent'`, `'replica'`, `'compile'`
+      * Default: `'agent'`.
 
 
 Commands
