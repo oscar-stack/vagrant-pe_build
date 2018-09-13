@@ -312,13 +312,9 @@ bash pe_frictionless_installer.sh
 
         case config.agent_type
           when 'replica'
-            # Run the agent on the master_vm to ensure any configuration is done. E.g code manager
-            shell_provision_commands(machine, ['/opt/puppetlabs/bin/puppet agent -t || true', '/opt/puppetlabs/bin/puppet agent -t || true'])
-            # Run the agent on the machine to ensure it is configured, has a report in puppetdb, and pxp-agent is running
-            shell_provision_commands(master_vm, ['/opt/puppetlabs/bin/puppet agent -t || true', '/opt/puppetlabs/bin/puppet agent -t || true'])
             provision_replica
           when 'compile'
-              #TODO: Implement a provisioner for the compile master. 
+            provision_compile
           else
             machine.ui.error I18n.t(
               'pebuild.provisioner.pe_agent.agent_type_invalid',
@@ -332,21 +328,31 @@ bash pe_frictionless_installer.sh
         # Provision an HA replica
         agent_certname = facts['certname']
 
+        # Check for code manager and run the puppet agent on the master if it is not running.
         unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --verbose | grep -q -F 'Code Manager'", :sudo => true)
-          master_vm.ui.error I18n.t(
-            'pebuild.provisioner.pe_agent.code_manager_not_running',
-            :certname => agent_certname,
-            :master   => master_vm.name.to_s,
-            :type     => config.agent_type
-          )
-          return
+          shell_provision_commands(master_vm, ['/opt/puppetlabs/bin/puppet agent -t || true', '/opt/puppetlabs/bin/puppet agent -t || true'])
+
+          # Try to check for code manager again
+          unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --verbose | grep -q -F 'Code Manager'", :sudo => true)
+            master_vm.ui.error I18n.t(
+              'pebuild.provisioner.pe_agent.code_manager_not_running',
+              :certname => agent_certname,
+              :master   => master_vm.name.to_s,
+              :type     => config.agent_type
+            )
+            return
+          end
         end
 
         master_vm.ui.info I18n.t(
-          'pebuild.provisioner.pe_agent.provisioning_ha_replica',
+          'pebuild.provisioner.pe_agent.provisioning_type',
           :certname => agent_certname,
-          :master   => master_vm.name.to_s
+          :master   => master_vm.name.to_s,
+          :type     => config.type
         )
+
+        # Run the agent on the machine to ensure it is configured, has a report in puppetdb, and pxp-agent is running
+        shell_provision_commands(machine, '/opt/puppetlabs/bin/puppet agent -t || true')
 
         # Install an RBAC token
         # Deploy code to ensure it has been done
@@ -357,6 +363,35 @@ bash pe_frictionless_installer.sh
                                              "/opt/puppetlabs/bin/puppet infrastructure provision replica #{agent_certname}",
                                              "/opt/puppetlabs/bin/puppet infrastructure enable replica --yes --topology mono #{agent_certname}"
                                              ])
+      end
+
+      def provision_compile
+        # Provision a compile master
+        agent_certname = facts['certname']
+
+        master_vm.ui.info I18n.t(
+          'pebuild.provisioner.pe_agent.provisioning_type',
+          :certname => agent_certname,
+          :master   => master_vm.name.to_s,
+          :type     => config.agent_type
+        )
+
+        # Pin the node to the PE Master group
+        shell_provision_commands(master_vm, ['set -e',
+                                             "CLASSIFIER=$(grep server /etc/puppetlabs/puppet/classifier.yaml | grep -Eo '([^ ]+)$')",
+                                             "CERT_ARGS=\"--cert $(/opt/puppetlabs/bin/puppet config print hostcert)\
+                                               --key $(/opt/puppetlabs/bin/puppet config print hostprivkey)\
+                                               --cacert $(/opt/puppetlabs/bin/puppet config print localcacert)\"",
+                                             "PARSE_ID_RUBY=\"require 'json'; puts JSON.parse(ARGF.read).find{ |group| group['name'] == 'PE Master' }['id']\"",
+                                             "ID=$(curl -sS -k $CERT_ARGS https://$CLASSIFIER:4433/classifier-api/v1/groups |\
+                                               /opt/puppetlabs/puppet/bin/ruby -e \"${PARSE_ID_RUBY}\")",
+                                             "curl -sS -X POST -H 'Content-Type: application/json' $CERT_ARGS \
+                                               https://$CLASSIFIER:4433/classifier-api/v1/groups/$ID/pin?nodes=#{agent_certname}"
+                                             ])
+        # Run the agent on the new CM
+        shell_provision_commands(machine, '/opt/puppetlabs/bin/puppet agent -t || true')
+        # Run the agent on the MoM to update the configuration
+        shell_provision_commands(master_vm, '/opt/puppetlabs/bin/puppet agent -t || true')
       end
 
       # Remove agent_type configuration from master_vm
@@ -380,12 +415,6 @@ bash pe_frictionless_installer.sh
         # Setup a shell_provisioner
         case config.agent_type
           when 'replica'
-            master_vm.ui.info I18n.t(
-              'pebuild.provisioner.pe_agent.forgetting_ha_replica',
-              :certname => agent_certname,
-              :master   => master_vm.name.to_s
-            )
-
             # Stop the PE services on the replica
             ['puppet', 'pxp-agent' 'pe-puppetserver', 'pe-puppetdb',
              'pe-orchestration-services', 'pe-console-services', 'pe-postgresql'].each do | service |
@@ -397,11 +426,28 @@ bash pe_frictionless_installer.sh
             master_commands.push('cd /tmp', "/opt/puppetlabs/bin/puppet infrastructure forget #{agent_certname}")
 
           when 'compile'
-            #TODO: Implement a provisioner for the compile master.
-            return
+            # Unpin the node from PE Master
+            master_commands.push('set -e',
+                                 "CLASSIFIER=$(grep server /etc/puppetlabs/puppet/classifier.yaml | grep -Eo '([^ ]+)$')",
+                                 "CERT_ARGS=\"--cert $(/opt/puppetlabs/bin/puppet config print hostcert)\
+                                   --key $(/opt/puppetlabs/bin/puppet config print hostprivkey) \
+                                   --cacert $(/opt/puppetlabs/bin/puppet config print localcacert)\"",
+                                 "PARSE_ID_RUBY=\"require 'json'; puts JSON.parse(ARGF.read).find{ |group| group['name'] == 'PE Master' }['id']\"",
+                                 "ID=$(curl -sS -k $CERT_ARGS https://$CLASSIFIER:4433/classifier-api/v1/groups | \
+                                   /opt/puppetlabs/puppet/bin/ruby -e \"${PARSE_ID_RUBY}\")",
+                                 "curl -sS -X POST -H 'Content-Type: application/json' $CERT_ARGS \
+                                   https://$CLASSIFIER:4433/classifier-api/v1/groups/$ID/unpin?nodes=#{agent_certname}"
+                                 )
           else
             return
         end
+
+         master_vm.ui.info I18n.t(
+           'pebuild.provisioner.pe_agent.cleaning_type',
+           :certname => agent_certname,
+           :master   => master_vm.name.to_s,
+           :type     => config.agent_type
+         )
 
         # Run the shell provisioner
         begin

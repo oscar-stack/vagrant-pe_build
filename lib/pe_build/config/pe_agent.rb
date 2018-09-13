@@ -147,6 +147,13 @@ class PEBuild::Config::PEAgent < Vagrant.plugin('2', :config)
           :minimum_version => '2016.5.0',
           :agent_type      => @agent_type
         )
+      elsif @agent_type == 'compile' and PEBuild::Util::VersionString.compare(@version, '2016.1.0') < 0
+        errors << I18n.t(
+          'pebuild.config.pe_agent.errors.agent_type_version_too_old',
+          :version         => @version,
+          :minimum_version => '2016.1.0',
+          :agent_type      => @agent_type
+        )
       end
 
       return

@@ -95,10 +95,10 @@ en:
         agent_type_invalid: |-
           An invalid agent_type of %{type} has been specified for the agent. Valid types are
           'agent', 'compile', and 'replica'.
-        provisioning_ha_replica: |-
-          Provisioning %{certname} as a replica on %{master}.
-        forgetting_ha_replica: |-
-          Forgetting %{certname} as a replica on %{master}.
+        provisioning_type: |-
+          Provisioning %{certname} as a %{type} on %{master}.
+        cleaning_type: |-
+          Forgetting %{certname} as a %{type} on %{master}.
         code_manager_not_running: |-
           Code Manager is not running on %{master}, cannot provision %{certname} as type %{type}.
         type_cleanup_failed: |-
