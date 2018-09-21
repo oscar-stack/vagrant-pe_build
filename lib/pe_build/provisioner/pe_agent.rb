@@ -358,7 +358,7 @@ bash pe_frictionless_installer.sh
         # Deploy code to ensure it has been done
         # Provision the replica
         shell_provision_commands(master_vm, ['set -e',
-                                             'echo "puppetlabs" | /opt/puppetlabs/bin/puppet access login --username admin -l 1y',
+                                             'echo "puppetlabs" | /opt/puppetlabs/bin/puppet access login --username admin -l 0',
                                              '/opt/puppetlabs/bin/puppet code deploy --all --wait',
                                              "/opt/puppetlabs/bin/puppet infrastructure provision replica #{agent_certname}",
                                              "/opt/puppetlabs/bin/puppet infrastructure enable replica --yes --topology mono #{agent_certname}"
