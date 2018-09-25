@@ -3,7 +3,7 @@ require 'rubygems/version'
 
 # Check for deprecated Vagrant versions
 class PEBuild::Action::VersionCheck
-  MINIMUM_VERSION = '1.8.0'
+  MINIMUM_VERSION = '2.0.0'
 
   def initialize(app, env)
     @app = app
