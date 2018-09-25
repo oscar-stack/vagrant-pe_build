@@ -326,6 +326,3 @@ Contact
 
   * [Source code](https://github.com/oscar-stack/vagrant-pe_build)
   * [Issue tracker](https://github.com/oscar-stack/vagrant-pe_build/issues)
-
-If you have questions or concerns about this module, contact finch on on
-Freenode, or email adrien@puppetlabs.com.
