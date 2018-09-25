@@ -90,6 +90,24 @@ en:
           %{message}
 
           Agent data will have to be removed from %{master} manually.
+        agent_type_provisioned: |-
+          Agent type already provisioned for %{certname} on %{master}. Skipping %{type} provisioning.
+        agent_type_invalid: |-
+          An invalid agent_type of %{type} has been specified for the agent. Valid types are
+          'agent', 'compile', and 'replica'.
+        provisioning_type: |-
+          Provisioning %{certname} as a %{type} on %{master}.
+        cleaning_type: |-
+          Forgetting %{certname} as a %{type} on %{master}.
+        code_manager_not_running: |-
+          Code Manager is not running on %{master}, cannot provision %{certname} as type %{type}.
+        type_cleanup_failed: |-
+          An error of type %{error_class} occurred while unconfiguring %{type}
+          agent %{certname} from %{master}:
+
+          %{message}
+
+          Any configuration items for %{certname} need to be cleaned up on %{master} manually.
     transfer:
       open_uri:
         download_failed: |-
@@ -144,6 +162,12 @@ en:
           version_too_old: |-
             The agent version %{version} is too old; pe_agent can only provision versions
             newer than %{minimum_version}.
+          agent_type_invalid: |-
+            An invalid agent_type of %{type} has been specified for the agent. Valid types are
+            'agent', 'compile', and 'replica'.
+          agent_type_version_too_old: |-
+            The agent version %{version} is too old for agent type %{agent_type}.
+            Please use %{minimum_version} or newer.
     cap:
       stage_installer:
         downloading_installer: |-

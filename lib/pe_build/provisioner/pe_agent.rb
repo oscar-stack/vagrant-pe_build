@@ -28,6 +28,7 @@ module PEBuild
         end
         provision_agent
         provision_agent_cert if config.autosign
+        provision_agent_type unless config.agent_type == 'agent'
       end
 
       # This gets run during agent destruction and will remove the agent's
@@ -46,6 +47,7 @@ module PEBuild
         @master_vm = machine.env.machine(*vm_def)
 
         cleanup_agent_cert if config.autopurge
+        cleanup_agent_type unless config.agent_type == 'agent'
       end
 
       private
@@ -270,6 +272,195 @@ bash pe_frictionless_installer.sh
             :master   => master_vm.name.to_s,
             :error_class => e.class,
             :message => e.message
+          )
+        end
+      end
+
+      # Run shell provision commands on a target machine
+      # commands is expected to be an array
+      def shell_provision_commands(target_machine, commands)
+
+        shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
+        shell_config.privileged = true
+        shell_config.inline = [commands].flatten.join("\n")
+        shell_config.finalize!
+
+        target_machine.ui.info "Running: #{shell_config.inline}"
+
+        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(target_machine, shell_config)
+        shell_provisioner.provision
+
+      end
+
+      # Run commands on the master_vm based on the agent_type
+      # Allows for provisioning replcas and compile masters
+      def provision_agent_type
+        ensure_reachable(master_vm)
+
+        agent_certname = facts['certname']
+
+        # Return if the certname is in the infrastructure status
+        if master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --host #{agent_certname} --verbose | grep -q -F #{agent_certname}", :sudo => true)
+          master_vm.ui.info I18n.t(
+            'pebuild.provisioner.pe_agent.agent_type_provisioned',
+            :certname => agent_certname,
+            :master   => master_vm.name.to_s,
+            :type     => config.agent_type
+          )
+          return
+        end
+
+        case config.agent_type
+          when 'replica'
+            provision_replica
+          when 'compile'
+            provision_compile
+          else
+            machine.ui.error I18n.t(
+              'pebuild.provisioner.pe_agent.agent_type_invalid',
+              :type => config.agent_type
+            )
+            return
+          end
+      end
+
+      def provision_replica
+        # Provision an HA replica
+        agent_certname = facts['certname']
+
+        # Check for code manager and run the puppet agent on the master if it is not running.
+        unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --verbose | grep -q -F 'Code Manager'", :sudo => true)
+          shell_provision_commands(master_vm, ['/opt/puppetlabs/bin/puppet agent -t || true', '/opt/puppetlabs/bin/puppet agent -t || true'])
+
+          # Try to check for code manager again
+          unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --verbose | grep -q -F 'Code Manager'", :sudo => true)
+            master_vm.ui.error I18n.t(
+              'pebuild.provisioner.pe_agent.code_manager_not_running',
+              :certname => agent_certname,
+              :master   => master_vm.name.to_s,
+              :type     => config.agent_type
+            )
+            return
+          end
+        end
+
+        master_vm.ui.info I18n.t(
+          'pebuild.provisioner.pe_agent.provisioning_type',
+          :certname => agent_certname,
+          :master   => master_vm.name.to_s,
+          :type     => config.type
+        )
+
+        # Run the agent on the machine to ensure it is configured, has a report in puppetdb, and pxp-agent is running
+        shell_provision_commands(machine, '/opt/puppetlabs/bin/puppet agent -t || true')
+
+        # Install an RBAC token
+        # Deploy code to ensure it has been done
+        # Provision the replica
+        shell_provision_commands(master_vm, ['set -e',
+                                             'echo "puppetlabs" | /opt/puppetlabs/bin/puppet access login --username admin -l 0',
+                                             '/opt/puppetlabs/bin/puppet code deploy --all --wait',
+                                             "/opt/puppetlabs/bin/puppet infrastructure provision replica #{agent_certname}",
+                                             "/opt/puppetlabs/bin/puppet infrastructure enable replica --yes --topology mono #{agent_certname}"
+                                             ])
+      end
+
+      def provision_compile
+        # Provision a compile master
+        agent_certname = facts['certname']
+
+        master_vm.ui.info I18n.t(
+          'pebuild.provisioner.pe_agent.provisioning_type',
+          :certname => agent_certname,
+          :master   => master_vm.name.to_s,
+          :type     => config.agent_type
+        )
+
+        # Pin the node to the PE Master group
+        shell_provision_commands(master_vm, ['set -e',
+                                             "CLASSIFIER=$(grep server /etc/puppetlabs/puppet/classifier.yaml | grep -Eo '([^ ]+)$')",
+                                             "CERT_ARGS=\"--cert $(/opt/puppetlabs/bin/puppet config print hostcert)\
+                                               --key $(/opt/puppetlabs/bin/puppet config print hostprivkey)\
+                                               --cacert $(/opt/puppetlabs/bin/puppet config print localcacert)\"",
+                                             "PARSE_ID_RUBY=\"require 'json'; puts JSON.parse(ARGF.read).find{ |group| group['name'] == 'PE Master' }['id']\"",
+                                             "ID=$(curl -sS -k $CERT_ARGS https://$CLASSIFIER:4433/classifier-api/v1/groups |\
+                                               /opt/puppetlabs/puppet/bin/ruby -e \"${PARSE_ID_RUBY}\")",
+                                             "curl -sS -X POST -H 'Content-Type: application/json' $CERT_ARGS \
+                                               https://$CLASSIFIER:4433/classifier-api/v1/groups/$ID/pin?nodes=#{agent_certname}"
+                                             ])
+        # Run the agent on the new CM
+        shell_provision_commands(machine, '/opt/puppetlabs/bin/puppet agent -t || true')
+        # Run the agent on the MoM to update the configuration
+        shell_provision_commands(master_vm, '/opt/puppetlabs/bin/puppet agent -t || true')
+      end
+
+      # Remove agent_type configuration from master_vm
+      def cleanup_agent_type
+        agent_certname = (machine.config.vm.hostname || machine.name).to_s
+
+        unless is_reachable?(master_vm)
+          master_vm.ui.warn I18n.t(
+            'pebuild.provisioner.pe_agent.skip_purge_master_not_reachable',
+            :master => master_vm.name.to_s
+          )
+          return
+        end
+
+        unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet infrastructure status --host #{agent_certname} --verbose | grep -q -F #{agent_certname}", :sudo => true)
+          return
+        end
+
+        master_commands = []
+        machine_commands = []
+        # Setup a shell_provisioner
+        case config.agent_type
+          when 'replica'
+            # Stop the PE services on the replica
+            ['puppet', 'pxp-agent' 'pe-puppetserver', 'pe-puppetdb',
+             'pe-orchestration-services', 'pe-console-services', 'pe-postgresql'].each do | service |
+                machine_commands.push("/opt/puppetlabs/bin/puppet resource service #{service} ensure=stopped")
+            end
+
+            # Change directories to /tmp to avoid permissions errors with forget command
+            # Forget the replica on the master
+            master_commands.push('cd /tmp', "/opt/puppetlabs/bin/puppet infrastructure forget #{agent_certname}")
+
+          when 'compile'
+            # Unpin the node from PE Master
+            master_commands.push('set -e',
+                                 "CLASSIFIER=$(grep server /etc/puppetlabs/puppet/classifier.yaml | grep -Eo '([^ ]+)$')",
+                                 "CERT_ARGS=\"--cert $(/opt/puppetlabs/bin/puppet config print hostcert)\
+                                   --key $(/opt/puppetlabs/bin/puppet config print hostprivkey) \
+                                   --cacert $(/opt/puppetlabs/bin/puppet config print localcacert)\"",
+                                 "PARSE_ID_RUBY=\"require 'json'; puts JSON.parse(ARGF.read).find{ |group| group['name'] == 'PE Master' }['id']\"",
+                                 "ID=$(curl -sS -k $CERT_ARGS https://$CLASSIFIER:4433/classifier-api/v1/groups | \
+                                   /opt/puppetlabs/puppet/bin/ruby -e \"${PARSE_ID_RUBY}\")",
+                                 "curl -sS -X POST -H 'Content-Type: application/json' $CERT_ARGS \
+                                   https://$CLASSIFIER:4433/classifier-api/v1/groups/$ID/unpin?nodes=#{agent_certname}"
+                                 )
+          else
+            return
+        end
+
+         master_vm.ui.info I18n.t(
+           'pebuild.provisioner.pe_agent.cleaning_type',
+           :certname => agent_certname,
+           :master   => master_vm.name.to_s,
+           :type     => config.agent_type
+         )
+
+        # Run the shell provisioner
+        begin
+          shell_provision_commands(machine, machine_commands)
+          shell_provision_commands(master_vm, master_commands)
+        rescue Vagrant::Errors::VagrantError => e
+          master_vm.ui.error I18n.t(
+            'pebuild.provisioner.pe_agent.type_cleanup_failed',
+            :certname => agent_certname,
+            :master   => master_vm.name.to_s,
+            :error_class => e.class,
+            :message => e.message,
+            :type    => config.agent_type
           )
         end
       end
