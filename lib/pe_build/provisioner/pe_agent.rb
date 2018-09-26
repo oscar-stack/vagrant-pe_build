@@ -348,7 +348,7 @@ bash pe_frictionless_installer.sh
           'pebuild.provisioner.pe_agent.provisioning_type',
           :certname => agent_certname,
           :master   => master_vm.name.to_s,
-          :type     => config.type
+          :type     => config.agent_type
         )
 
         # Run the agent on the machine to ensure it is configured, has a report in puppetdb, and pxp-agent is running
