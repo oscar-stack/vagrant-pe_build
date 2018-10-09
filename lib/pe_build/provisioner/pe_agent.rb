@@ -197,7 +197,10 @@ bash pe_frictionless_installer.sh
         # inverted as `grep -q` will exit with 1 if the certificate is not
         # found.
         # TODO: Extend paths to PE 3.x masters.
-        if not master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}", :sudo => true)
+        csr_check = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+            "/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}" :
+            "/opt/puppetlabs/bin/puppetserver ca list | grep -q -F #{agent_certname}"
+        if not master_vm.communicate.test(csr_check, :sudo => true)
           master_vm.ui.info I18n.t(
             'pebuild.provisioner.pe_agent.no_csr_pending',
             :certname => agent_certname,
@@ -212,16 +215,13 @@ bash pe_frictionless_installer.sh
           :master   => master_vm.name.to_s
         )
 
-        shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
-        shell_config.privileged = true
         # TODO: Extend paths to PE 3.x masters.
-        shell_config.inline = <<-EOS
-/opt/puppetlabs/bin/puppet cert --allow-dns-alt-names sign #{agent_certname}
-        EOS
-        shell_config.finalize!
+        # NOTE: 2019.0.0 has Cert SAN allowed by default
+        sign_cert = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+            "/opt/puppetlabs/bin/puppet cert --allow-dns-alt-names sign #{agent_certname}" :
+            "/opt/puppetlabs/bin/puppetserver ca sign --certname #{agent_certname}"
+        shell_provision_commands(master_vm, sign_cert)
 
-        shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
-        shell_provisioner.provision
       end
 
       def cleanup_agent_cert
@@ -238,7 +238,11 @@ bash pe_frictionless_installer.sh
         end
 
         # TODO: Extend paths to PE 3.x masters.
-        unless master_vm.communicate.test("/opt/puppetlabs/bin/puppet cert list #{agent_certname}", :sudo => true)
+        # TODO: Find a way to query an individual certificate through puppetserver ca.
+        cert_check = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+            "/opt/puppetlabs/bin/puppet cert list #{agent_certname}" :
+            "/opt/puppetlabs/bin/puppetserver ca list --all| grep -q -F #{agent_certname}"
+        unless master_vm.communicate.test(cert_check, :sudo => true)
           master_vm.ui.info I18n.t(
             'pebuild.provisioner.pe_agent.agent_purged',
             :certname => agent_certname,
