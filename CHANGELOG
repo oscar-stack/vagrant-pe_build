@@ -1,6 +1,25 @@
 vagrant-pe_build
 ================
 
+0.18.0
+------
+
+2018-10-10
+
+This is a backwards compatible feature release.
+
+  * Add support for signing and purging agent certificates with Puppet 6
+    CA commands.
+
+  * Add support for two new agent types, "replica" and "compile", which can
+    be used to provision PE HA replicas and compilers.
+
+  * Add support for 2019.0.0
+
+Huge thanks to Jarret Lavallee for contributing Puppet 6 CA support along
+with the replica and compile agent roles.
+
+
 0.17.14
 -------
 
