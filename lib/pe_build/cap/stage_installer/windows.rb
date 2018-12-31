@@ -25,8 +25,11 @@ class PEBuild::Cap::StageInstaller::Windows
       # allows us to download from HTTPS sources that present a self-signed
       # certificate. For example, a Puppet Master.
       on_machine(machine, <<-EOS)
+$DestDir = (Get-Item -Path "#{dest_dir}").FullName
+Write-Host "Downloading #{filename} to: ${DestDir}"
+
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-(New-Object System.Net.WebClient).DownloadFile("#{uri}","#{dest_dir}/#{filename}")
+(New-Object System.Net.WebClient).DownloadFile("#{uri}","$DestDir/#{filename}")
 EOS
     end
   end
