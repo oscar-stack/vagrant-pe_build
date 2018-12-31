@@ -27,7 +27,9 @@ $params = @(
   "#{install_options}"
 )
 
-(Start-Process -FilePath "msiexec.exe" -ArgumentList $params -Wait -Passthru).ExitCode
+$Result = (Start-Process -FilePath "msiexec.exe" -ArgumentList $params -Wait -Passthru).ExitCode
+Write-Host "msiexec completed with exitcode: ${Result}"
+exit $Result
 EOS
 
     machine.ui.info "Running: #{cmd}"
