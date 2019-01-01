@@ -27,4 +27,5 @@ module PEBuild::Release
   end
 
   @releases['2019.0.0'] = twentynineteen_aught_x
+  @releases['2019.0.1'] = twentynineteen_aught_x
 end
