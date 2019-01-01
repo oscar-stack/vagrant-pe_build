@@ -20,19 +20,33 @@ class PEBuild::Cap::RunInstall::Windows
     installer_path = installer_path.gsub('/', '\\')
 
     cmd = <<-EOS
+$WorkingDirectory = (Get-Item -Path "#{installer_path}" -ErrorVariable InstallerMissing).Directory.FullName
+If ($InstallerMissing) { Exit 1 }
+
+$Package = (Get-Item -Path "#{installer_path}").FullName
+$LogFile = "${WorkingDirectory}\\puppet-enterprise-installer.log"
+
 $params = @(
   "/qn",
-  "/i `"#{installer_path}`"",
-  "/l*v puppet-enterprise-installer.log",
+  "/i `"${Package}`"",
+  "/l*v `"${LogFile}`"",
   "#{install_options}"
 )
 
-$Result = (Start-Process -FilePath "msiexec.exe" -ArgumentList $params -Wait -Passthru).ExitCode
-Write-Host "msiexec completed with exitcode: ${Result}"
-exit $Result
-EOS
+Write-Host "Running msiexec to install: ${Package}"
 
-    machine.ui.info "Running: #{cmd}"
+$Result = (Start-Process -FilePath "msiexec.exe" -ArgumentList $params -Wait -Passthru).ExitCode
+
+If ($Result -ne 0) {
+  $HOST.UI.WriteErrorLine("msiexec failed with exitcode: ${Result}")
+  $HOST.UI.WriteErrorLine("Contents of ${LogFile}:")
+  Get-Content "${LogFile}" | ForEach-Object { $HOST.UI.WriteErrorLine($_) }
+} Else {
+  Write-Host "msiexec completed with exitcode: ${Result}"
+}
+
+Exit $Result
+EOS
 
     on_machine(machine, cmd)
   end
