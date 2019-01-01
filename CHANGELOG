@@ -1,6 +1,25 @@
 vagrant-pe_build
 ================
 
+0.18.1
+------
+
+2019-01-01
+
+This is a backwards compatible bugfix release.
+
+  * Add test coverage for Vagrant 2.2
+
+  * Add support for 2018.1.5
+
+  * Add support for 2019.0.1
+
+  * Fixed an issue where Windows agent packages were not downloaded to the
+    location where the installer expected them.
+
+  * Improved logging around failed Windows installations.
+
+
 0.18.0
 ------
 
