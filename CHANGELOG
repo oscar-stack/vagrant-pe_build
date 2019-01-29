@@ -1,6 +1,23 @@
 vagrant-pe_build
 ================
 
+0.18.2
+------
+
+2019-01-29
+
+This is a backwards compatible bugfix release.
+
+  * Add test coverage for Vagrant 2.2.3
+
+  * Add support for 2018.1.7
+
+  * Add support for 2019.0.2
+
+  * Disabled collection of analytics from PE installs created by the
+    vagrant-pe_build plugin.
+
+
 0.18.1
 ------
 
