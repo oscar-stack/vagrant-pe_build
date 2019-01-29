@@ -20,9 +20,8 @@ class PEBuild::Cap::RunInstall::POSIX
   #
   # @return [void]
   def self.run_install(machine, installer_path, answers, **options)
-
     if options.fetch(:use_pem, false)
-      on_machine(machine, "#{installer_path}/puppet-enterprise-installer -c #{answers}")
+      on_machine(machine, "DISABLE_ANALYTICS=1 #{installer_path}/puppet-enterprise-installer -c #{answers}")
     else
       on_machine(machine, "#{installer_path}/puppet-enterprise-installer -a #{answers}")
     end
