@@ -33,4 +33,6 @@ module PEBuild::Release
   @releases['2018.1.3'] = twentyeighteen_one_x
   @releases['2018.1.4'] = twentyeighteen_one_x
   @releases['2018.1.5'] = twentyeighteen_one_x
+  # 2018.1.6 was only shipped to AWS OpsWorks
+  @releases['2018.1.7'] = twentyeighteen_one_x
 end
