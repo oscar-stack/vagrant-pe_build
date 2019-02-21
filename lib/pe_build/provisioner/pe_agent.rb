@@ -17,6 +17,11 @@ module PEBuild
       attr_reader :facts
       attr_reader :agent_version
       attr_reader :master_vm
+      attr_reader :global_config
+
+      def configure(root_config)
+        @global_config = config # root_config.pe_build
+      end
 
       def provision
         provision_init!
@@ -197,7 +202,7 @@ bash pe_frictionless_installer.sh
         # inverted as `grep -q` will exit with 1 if the certificate is not
         # found.
         # TODO: Extend paths to PE 3.x masters.
-        csr_check = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+        csr_check = PEBuild::Util::VersionString.compare(@global_config.version, '2019.0.0') < 0 ?
             "/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}" :
             "/opt/puppetlabs/bin/puppetserver ca list | grep -q -F #{agent_certname}"
         if not master_vm.communicate.test(csr_check, :sudo => true)
@@ -217,7 +222,7 @@ bash pe_frictionless_installer.sh
 
         # TODO: Extend paths to PE 3.x masters.
         # NOTE: 2019.0.0 has Cert SAN allowed by default
-        sign_cert = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+        sign_cert = PEBuild::Util::VersionString.compare(@global_config.version, '2019.0.0') < 0 ?
             "/opt/puppetlabs/bin/puppet cert --allow-dns-alt-names sign #{agent_certname}" :
             "/opt/puppetlabs/bin/puppetserver ca sign --certname #{agent_certname}"
         shell_provision_commands(master_vm, sign_cert)
@@ -239,7 +244,7 @@ bash pe_frictionless_installer.sh
 
         # TODO: Extend paths to PE 3.x masters.
         # TODO: Find a way to query an individual certificate through puppetserver ca.
-        cert_check = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+        cert_check = PEBuild::Util::VersionString.compare(@global_config.version, '2019.0.0') < 0 ?
             "/opt/puppetlabs/bin/puppet cert list #{agent_certname}" :
             "/opt/puppetlabs/bin/puppetserver ca list --all| grep -q -F #{agent_certname}"
         unless master_vm.communicate.test(cert_check, :sudo => true)
