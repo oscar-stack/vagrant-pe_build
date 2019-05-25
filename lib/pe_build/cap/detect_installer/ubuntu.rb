@@ -13,7 +13,7 @@ class PEBuild::Cap::DetectInstaller::Ubuntu < PEBuild::Cap::DetectInstaller::POS
   end
 
   def supported_releases
-    %w[10.04 12.04 14.04 15.04 15.10 16.04]
+    %w[10.04 12.04 14.04 15.04 15.10 16.04 18.04]
   end
 
   def arch
