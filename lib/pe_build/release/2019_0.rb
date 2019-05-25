@@ -5,6 +5,7 @@ module PEBuild::Release
     add_release :el, '5'
     add_release :el, '6'
     add_release :el, '7'
+    add_release :el, '8'
 
     add_release :sles, '11'
     add_release :sles, '12'
@@ -29,4 +30,5 @@ module PEBuild::Release
   @releases['2019.0.0'] = twentynineteen_aught_x
   @releases['2019.0.1'] = twentynineteen_aught_x
   @releases['2019.0.2'] = twentynineteen_aught_x
+  @releases['2019.0.3'] = twentynineteen_aught_x
 end
