@@ -14,6 +14,7 @@ module PEBuild::Release
 
     add_release :ubuntu, '14.04'
     add_release :ubuntu, '16.04'
+    add_release :ubuntu, '18.04'
 
     add_release :windows, '2008'
     add_release :windows, '2008R2'
