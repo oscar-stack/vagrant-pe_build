@@ -21,6 +21,7 @@ module PEBuild::Release
     add_release :windows, '2012'
     add_release :windows, '2012R2'
     add_release :windows, '2016'
+    add_release :windows, '2019'
     add_release :windows, '7'
     add_release :windows, '8'
     add_release :windows, '8.1'
