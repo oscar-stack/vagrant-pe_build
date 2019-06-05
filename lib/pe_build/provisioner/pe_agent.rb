@@ -190,6 +190,13 @@ bash pe_frictionless_installer.sh
         # This method will raise an error if commands can't be run on the
         # master VM.
         ensure_reachable(master_vm)
+        master_version = ''
+        err_code = master_vm.communicate.sudo('cat /opt/puppetlabs/server/pe_version', error_check: false) do |type, output|
+                     master_version << output if type == :stdout
+                   end
+        # Check for unrecognized PE file layouts, which are assumed to be older
+        # than 2019.0.
+        master_version = '0.0' if (err_code != 0)
 
         agent_certname = facts['certname']
 
@@ -197,7 +204,7 @@ bash pe_frictionless_installer.sh
         # inverted as `grep -q` will exit with 1 if the certificate is not
         # found.
         # TODO: Extend paths to PE 3.x masters.
-        csr_check = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+        csr_check = PEBuild::Util::VersionString.compare(master_version, '2019.0') < 0 ?
             "/opt/puppetlabs/bin/puppet cert list | grep -q -F #{agent_certname}" :
             "/opt/puppetlabs/bin/puppetserver ca list | grep -q -F #{agent_certname}"
         if not master_vm.communicate.test(csr_check, :sudo => true)
@@ -217,7 +224,7 @@ bash pe_frictionless_installer.sh
 
         # TODO: Extend paths to PE 3.x masters.
         # NOTE: 2019.0.0 has Cert SAN allowed by default
-        sign_cert = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+        sign_cert = PEBuild::Util::VersionString.compare(master_version, '2019.0') < 0 ?
             "/opt/puppetlabs/bin/puppet cert --allow-dns-alt-names sign #{agent_certname}" :
             "/opt/puppetlabs/bin/puppetserver ca sign --certname #{agent_certname}"
         shell_provision_commands(master_vm, sign_cert)
@@ -237,9 +244,17 @@ bash pe_frictionless_installer.sh
           return
         end
 
+        master_version = ''
+        err_code = master_vm.communicate.sudo('cat /opt/puppetlabs/server/pe_version', error_check: false) do |type, output|
+                     master_version << output if type == :stdout
+                   end
+        # Check for unrecognized PE file layouts, which are assumed to be older
+        # than 2019.0.
+        master_version = '0.0' if (err_code != 0)
+
         # TODO: Extend paths to PE 3.x masters.
         # TODO: Find a way to query an individual certificate through puppetserver ca.
-        cert_check = PEBuild::Util::VersionString.compare(config.version, '2019.0.0') < 0 ?
+        cert_check = PEBuild::Util::VersionString.compare(master_version, '2019.0') < 0 ?
             "/opt/puppetlabs/bin/puppet cert list #{agent_certname}" :
             "/opt/puppetlabs/bin/puppetserver ca list --all| grep -q -F #{agent_certname}"
         unless master_vm.communicate.test(cert_check, :sudo => true)
