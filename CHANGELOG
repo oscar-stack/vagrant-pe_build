@@ -1,6 +1,18 @@
 vagrant-pe_build
 ================
 
+0.19.1
+------
+
+2019-06-05
+
+This is a backwards compatible bugfix release.
+
+  * Fix the pe_agent provisioner to read and use the master's version number
+    instead of the agent's when determining how to provision and clean up
+    certificates.
+
+
 0.19.0
 ------
 
@@ -19,7 +31,6 @@ This is a backwards compatible feature release.
   * Add support for PE 2019.0.3
 
   * Add support for PE 2018.1.8
-
 
 
 0.18.2
