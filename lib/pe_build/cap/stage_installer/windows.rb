@@ -27,7 +27,7 @@ class PEBuild::Cap::StageInstaller::Windows
       on_machine(machine, <<-EOS)
 $DestDir = (Get-Item -Path "#{dest_dir}").FullName
 Write-Host "Downloading #{filename} to: ${DestDir}"
-
+[System.Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 (New-Object System.Net.WebClient).DownloadFile("#{uri}","$DestDir/#{filename}")
 EOS
