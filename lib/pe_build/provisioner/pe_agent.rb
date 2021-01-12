@@ -126,14 +126,20 @@ module PEBuild
           :platform_tag => platform
         )
 
+        master_version = ''
+        err_code = master_vm.communicate.sudo('cat /opt/puppetlabs/server/pe_version', error_check: false) do |type, output|
+                     master_version << output if type == :stdout
+                   end
+        master_version = '0.0' if (err_code != 0)
+        platform_install_cmd = PEBuild::Util::VersionString.compare(master_version, '2019.8') < 0 ?
+                    "/opt/puppetlabs/bin/puppet apply -e 'include pe_repo::platform::#{pe_repo_platform}'" :
+                    "/opt/puppetlabs/bin/puppet apply -e 'class{pe_repo: enable_bulk_pluginsync => false, enable_windows_bulk_pluginsync => false };include pe_repo::platform::#{pe_repo_platform}'"
         shell_config = Vagrant.plugin('2').manager.provisioner_configs[:shell].new
         shell_config.privileged = true
         # TODO: Extend to configuring agent repos which are older than the
         # master.
         # TODO: Extend to PE 3.x masters.
-        shell_config.inline = <<-EOS
-/opt/puppetlabs/bin/puppet apply -e 'include pe_repo::platform::#{pe_repo_platform}'
-        EOS
+        shell_config.inline = platform_install_cmd
         shell_config.finalize!
 
         shell_provisioner = Vagrant.plugin('2').manager.provisioners[:shell].new(master_vm, shell_config)
